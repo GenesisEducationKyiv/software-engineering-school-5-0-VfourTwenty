@@ -49,6 +49,7 @@ services:
     environment:
       NODE_ENV: docker
       DATABASE_URL: postgres://postgres:alwayssunny@db:5432/weather_db
+      PORT: 3000
 
 volumes:
   pgdata:

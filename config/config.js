@@ -2,7 +2,7 @@ require('dotenv').config();
 
 module.exports = {
     development: {
-        baseUrl: 'http://localhost:3000',
+        baseUrl: 'http://localhost:3001',
         username: 'postgres',
         password: 'alwayssunny',
         database: 'weather_db',

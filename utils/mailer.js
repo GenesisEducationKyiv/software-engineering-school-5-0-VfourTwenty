@@ -8,6 +8,7 @@ const env = process.env.NODE_ENV || 'docker';
 const config = require('../config/config.js')[env];
 
 const BASE_URL = config.baseUrl;
+console.log("read base url: ", config.baseUrl);
 
 async function sendConfirmationEmail(to, confirmUrl) {
     try {
