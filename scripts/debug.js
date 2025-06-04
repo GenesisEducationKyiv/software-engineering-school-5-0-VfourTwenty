@@ -60,7 +60,7 @@ const [,, command, arg] = process.argv; // command will be 'sub:list' or 'weathe
             if (!arg) return console.error('❗ Usage: npm run debug weather:find <city>');
             await findWeatherByCity(arg);
             break;
-        case 'weather:inspect':
+        case 'weather:inspect': {
             const [columns] = await sequelize.query(`
               SELECT column_name, data_type
               FROM information_schema.columns
@@ -68,6 +68,7 @@ const [,, command, arg] = process.argv; // command will be 'sub:list' or 'weathe
             `);
             console.table(columns);
             break;
+        }
         case 'tracker:list':
             await listTrackedCities();
             break;
@@ -80,10 +81,10 @@ const [,, command, arg] = process.argv; // command will be 'sub:list' or 'weathe
             console.log('  debug sub:list');
             console.log('  debug sub:find email@example.com');
             console.log('  debug weather:list');
-            console.log('  debug weather:find \"City Name\"');
+            console.log('  debug weather:find "City Name"');
             console.log('  debug weather:inspect');
             console.log('  debug tracker:list');
-            console.log('  debug tracker:find \"City Name\"');
+            console.log('  debug tracker:find "City Name"');
     }
 
     await sequelize.close();
