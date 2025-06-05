@@ -16,7 +16,7 @@ services:
 
 
   backend:
-    build: .github
+    build: .
     restart: always
     depends_on:
       - db
@@ -28,12 +28,13 @@ services:
       WEATHER_API_KEY: 588e4679207f459c9d893949251405
       RESEND_API_KEY: re_D4x576dB_Cp74P9pQKpvuUwjqGyEEHeUo
       FROM_EMAIL: skyfetch@resend.dev
+      PORT: 3000
     ports:
       - "3000:3000"
     command: npm start
 
   seed:
-    build: .github
+    build: .
     command: node scripts/seeder.js
     depends_on:
       - db
@@ -42,7 +43,7 @@ services:
       DATABASE_URL: postgres://postgres:alwayssunny@db:5432/weather_db
 
   debug:
-    build: .github
+    build: .
     command: node scripts/debug.js
     depends_on:
       - db
