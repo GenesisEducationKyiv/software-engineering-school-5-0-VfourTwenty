@@ -148,9 +148,9 @@
 ### Currently
 
 - Designed for free-tier usage 
-- Questionable config setup (see ADR-001)
-- Singular point of failure risk with using onw provider per external service (see ADR-002)
-- Routing controllers are defined inline - not good for scaling (see ADR-003)
+- Questionable config setup [(see ADR-001)](../ADR/ADR-001-EnvironmentConfig.md)
+- Singular point of failure risk with using onw provider per external service [(see ADR-002)](../ADR/ADR-002-ExternalDependencies.md)
+- Routing controllers are defined inline - not good for scaling [(see ADR-003)](../ADR/ADR-003-RoutingAndLogic.md)
 
 ### Future Improvements
 
