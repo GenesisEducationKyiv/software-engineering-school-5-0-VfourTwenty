@@ -2,6 +2,7 @@
 
 **Status:** Accepted  
 **Date:** 2025-06-08
+**Author:** VfourTwenty
 
 ### Context
 

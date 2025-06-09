@@ -2,7 +2,9 @@
 
 **Status:** Proposed  
 **Date:** 2025-06-08  
-**Context:**
+**Author:** VfourTwenty
+
+### Context:
 
 The current config.js file handles both:
 - Database-related environment variables

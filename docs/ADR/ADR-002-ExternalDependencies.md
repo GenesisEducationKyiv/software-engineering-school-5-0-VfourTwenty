@@ -2,6 +2,7 @@
 
 **Status:** Proposed  
 **Date:** 2025-06-09
+**Author:** VfourTwenty
 
 ### Context
 
