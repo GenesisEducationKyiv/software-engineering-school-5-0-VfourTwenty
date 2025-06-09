@@ -59,6 +59,7 @@
 
 ### 3.2 System Diagram
 ![containers.svg](../C4-model/containers.svg)
+<br>
 [See the whole C4 model](../C4-model/)
 
 ---
