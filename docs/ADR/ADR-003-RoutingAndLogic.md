@@ -1,7 +1,7 @@
 ## ADR Topic: Separating Route Controllers from Route Definitions
 
 **Status:** Accepted  
-**Date:** 2025-06-08
+**Date:** 2025-06-08 <br>
 **Author:** VfourTwenty
 
 ### Context

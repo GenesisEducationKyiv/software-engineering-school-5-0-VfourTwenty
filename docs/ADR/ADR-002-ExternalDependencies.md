@@ -1,7 +1,7 @@
 ## ADR Topic: Abstracting External Dependencies
 
 **Status:** Proposed  
-**Date:** 2025-06-09
+**Date:** 2025-06-09 <br>
 **Author:** VfourTwenty
 
 ### Context
