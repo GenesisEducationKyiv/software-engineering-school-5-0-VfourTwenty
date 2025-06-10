@@ -61,3 +61,4 @@ Define all logic inside route declarations.
 ### Decision
 
 **Option 1.** We will create a separate `controllers` module and use the logic via imports in routes.
+**UPD 2025-06-10:** The chosen option has been successfully implemented in the main branch.
