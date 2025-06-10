@@ -1,5 +1,4 @@
 const readline = require('readline');
-const { Sequelize, Op } = require('sequelize');
 const { Subscription, WeatherCity, WeatherData } = require('../models'); // adjust if needed
 const { incrementCityCounter } = require('../utils/subtracker'); // adjust if needed
 const crypto = require('crypto');
