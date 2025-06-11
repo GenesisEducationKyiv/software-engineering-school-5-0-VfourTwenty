@@ -75,4 +75,8 @@ This mixes infrastructure concerns (database setup) with application behavior (r
 ---
 
 ### Decision: ###
-Pending
+**Option 4.** We will keep the same single config file with currently 4 environments defined (development, docker, production, and testing)
+and introduce a clear variable naming convention. This solution works well in the current setup with 4 environments and few external services
+that require configuration. Also, this approach will simplify abstraction of external providers [(see ADR-002)](../ADR/ADR-002-ExternalDependencies.md) by allowing to configure variables based on the active provider.
+In case if number or complexity of configuration grows it won't pose a problem to restructure this setup
+with, for example, separate files (Options 1, 2).
