@@ -1,4 +1,4 @@
-const { WeatherCity } = require('../models');
+const { WeatherCity } = require('../db/models');
 
 // track the number of subscriptions per city per type (hourly/daily)
 async function incrementCityCounter(city, frequency) {

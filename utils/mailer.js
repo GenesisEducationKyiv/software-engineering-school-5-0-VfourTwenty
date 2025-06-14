@@ -1,88 +1,50 @@
-const { Resend } = require('resend');
-const {Subscription, WeatherData} = require("../models");
+const {Subscription, WeatherData} = require("../db/models");
+
 require('dotenv').config();
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const env = process.env.NODE_ENV || 'docker';
 const config = require('../config/config.js')[env];
-
 const BASE_URL = config.baseUrl;
+
+const { confirmEmailTemplate, unsubscribeEmailTemplate, weatherUpdateEmailTemplate } = require('./emailTemplates');
+const { sendEmail } = require('../services/emailService');
 
 async function sendConfirmationEmail(to, confirmUrl) {
     try {
-        const result = await resend.emails.send({
-            from: process.env.FROM_EMAIL,
-            to,
-            subject: 'Confirm your weather subscription',
-            html: `
-        <p>Thanks for subscribing! Click below to confirm your subscription:</p>
-        <a href="${confirmUrl}">${confirmUrl}</a>
-      `
-        });
+        const subject = 'Confirm your weather subscription';
+        const body = confirmEmailTemplate(confirmUrl);
 
-        return result;
+        return await sendEmail(to, subject, body);
     } catch (err) {
         console.error('❌ Failed to send confirmation email:', err);
         return null;
     }
 }
 
-
 async function sendUnsubscribeEmail(to, city) {
     try {
-        const result = await resend.emails.send({
-            from: process.env.FROM_EMAIL,
-            to,
-            subject: 'You’ve been unsubscribed',
-            html: `
-        <p>You have been unsubscribed from weather updates for <strong>${city}</strong>.</p>
-      `
-        });
+        const subject = 'You’ve been unsubscribed';
+        const body = unsubscribeEmailTemplate(city);
 
-        return result;
+        return await sendEmail(to, subject, body);
     } catch (err) {
         console.error('❌ Failed to send unsubscribe email:', err);
         return null;
     }
 }
 
-// internal function
-function delay(ms) {
-    return new Promise((res) => setTimeout(res, ms));
-}
-
 async function sendWeatherUpdate(email, city, weather, token) {
-    const subject = `SkyFetch Weather Update for ${city}`;
-    const body = `
-    <p>Here's your latest weather update for <strong>${city}</strong>:</p>
-    <ul>
-      <li><strong>Temperature:</strong> ${weather.temperature}°C</li>
-      <li><strong>Humidity:</strong> ${weather.humidity}%</li>
-      <li><strong>Condition:</strong> ${weather.description}</li>
-    </ul>
-    <p>To unsubscribe, click <a href="${BASE_URL}/unsubscribe/${token}">here</a>.</p>
-    <p style="font-size: 0.8rem; color: gray;">SkyFetch 2025 by VfourTwenty</p>
-  `;
     try {
-        const response = await resend.emails.send({
-            from: process.env.FROM_EMAIL,
-            to: email,
-            subject,
-            html: body
-        });
+        const subject = `SkyFetch Weather Update for ${city}`;
+        const unsubUrl = `${BASE_URL}/unsubscribe/${token}`;
+        const html = weatherUpdateEmailTemplate(city, weather, unsubUrl);
 
+        const response = await sendEmail(email, subject, html);
+        console.log(`📧 Weather update sent to ${email}`, response);
 
-        if (response.error?.statusCode === 429) {
-            console.warn(`⚠️ Rate limit hit for ${email}. Retrying after 0.5s...`);
-            await delay(510);
-            return await sendWeatherUpdate(email, city, weather, token); // retry once
-        }
-
-        console.log(`📧 Email sent to ${email}`, response);
-
+        return response;
     } catch (err) {
-        console.error(`❌ Failed to send email to ${email}:`, err.message || err);
+        console.error(`❌ Failed to send weather update to ${email}:`, err.message || err);
+        return null;
     }
 }
 
@@ -99,7 +61,6 @@ async function sendUpdates(frequency) {
                 console.warn(`⚠️ No weather data cached for ${sub.city}, skipping ${sub.email}`);
                 continue;
             }
-
             await sendWeatherUpdate(sub.email, sub.city, weather.toJSON(), sub.token);
             console.log(`✅ ${frequency} email sent to ${sub.email}`);
         } catch (err) {
@@ -107,7 +68,6 @@ async function sendUpdates(frequency) {
         }
     }
 }
-
 
 module.exports = {
     sendConfirmationEmail,
