@@ -10,6 +10,7 @@ services:
       NODE_ENV: docker
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5433:5432"  # Host 5433 → Container 5432
 
@@ -46,6 +47,15 @@ services:
       - .env.docker
     environment:
       NODE_ENV: docker
+
+  test:
+    build: .
+    depends_on:
+      - db
+    entrypoint: [ "/bin/sh", "-c", "npx sequelize-cli db:migrate --env docker_test && npm run test-docker" ]
+    environment:
+      NODE_ENV: docker_test
+      DATABASE_URL_TEST: postgres://postgres:alwayssunny@db:5432/weather_db_test
 
 volumes:
   pgdata:
