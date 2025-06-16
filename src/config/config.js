@@ -13,6 +13,9 @@ module.exports = {
     test: {
     },
 
+    docker_test: {
+        baseUrl: 'http://localhost:3000',
+    },
     // deployed on render and railway
     production: {
         baseUrl: process.env.BASE_URL,

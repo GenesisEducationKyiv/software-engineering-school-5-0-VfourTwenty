@@ -22,6 +22,11 @@ module.exports = {
         dialect: 'postgres'
     },
 
+    docker_test: {
+        use_env_variable: 'DATABASE_URL_TEST',
+        dialect: 'postgres',
+    },
+
     // deployed on render
     production: {
         username: process.env.DB_USER,
