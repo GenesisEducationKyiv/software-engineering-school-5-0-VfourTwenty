@@ -37,6 +37,8 @@ async function sendWeatherUpdate(email, city, weather, token) {
         const subject = `SkyFetch Weather Update for ${city}`;
         const unsubUrl = `${BASE_URL}/unsubscribe/${token}`;
         const html = weatherUpdateEmailTemplate(city, weather, unsubUrl);
+        console.log("weather data: ", weather);
+        console.log("email body: ", html);
 
         const response = await sendEmail(email, subject, html);
         console.log(`📧 Weather update sent to ${email}`, response);

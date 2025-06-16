@@ -1,7 +1,6 @@
 const { join } = require('path');
 
-// for looking up the subscription details since sending in with json is not allowed
-const { Subscription } = require('../db/models');
+const { findSub } = require('../services/subscriptionService');
 const env = process.env.NODE_ENV || 'docker';
 const config = require('../config/config.js')[env];
 
@@ -25,9 +24,8 @@ const confirmPublicController = async (req, res) => {
 
 
         if (apiRes.status === 200) {
-
-            const url = new URL(`${config.baseUrl}/confirmed.html`);//${req.get('host')}`);
-            const sub = await Subscription.findOne({ where: { token } })
+            const url = new URL(`${config.baseUrl}/confirmed.html`);
+            const sub = await findSub({token: token});
 
             url.searchParams.set('city', sub.city || '');
             url.searchParams.set('frequency', sub.frequency || '');
