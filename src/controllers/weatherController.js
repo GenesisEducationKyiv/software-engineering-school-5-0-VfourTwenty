@@ -24,8 +24,14 @@ const weatherController = async (req, res) => {
         });
 
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to fetch weather data' });
+        if (err.message === 'No matching location found.')
+        {
+            res.status(404).json({error: err.message});
+        }
+        else
+        {
+            res.status(500).json({ error: 'Failed to fetch weather data' });
+        }
     }
 }
 
