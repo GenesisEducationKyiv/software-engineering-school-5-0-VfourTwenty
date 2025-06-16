@@ -1,10 +1,10 @@
 const request = require('supertest');
-const app = require('../app');
+const app = require('../src/app');
 const { expect } = require('chai');
-const {Subscription, sequelize} = require("../models");
+const {Subscription, sequelize} = require("../src/db/models");
 
 const sinon = require('sinon');
-const mailer = require('../utils/mailer');
+const mailer = require('../src/utils/mailer');
 
 
 describe('POST /api/subscribe', () => {
@@ -21,7 +21,7 @@ describe('POST /api/subscribe', () => {
             .send({ city: 'Kyiv', frequency: 'daily' });
 
         expect(res.status).to.equal(400);
-        expect(res.body.error).to.equal('Missing required fields');
+        expect(res.body.error).to.equal('Missing required fields.');
     });
 
     // missing city
@@ -32,7 +32,7 @@ describe('POST /api/subscribe', () => {
             .send({ email: 'test@gmail.com', frequency: 'daily' });
 
         expect(res.status).to.equal(400);
-        expect(res.body.error).to.equal('Missing required fields');
+        expect(res.body.error).to.equal('Missing required fields.');
     });
 
     // missing frequency
@@ -43,7 +43,7 @@ describe('POST /api/subscribe', () => {
             .send({ email: 'test@gmail.com', city: 'Kyiv'});
 
         expect(res.status).to.equal(400);
-        expect(res.body.error).to.equal('Missing required fields');
+        expect(res.body.error).to.equal('Missing required fields.');
     });
 
     // invalid email format
@@ -54,7 +54,7 @@ describe('POST /api/subscribe', () => {
             .send({ email: 'invalid_email', city: 'Kyiv', frequency: 'daily' });
 
         expect(res.status).to.equal(400);
-        expect(res.body.error).to.equal('Invalid email format');
+        expect(res.body.error).to.equal('Invalid email format.');
     });
 
     // frequency != daily or hourly
@@ -65,7 +65,7 @@ describe('POST /api/subscribe', () => {
             .send({ email: 'test@gmail.com', city: 'Kyiv', frequency: 'hgkdfhgsh' });
 
         expect(res.status).to.equal(400);
-        expect(res.body.error).to.equal('Invalid frequency');
+        expect(res.body.error).to.equal('Invalid frequency.');
     });
 
 
@@ -103,7 +103,7 @@ describe('POST /api/subscribe', () => {
             .send({ email: 'test@example.com', city: 'Kyiv', frequency: 'daily' });
 
         expect(res.status).to.equal(409);
-        expect(res.body.error).to.equal('Email already subscribed for this city and frequency');
+        expect(res.body.error).to.equal('Subscription already exists for this city and frequency.');
     });
 });
 
