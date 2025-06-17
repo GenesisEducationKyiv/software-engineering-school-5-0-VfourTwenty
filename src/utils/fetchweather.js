@@ -1,21 +1,7 @@
-const { WeatherCity, WeatherData } = require('../models');
+const { WeatherCity, WeatherData } = require('../db/models');
 const { Op } = require('sequelize');
 
-const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
-
-// internal
-async function fetchWeather(city) {
-    const url = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${encodeURIComponent(city)}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-
-    return {
-        temperature: data.current.temp_c,
-        humidity: data.current.humidity,
-        description: data.current.condition.text
-    };
-}
+const { fetchWeather } = require("../services/weatherService");
 
 // for cron jobs
 async function fetchHourlyWeather() {

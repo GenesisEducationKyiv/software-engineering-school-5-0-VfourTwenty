@@ -2,7 +2,6 @@ require('dotenv').config();
 
 module.exports = {
     development: {
-        baseUrl: 'http://localhost:3000',
         username: 'postgres',
         password: 'alwayssunny',
         database: 'weather_db',
@@ -12,7 +11,6 @@ module.exports = {
 
     docker: {
         use_env_variable: 'DATABASE_URL',
-        baseUrl: 'http://localhost:3000',
         dialect: 'postgres'
     },
 
@@ -26,7 +24,6 @@ module.exports = {
 
     // deployed on render
     production: {
-        baseUrl: 'https://weatherapi-backend-z94f.onrender.com',
         username: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
