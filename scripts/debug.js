@@ -1,4 +1,4 @@
-const { Subscription, WeatherData, WeatherCity, sequelize } = require('../models');
+const { Subscription, WeatherData, WeatherCity, sequelize } = require('../src/db/models');
 
 async function listSubscriptions() {
     const all = await Subscription.findAll();

@@ -1,7 +1,7 @@
 const readline = require('readline');
 const { Sequelize, Op } = require('sequelize');
-const { Subscription, WeatherCity, WeatherData } = require('../models'); // adjust if needed
-const { incrementCityCounter } = require('../utils/subtracker'); // adjust if needed
+const { Subscription, WeatherCity, WeatherData } = require('../src/db/models'); // adjust if needed
+const { incrementCityCounter } = require('../src/utils/subtracker'); // adjust if needed
 const crypto = require('crypto');
 
 const rl = readline.createInterface({
