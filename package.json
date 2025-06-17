@@ -7,7 +7,8 @@
     "migrate": "npx sequelize-cli db:migrate",
     "test": "NODE_ENV=test mocha --timeout 5000 --exit",
     "debug": "node scripts/debug.js",
-    "seed": "node scripts/seeder.js"
+    "seed": "node scripts/seeder.js",
+    "lint": "npx eslint ."
   },
   "dependencies": {
     "chai": "^4.3.7",
