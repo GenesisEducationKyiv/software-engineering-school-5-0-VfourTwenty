@@ -4,7 +4,8 @@ const { Op } = require('sequelize');
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 
 // internal
-async function fetchWeather(city) {
+async function fetchWeather(city) 
+{
     const url = `https://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q=${encodeURIComponent(city)}`;
     const res = await fetch(url);
     const data = await res.json();
@@ -18,15 +19,18 @@ async function fetchWeather(city) {
 }
 
 // for cron jobs
-async function fetchHourlyWeather() {
+async function fetchHourlyWeather() 
+{
     const cities = await WeatherCity.findAll({
         hourly_count: { [Op.gt]: 0 }
     });
 
     console.log(`Fetching hourly weather for ${cities.length} cities...`);
 
-    for (const { city } of cities) {
-        try {
+    for (const { city } of cities) 
+    {
+        try 
+        {
             const data = await fetchWeather(city);
             await WeatherData.upsert({
                 city,
@@ -36,14 +40,17 @@ async function fetchHourlyWeather() {
                 fetchedAt: new Date()
             });
             console.log(`✅ Cached hourly weather for ${city}`);
-        } catch (err) {
+        }
+        catch (err) 
+        {
             console.error(`❌ Failed to fetch weather for ${city}:`, err.message);
         }
     }
 }
 
 // reuse hourly fetches for cities that have both hourly and daily subs
-async function fetchDailyWeather() {
+async function fetchDailyWeather() 
+{
     const cities = await WeatherCity.findAll({
         where: {
             daily_count: { [Op.gt]: 0 },
@@ -53,8 +60,10 @@ async function fetchDailyWeather() {
 
     console.log(`Fetching daily-only weather for ${cities.length} cities...`);
 
-    for (const { city } of cities) {
-        try {
+    for (const { city } of cities) 
+    {
+        try 
+        {
             const data = await fetchWeather(city);
             await WeatherData.upsert({
                 city,
@@ -64,7 +73,9 @@ async function fetchDailyWeather() {
                 fetchedAt: new Date()
             });
             console.log(`✅ Cached daily-only weather for ${city}`);
-        } catch (err) {
+        }
+        catch (err) 
+        {
             console.error(`❌ Failed to fetch weather for ${city}:`, err.message);
         }
     }

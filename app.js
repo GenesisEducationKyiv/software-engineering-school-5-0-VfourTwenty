@@ -6,7 +6,7 @@ const createError = require('http-errors');
 
 const weatherRouter = require('./routes/weather');
 const subscriptionRouter = require('./routes/subscription');
-const publicRouter = require('./routes/public')
+const publicRouter = require('./routes/public');
 
 const app = express();
 const cron = require('node-cron');
@@ -28,37 +28,46 @@ app.use('/api', subscriptionRouter);
 app.use('/', publicRouter);
 
 // 404 handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function(req, res, next) 
+{
+    next(createError(404));
 });
 
 // Error handler
-app.use(function(err, req, res) {
-  res.status(err.status || 500).json({
-    error: err.message
-  });
+app.use(function(err, req, res) 
+{
+    res.status(err.status || 500).json({
+        error: err.message
+    });
 });
 
-
-cron.schedule('0 * * * *', async () => {
-  console.log('Running hourly weather job...');
-  try {
-    await fetchHourlyWeather();
-    console.log("hourly weather fetched");
-    await sendUpdates('hourly');
-  } catch (err) {
-    console.error('❌ Hourly job failed:', err.message || err);
-  }
+cron.schedule('0 * * * *', async () => 
+{
+    console.log('Running hourly weather job...');
+    try 
+    {
+        await fetchHourlyWeather();
+        console.log('hourly weather fetched');
+        await sendUpdates('hourly');
+    }
+    catch (err) 
+    {
+        console.error('❌ Hourly job failed:', err.message || err);
+    }
 });
 
-cron.schedule('0 11 * * *', async () => {
-  console.log('Running daily weather job...');
-  try {
-    await fetchDailyWeather();
-    await sendUpdates('daily');
-  } catch (err) {
-    console.error('❌ Daily job failed:', err.message || err);
-  }
+cron.schedule('0 11 * * *', async () => 
+{
+    console.log('Running daily weather job...');
+    try 
+    {
+        await fetchDailyWeather();
+        await sendUpdates('daily');
+    }
+    catch (err) 
+    {
+        console.error('❌ Daily job failed:', err.message || err);
+    }
 });
 
 module.exports = app;

@@ -1,5 +1,6 @@
 'use strict';
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, DataTypes) => 
+{
     const WeatherData = sequelize.define('WeatherData', {
         city: {
             type: DataTypes.STRING,
