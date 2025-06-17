@@ -75,8 +75,7 @@ This mixes infrastructure concerns (database setup) with application behavior (r
 ---
 
 ### Decision: ###
-**Option 4.** We will keep the same single config file with currently 4 environments defined (development, docker, production, and testing)
-and introduce a clear variable naming convention. This solution works well in the current setup with 4 environments and few external services
-that require configuration. Also, this approach will simplify abstraction of external providers [(see ADR-002)](../ADR/ADR-002-ExternalDependencies.md) by allowing to configure variables based on the active provider.
-In case if number or complexity of configuration grows it won't pose a problem to restructure this setup
-with, for example, separate files (Options 1, 2).
+**Option 1** has been slightly modified and successfully implemented. There old config/config.js file now 
+only stores the baseUrl needed for link construction, and as the system was modularized in more recent updates, and the 
+database related code has been moved to a separate db folder, db/config.js now stores all the credentials needed for 
+establishing db connections.

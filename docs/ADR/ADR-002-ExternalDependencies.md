@@ -99,5 +99,9 @@ Use third-party SDKs or APIs inline in business logic.
 
 ### Decision
 
-Reject Option 3.  
-Decision pending.
+**Option 1** has been implemented. Now, instead of calling weather and email providers 
+directly, app will use functions exposed by the corresponding service (weatherService, emailService, subscriptionService).
+To create a provider standard, interface IProvider has been implemented. Then IWeatherProvider and IEmailProvider inherit from it
+and expose function signatures to be implemented in specific providers (currently WeatherApi.com and Resend).
+All implementations of IProvider have a ping() method that will be used for health checks via cron jobs. Orchestration will be performed by shared state.js
+file that now stores currently active provider for each external service. 
