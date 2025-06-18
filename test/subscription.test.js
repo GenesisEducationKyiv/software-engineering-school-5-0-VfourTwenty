@@ -1,20 +1,22 @@
 const request = require('supertest');
 const app = require('../app');
 const { expect } = require('chai');
-const {Subscription, sequelize} = require("../models");
+const { Subscription, sequelize } = require('../models');
 
 const sinon = require('sinon');
 const mailer = require('../utils/mailer');
 
-
-describe('POST /api/subscribe', () => {
-    before(async () => {
+describe('POST /api/subscribe', () => 
+{
+    before(async () => 
+    {
         await sequelize.sync();
         await Subscription.destroy({ where: {} }); // clear table
     });
 
     // missing email
-    it('should return 400 for missing email', async () => {
+    it('should return 400 for missing email', async () => 
+    {
         const res = await request(app)
             .post('/api/subscribe')
             .type('form')
@@ -25,7 +27,8 @@ describe('POST /api/subscribe', () => {
     });
 
     // missing city
-    it('should return 400 for missing city', async () => {
+    it('should return 400 for missing city', async () => 
+    {
         const res = await request(app)
             .post('/api/subscribe')
             .type('form')
@@ -36,18 +39,20 @@ describe('POST /api/subscribe', () => {
     });
 
     // missing frequency
-    it('should return 400 for missing frequency', async () => {
+    it('should return 400 for missing frequency', async () => 
+    {
         const res = await request(app)
             .post('/api/subscribe')
             .type('form')
-            .send({ email: 'test@gmail.com', city: 'Kyiv'});
+            .send({ email: 'test@gmail.com', city: 'Kyiv' });
 
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Missing required fields');
     });
 
     // invalid email format
-    it('should return 400 for invalid email format', async () => {
+    it('should return 400 for invalid email format', async () => 
+    {
         const res = await request(app)
             .post('/api/subscribe')
             .type('form')
@@ -58,7 +63,8 @@ describe('POST /api/subscribe', () => {
     });
 
     // frequency != daily or hourly
-    it('should return 400 for invalid frequency string', async () => {
+    it('should return 400 for invalid frequency string', async () => 
+    {
         const res = await request(app)
             .post('/api/subscribe')
             .type('form')
@@ -68,9 +74,9 @@ describe('POST /api/subscribe', () => {
         expect(res.body.error).to.equal('Invalid frequency');
     });
 
-
     // successful subscription
-    it('should return 200 and create a subscription', async () => {
+    it('should return 200 and create a subscription', async () => 
+    {
         const res = await request(app)
             .post('/api/subscribe')
             .type('form')
@@ -88,7 +94,8 @@ describe('POST /api/subscribe', () => {
     });
 
     // duplicate subscription
-    it('should return 409 for duplicate subscription', async () => {
+    it('should return 409 for duplicate subscription', async () => 
+    {
         await Subscription.create({
             email: 'test@example.com',
             city: 'Kyiv',
@@ -107,10 +114,12 @@ describe('POST /api/subscribe', () => {
     });
 });
 
-describe('GET /api/confirm/:token', () => {
+describe('GET /api/confirm/:token', () => 
+{
     let token;
 
-    before(async () => {
+    before(async () => 
+    {
         await sequelize.sync();
 
         const sub = await Subscription.create({
@@ -125,7 +134,8 @@ describe('GET /api/confirm/:token', () => {
     });
 
     // confirmation successful
-    it('should return 200 and confirm subscription', async () => {
+    it('should return 200 and confirm subscription', async () => 
+    {
         const res = await request(app).get(`/api/confirm/${token}`);
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('Subscription confirmed successfully');
@@ -135,31 +145,36 @@ describe('GET /api/confirm/:token', () => {
     });
 
     // already confirmed
-    it('should return 400 if already confirmed', async () => {
+    it('should return 400 if already confirmed', async () => 
+    {
         const res = await request(app).get(`/api/confirm/${token}`);
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Subscription already confirmed');
     });
 
     // token doesn't exist
-    it('should return 404 if token not found', async () => {
-        const res = await request(app).get(`/api/confirm/this-token-does-not-exist`);
+    it('should return 404 if token not found', async () => 
+    {
+        const res = await request(app).get('/api/confirm/this-token-does-not-exist');
         expect(res.status).to.equal(404);
         expect(res.body.error).to.equal('Token not found');
     });
 
     // token too short
-    it('should return 400 for invalid token format', async () => {
-        const res = await request(app).get(`/api/confirm/123`);
+    it('should return 400 for invalid token format', async () => 
+    {
+        const res = await request(app).get('/api/confirm/123');
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Invalid token');
     });
 });
 
-describe('GET /api/unsubscribe/:token', () => {
+describe('GET /api/unsubscribe/:token', () => 
+{
     let token;
 
-    before(async () => {
+    before(async () => 
+    {
         await sequelize.sync();
 
         const sub = await Subscription.create({
@@ -174,7 +189,8 @@ describe('GET /api/unsubscribe/:token', () => {
         token = sub.token;
     });
 
-    it('should return 200 and delete the subscription', async () => {
+    it('should return 200 and delete the subscription', async () => 
+    {
         // 💡 Place the stub BEFORE making the request
         sinon.stub(mailer, 'sendUnsubscribeEmail').resolves(true);
 
@@ -191,15 +207,16 @@ describe('GET /api/unsubscribe/:token', () => {
         sinon.restore();
     });
 
-
-    it('should return 404 if token not found', async () => {
-        const res = await request(app).get(`/api/unsubscribe/not-a-real-token`);
+    it('should return 404 if token not found', async () => 
+    {
+        const res = await request(app).get('/api/unsubscribe/not-a-real-token');
         expect(res.status).to.equal(404);
         expect(res.body.error).to.equal('Token not found');
     });
 
-    it('should return 400 for invalid token format', async () => {
-        const res = await request(app).get(`/api/unsubscribe/123`);
+    it('should return 400 for invalid token format', async () => 
+    {
+        const res = await request(app).get('/api/unsubscribe/123');
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Invalid token');
     });
