@@ -14,32 +14,25 @@ class EmailProvider1 extends IEmailProvider {
         return "Resend";
     }
 
-    async sendEmail(to, subject, body) {
+    async sendEmail(to, subject, html) {
         try {
             const result = await resend.emails.send({
                 from: fromEmail,
                 to,
                 subject,
-                html: body
+                html,
             });
 
-            // Handle rate limit response
             if (result.error?.statusCode === 429) {
-                console.warn(`⚠️ Rate limit hit for ${to}. Retrying after 0.5s...`);
+                console.warn(`⚠️ Rate limit hit for ${to}. Retrying...`);
                 await delay(510);
-                return await resend.emails.send({
-                    from: fromEmail,
-                    to,
-                    subject,
-                    html: body
-                });
+                await resend.emails.send({ from: fromEmail, to, subject, html });
             }
 
-            return result;
-
+            return { success: true }; // ✅ simple response
         } catch (err) {
-            console.error('❌ ResendProvider: Failed to send email:', err);
-            return null;
+            console.error('❌ Resend failed:', err);
+            return { success: false, error: err }; // ✅ unified error
         }
     }
 }
