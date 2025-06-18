@@ -1,10 +1,13 @@
+const sinon = require('sinon');
+const mailer = require('../src/utils/mailer');
+
+sinon.stub(mailer, 'sendConfirmationEmail').resolves(true);
+sinon.stub(mailer, 'sendUnsubscribeEmail').resolves(true);
+
 const request = require('supertest');
 const app = require('../src/app');
 const { expect } = require('chai');
 const {Subscription, sequelize} = require("../src/db/models");
-
-const sinon = require('sinon');
-const mailer = require('../src/utils/mailer');
 
 
 describe('POST /api/subscribe', () => {
@@ -175,9 +178,6 @@ describe('GET /api/unsubscribe/:token', () => {
     });
 
     it('should return 200 and delete the subscription', async () => {
-        // 💡 Place the stub BEFORE making the request
-        sinon.stub(mailer, 'sendUnsubscribeEmail').resolves(true);
-
         // Send unsubscribe request
         const res = await request(app).get(`/api/unsubscribe/${token}`);
         expect(res.status).to.equal(200);
@@ -188,7 +188,6 @@ describe('GET /api/unsubscribe/:token', () => {
         expect(check).to.be.null;
 
         // Clean up the stub AFTER the test
-        sinon.restore();
     });
 
 
