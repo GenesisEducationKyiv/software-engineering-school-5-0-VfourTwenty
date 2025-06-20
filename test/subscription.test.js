@@ -1,10 +1,5 @@
-const sinon = require('sinon');
-const mailer = require('../src/utils/mailer');
-
-sinon.stub(mailer, 'sendConfirmationEmail').resolves(true);
-sinon.stub(mailer, 'sendUnsubscribeEmail').resolves(true);
-
 const request = require('supertest');
+
 const app = require('../src/app');
 const { expect } = require('chai');
 const {Subscription, sequelize} = require("../src/db/models");
