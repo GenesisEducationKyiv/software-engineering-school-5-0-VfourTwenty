@@ -2,14 +2,14 @@ const { chromium } = require('playwright');
 const { expect } = require('chai');
 const { spawn, exec } = require('child_process');
 
+// unused vars are actually used in the tests commented (see line 218)
 const { createSub, confirmSub, deleteSub } = require('../../src/services/subscriptionService');
 
-// port 3000 for docker
+// port 3000 for docker, 3001 for local runs
 const PORT = process.env.NODE_ENV === 'docker_test' ? '3000' : '3001';
-// backend not localhost for docker
+// backend-test is the host inside docker
 console.log("using env:", process.env.NODE_ENV);
 const host = process.env.NODE_ENV === 'docker_test' ? 'backend-test' : 'localhost';
-//const host = 'localhost';
 const baseURL = `http://${host}:${PORT}`;
 const confirmUrl = (token) => `${baseURL}/confirm/${token}`
 const unsubscribeUrl = (token) => `${baseURL}/unsubscribe/${token}`
@@ -31,7 +31,7 @@ const sub = {
 }
 
 // needed without docker
-
+// ( I know it's not perfect... (￣ ￣) )
 if (process.env.NODE_ENV !== 'docker_test')
 {
     before(function (done) {
@@ -215,6 +215,30 @@ describe('SkyFetch E2E Tests', () => {
         await expect(await page.textContent('#message')).to.equal('');
     });
 
+    // HELP NEEDED!!! \\
+    // All 11 tests in the file pass locally, and in docker
+    // While the above 6 run fine on the homepage (/ route)
+    // other 5 keep failing (on /confirm and /unsubscribe routes):
+    /**
+     * 1) SkyFetch E2E Tests
+     * test-e2e-1  |        should confirm a new subscription with a valid token:
+     * test-e2e-1  |      page.goto: net::ERR_CONNECTION_REFUSED at http://backend-test:3000/confirm/3809eed3e9ebe369f414fb0833b7b2d5fee37fa1
+     * test-e2e-1  | Call log:
+     * test-e2e-1  |   - navigating to "http://backend-test:3000/confirm/3809eed3e9ebe369f414fb0833b7b2d5fee37fa1", waiting until "load"
+     * test-e2e-1  |
+     * test-e2e-1  |       at Context.<anonymous> (test/e2e/end2end.js:228:20)
+     * test-e2e-1  |
+     * test-e2e-1  |   2) SkyFetch E2E Tests
+     * test-e2e-1  |        should unsubscribe a user with a valid token:
+     * test-e2e-1  |      page.goto: net::ERR_CONNECTION_REFUSED at http://backend-test:3000/unsubscribe/bb8a6e640a0da8f44567c856b70ca54be1beb5dc
+     * test-e2e-1  | Call log:
+     * test-e2e-1  |   - navigating to "http://backend-test:3000/unsubscribe/bb8a6e640a0da8f44567c856b70ca54be1beb5dc", waiting until "load"
+     * test-e2e-1  |
+     * test-e2e-1  |       at Context.<anonymous> (test/e2e/end2end.js:242:20)
+     */
+
+    // Apparently, this has to do with docker networking(most likely) or/and playwright
+    // I would appreciate your thoughts on this issue!
 
     // Confirmation page ------------------------------------ \\
 /**
