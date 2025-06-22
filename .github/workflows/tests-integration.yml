@@ -37,12 +37,12 @@ jobs:
           done
           # Create test database if it doesn't exist
         env:
-          DATABASE_URL_TEST: postgres://postgres:alwayssunny@db_test:5432/weather_db_test
+          DATABASE_URL_TEST: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
 
       - name: Run migrations and tests
         run: npm run test:integration:docker
         env:
-          DATABASE_URL_TEST: postgres://postgres:alwayssunny@db_test:5432/weather_db_test
+          DATABASE_URL_TEST: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
 
       - name: Debug logs on failure
         if: failure()
