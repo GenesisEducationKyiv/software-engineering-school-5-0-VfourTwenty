@@ -1,9 +1,9 @@
 const request = require('supertest');
 
-const app = require('../src/app');
+const app = require('../../src/app');
 const { expect } = require('chai');
-const { sequelize } = require("../src/db/models");
-const { createSub, confirmSub, deleteSub, findSub } = require('../src/services/subscriptionService');
+const { sequelize } = require("../../src/db/models");
+const { createSub, confirmSub, deleteSub, findSub } = require('../../src/services/subscriptionService');
 
 
 describe('POST /api/subscribe', () => {

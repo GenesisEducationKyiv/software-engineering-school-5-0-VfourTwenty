@@ -1,7 +1,7 @@
 const request = require('supertest');
 const { expect } = require('chai');
 
-const app = require('../src/app');
+const app = require('../../src/app');
 
 describe('GET /api/weather', () => {
     it('should return 400 if no city is provided', async () => {
