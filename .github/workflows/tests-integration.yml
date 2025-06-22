@@ -36,7 +36,7 @@ jobs:
             sleep 2
           done
           # Create test database if it doesn't exist
-          docker-compose -f docker-compose.test.yml exec -T db_test psql -U postgres -c "CREATE DATABASE weather_db_test;"
+        #  docker-compose -f docker-compose.test.yml exec -T db_test psql -U postgres -c "CREATE DATABASE weather_db_test;"
         env:
           DATABASE_URL_TEST: postgres://postgres:alwayssunny@db_test:5432/weather_db_test
 
