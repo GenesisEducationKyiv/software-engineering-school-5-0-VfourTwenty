@@ -11,7 +11,6 @@ services:
       POSTGRES_PASSWORD: alwayssunny
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5433:5432"  # Host 5433 → Container 5432
 

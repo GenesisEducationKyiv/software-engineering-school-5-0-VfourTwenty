@@ -2,13 +2,16 @@ const request = require('supertest');
 
 const app = require('../src/app');
 const { expect } = require('chai');
-const {Subscription, sequelize} = require("../src/db/models");
+const { sequelize } = require("../src/db/models");
+const { createSub, confirmSub, deleteSub, findSub } = require('../src/services/subscriptionService');
 
 
 describe('POST /api/subscribe', () => {
     before(async () => {
         await sequelize.sync();
-        await Subscription.destroy({ where: {} }); // clear table
+        for (const model of Object.values(sequelize.models)) {
+            await model.destroy({ where: {}, truncate: true, force: true });
+        }
     });
 
     // missing email
@@ -77,9 +80,7 @@ describe('POST /api/subscribe', () => {
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('Subscription successful. Confirmation email sent.');
 
-        const sub = await Subscription.findOne({
-            where: { email: 'delivered@resend.dev', city: 'Kyiv', frequency: 'daily' }
-        });
+        const sub = await findSub({ email: 'delivered@resend.dev', city: 'Kyiv', frequency: 'daily' })
         expect(sub).to.exist;
         expect(sub.confirmed).to.be.false;
         expect(sub.token).to.be.a('string');
@@ -87,13 +88,7 @@ describe('POST /api/subscribe', () => {
 
     // duplicate subscription
     it('should return 409 for duplicate subscription', async () => {
-        await Subscription.create({
-            email: 'test@example.com',
-            city: 'Kyiv',
-            frequency: 'daily',
-            confirmed: false,
-            token: 'some-token'
-        });
+        await createSub('test@example.com', 'Kyiv', 'daily');
 
         const res = await request(app)
             .post('/api/subscribe')
@@ -110,16 +105,10 @@ describe('GET /api/confirm/:token', () => {
 
     before(async () => {
         await sequelize.sync();
-
-        const sub = await Subscription.create({
-            email: 'confirm@test.com',
-            city: 'Kyiv',
-            frequency: 'daily',
-            confirmed: false,
-            token: 'valid-confirm-token'
-        });
-
-        token = sub.token;
+        for (const model of Object.values(sequelize.models)) {
+            await model.destroy({ where: {}, truncate: true, force: true });
+        }
+        token = await createSub('confirm@test.com', 'Kyiv', 'daily');
     });
 
     // confirmation successful
@@ -128,7 +117,7 @@ describe('GET /api/confirm/:token', () => {
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('Subscription confirmed successfully');
 
-        const sub = await Subscription.findOne({ where: { token } });
+        const sub = await findSub({token: token});
         expect(sub.confirmed).to.be.true;
     });
 
@@ -159,30 +148,19 @@ describe('GET /api/unsubscribe/:token', () => {
 
     before(async () => {
         await sequelize.sync();
-
-        const sub = await Subscription.create({
-            // resend test recipient
-            email: 'delivered@resend.dev',
-            city: 'Odesa',
-            frequency: 'daily',
-            confirmed: true,
-            token: 'valid-unsub-token'
-        });
-
-        token = sub.token;
+        for (const model of Object.values(sequelize.models)) {
+            await model.destroy({ where: {}, truncate: true, force: true });
+        }
+        token = await createSub('test@example.com', 'Odesa', 'daily');
     });
 
     it('should return 200 and delete the subscription', async () => {
-        // Send unsubscribe request
         const res = await request(app).get(`/api/unsubscribe/${token}`);
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('Unsubscribed successfully');
 
-        // Confirm it's deleted
-        const check = await Subscription.findOne({ where: { token } });
+        const check = await findSub({ token: token })
         expect(check).to.be.null;
-
-        // Clean up the stub AFTER the test
     });
 
 
