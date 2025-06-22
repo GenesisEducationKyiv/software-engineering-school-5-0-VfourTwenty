@@ -5,8 +5,12 @@
   "scripts": {
     "start": "npm run migrate && node bin/www",
     "migrate": "npx sequelize-cli db:migrate",
-    "test": "NODE_ENV=test mocha --parallel --require test/setup.js --timeout 5000 --exit",
+
+    "test:integration": "NODE_ENV=test mocha --parallel --require test/setup.js --timeout 5000 --exit",
+    "test:integration:docker": "docker compose up --build test-integration --abort-on-container-exit",
+
     "test-docker": "if [ \"$NODE_ENV\" != \"docker_test\" ]; then echo '❌ This script is Docker-only'; exit 1; fi && mocha --timeout 5000 --exit",
+
     "debug": "node scripts/debug.js",
     "seed": "node scripts/seeder.js"
   },
