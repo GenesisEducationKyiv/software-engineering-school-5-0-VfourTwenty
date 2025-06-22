@@ -23,7 +23,11 @@ module.exports = {
     },
 
     docker_test: {
-        use_env_variable: 'DATABASE_URL_TEST',
+        username: 'postgres',
+        password: 'alwayssunny',
+        database: 'weather_db_test',
+        host: 'db-test', //
+        port: 5432,
         dialect: 'postgres',
     },
 
