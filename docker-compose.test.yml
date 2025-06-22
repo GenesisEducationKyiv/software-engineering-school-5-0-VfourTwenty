@@ -40,3 +40,17 @@ services:
     environment:
       NODE_ENV: docker_test
       DATABASE_URL_TEST: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
+
+  test-e2e:
+    build:
+      context: .
+      dockerfile: Dockerfile.test-e2e
+    depends_on:
+      - db-test
+      - backend-test
+    environment:
+      NODE_ENV: docker_test
+      DATABASE_URL_TEST: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
+    command: >
+      sh -c "npx sequelize-cli db:migrate --env docker_test &&
+             npm run test-docker:e2e"
