@@ -38,12 +38,12 @@ jobs:
           # Create test database if it doesn't exist
           docker-compose exec -T db psql -U postgres -c "CREATE DATABASE weather_db_test;"
         env:
-          DATABASE_URL_TEST: postgres://postgres:alwayssunny@db:5432/weather_db_test
+          DATABASE_URL_TEST: postgres://postgres:alwayssunny@db_test:5432/weather_db_test
 
       - name: Run migrations and tests
         run: npm run test:integration:docker
         env:
-          DATABASE_URL_TEST: postgres://postgres:alwayssunny@db:5432/weather_db_test
+          DATABASE_URL_TEST: postgres://postgres:alwayssunny@db_test:5432/weather_db_test
 
       - name: Debug logs on failure
         if: failure()
