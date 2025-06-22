@@ -51,7 +51,7 @@ services:
       NODE_ENV: docker
       DATABASE_URL: postgres://postgres:alwayssunny@db:5432/weather_db
 
-  test:
+  test-integration:
     build: .
     depends_on:
       - db
