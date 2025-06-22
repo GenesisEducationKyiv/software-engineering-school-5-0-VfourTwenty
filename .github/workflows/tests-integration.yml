@@ -3,11 +3,8 @@ name: Integration Tests
 on: [push, pull_request]
 
 jobs:
-  test:
+  test-integration:
     runs-on: ubuntu-latest
-
-    env:
-      DATABASE_URL_TEST: postgres://postgres:alwayssunny@db:5432/weather_db_test
 
     steps:
       - name: Checkout code
