@@ -41,7 +41,7 @@ jobs:
           DATABASE_URL_TEST: postgres://postgres:alwayssunny@db:5432/weather_db_test
 
       - name: Run migrations and tests
-        run: docker-compose up --build test
+        run: npm run test:integration:docker
         env:
           DATABASE_URL_TEST: postgres://postgres:alwayssunny@db:5432/weather_db_test
 
