@@ -1,9 +1,9 @@
-name: Integration Tests
+name: End to End Tests
 
 on: [push, pull_request]
 
 jobs:
-  test-integration:
+  test-e2e:
     runs-on: ubuntu-latest
 
     steps:
@@ -36,7 +36,7 @@ jobs:
           DATABASE_URL_TEST: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
 
       - name: Run migrations and tests
-        run: npm run test:integration:docker
+        run: npm run test:e2e:docker
         env:
           DATABASE_URL_TEST: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
 
@@ -44,4 +44,4 @@ jobs:
         if: failure()
         run: |
           docker-compose -f docker-compose.test.yml logs db-test
-          docker-compose -f docker-compose.test.yml logs test-integration
+          docker-compose -f docker-compose.test.yml logs test-e2e
