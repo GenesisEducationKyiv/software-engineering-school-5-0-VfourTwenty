@@ -47,7 +47,7 @@ services:
     environment:
       NODE_ENV: docker
 
-  test:
+  test-integration:
     build: .
     depends_on:
       - db
