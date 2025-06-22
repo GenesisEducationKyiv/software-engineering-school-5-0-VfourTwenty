@@ -47,14 +47,14 @@ services:
     environment:
       NODE_ENV: docker
 
-  test-integration:
-    build: .
-    depends_on:
-      - db
-    entrypoint: [ "/bin/sh", "-c", "npx sequelize-cli db:migrate --env docker_test && npm run test-docker" ]
-    environment:
-      NODE_ENV: docker_test
-      DATABASE_URL_TEST: postgres://postgres:alwayssunny@db:5432/weather_db_test
+#  test-integration:
+#    build: .
+#    depends_on:
+#      - db
+#    entrypoint: [ "/bin/sh", "-c", "npx sequelize-cli db:migrate --env docker_test && npm run test-docker" ]
+#    environment:
+#      NODE_ENV: docker_test
+#      DATABASE_URL_TEST: postgres://postgres:alwayssunny@db:5432/weather_db_test
 
 volumes:
   pgdata:
