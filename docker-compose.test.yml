@@ -2,7 +2,7 @@
 version: "3.9"
 
 services:
-  db_test:
+  db-test:
     image: postgres:15
     environment:
       POSTGRES_DB: weather_db_test
@@ -18,7 +18,7 @@ services:
     build: .
     restart: always
     depends_on:
-      - db_test
+      - db-test
     environment:
       NODE_ENV: docker_test
       # local
