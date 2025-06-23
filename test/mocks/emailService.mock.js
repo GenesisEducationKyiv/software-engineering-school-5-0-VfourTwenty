@@ -1,8 +1,12 @@
-console.log('email mock called');
+console.log('email service mock called');
 
 async function sendEmail(to, subject, body)
 {
-    return { success: true}
+    if (to !== 'thisemailshouldfail@mail.com')
+    {
+        return { success: true }
+    }
+    return { success: false }
 }
 
 module.exports = { sendEmail };
