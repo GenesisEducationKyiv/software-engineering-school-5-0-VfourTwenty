@@ -1,5 +1,5 @@
-const Provider1 = require("./weatherProvider1");
-const weatherProviders = [new Provider1()]
+const WeatherApiProvider = require("./WeatherAPIProvider");
+const weatherProviders = [new WeatherApiProvider()]
 
 function setActiveWeatherProvider(provider) {
     if (weatherProviders.includes(provider)) {

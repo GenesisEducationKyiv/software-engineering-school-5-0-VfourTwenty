@@ -9,7 +9,7 @@ function delay(ms) {
     return new Promise((res) => setTimeout(res, ms));
 }
 
-class EmailProvider1 extends IEmailProvider {
+class ResendEmailProvider extends IEmailProvider {
     get name() {
         return "Resend";
     }
@@ -37,4 +37,4 @@ class EmailProvider1 extends IEmailProvider {
     }
 }
 
-module.exports = EmailProvider1;
+module.exports = ResendEmailProvider;

@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 
-class WeatherProvider1 extends IWeatherProvider
+class WeatherAPIProvider extends IWeatherProvider
 {
     get name() {
         return "WeatherAPI.com";
@@ -25,4 +25,4 @@ class WeatherProvider1 extends IWeatherProvider
     }
 }
 
-module.exports = WeatherProvider1;
+module.exports = WeatherAPIProvider;

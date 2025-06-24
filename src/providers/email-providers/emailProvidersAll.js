@@ -1,5 +1,5 @@
-const Provider1 = require("./emailProvider1");
-const emailProviders = [new Provider1()]
+const ResendEmailProvider = require("./ResendEmailProvider");
+const emailProviders = [new ResendEmailProvider()]
 
 function setActiveEmailProvider(provider) {
     if (emailProviders.includes(provider)) {
