@@ -1,5 +1,7 @@
-const { WeatherData, WeatherCity, sequelize } = require('../src/db/models');
+const { sequelize } = require('../src/db/models');
 const SubscriptionRepo = require('../src/repositories/subscriptionRepo');
+const WeatherDataRepo = require('../src/repositories/weatherDataRepo');
+const WeatherCityRepo = require('../src/repositories/weatherCityRepo');
 
 async function listSubscriptions() {
     const all = await SubscriptionRepo.findAllBy({});
@@ -12,24 +14,22 @@ async function findSubscriptionByEmail(email) {
 }
 
 async function listWeather() {
-    const all = await WeatherData.findAll();
+    const all = await WeatherDataRepo.findAllBy({});
     console.log('\nAll Weather Data:\n', all.map(w => w.toJSON()));
 }
 
 async function findWeatherByCity(city) {
-    const match = await WeatherData.findAll({
-        where: { city }
-    });
+    const match = await WeatherDataRepo.findAllBy({ city });
     console.log(`\nWeather for ${city}:\n`, match.map(w => w.toJSON()));
 }
 
 async function listTrackedCities() {
-    const cities = await WeatherCity.findAll({ order: [['city', 'ASC']] });
+    const cities = await WeatherCityRepo.findAllBy({});
     console.log('\nTracked Cities:\n', cities.map(c => c.toJSON()));
 }
 
 async function findTrackedCity(city) {
-    const entry = await WeatherCity.findOne({ where: { city } });
+    const entry = await WeatherCityRepo.findOneBy({ city });
     if (!entry) {
         console.log(`❌ No tracking info found for ${city}`);
     } else {

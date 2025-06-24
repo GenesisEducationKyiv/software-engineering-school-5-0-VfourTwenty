@@ -1,7 +1,8 @@
 const readline = require('readline');
 const { Sequelize, Op } = require('sequelize');
-const { WeatherCity, WeatherData } = require('../src/db/models'); // adjust if needed
 const SubscriptionRepo = require('../src/repositories/subscriptionRepo');
+const WeatherDataRepo = require('../src/repositories/weatherDataRepo');
+const WeatherCityRepo = require('../src/repositories/weatherCityRepo');
 const { incrementCityCounter } = require('../src/utils/subtracker'); // adjust if needed
 const crypto = require('crypto');
 
@@ -19,8 +20,8 @@ async function clearTables() {
 
     await Promise.all([
         SubscriptionRepo.destroy({}),
-        WeatherData.destroy({ where: {}, truncate: true, cascade: true }),
-        WeatherCity.destroy({ where: {}, truncate: true, cascade: true }),
+        WeatherDataRepo.destroy({}),
+        WeatherCityRepo.destroy({}),
     ]);
 
     console.log('✅ All tables cleared: Subscription, WeatherData, WeatherCity.');

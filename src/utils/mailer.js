@@ -1,4 +1,5 @@
-const {Subscription, WeatherData} = require("../db/models");
+const WeatherDataRepo = require('../repositories/weatherDataRepo');
+const SubscriptionRepo = require('../repositories/subscriptionRepo');
 
 require('dotenv').config();
 const env = process.env.NODE_ENV;
@@ -7,8 +8,6 @@ const BASE_URL = config.baseUrl;
 
 const { confirmEmailTemplate, unsubscribeEmailTemplate, weatherUpdateEmailTemplate } = require('./emailTemplates');
 const { sendEmail } = require('../services/emailService');
-const { SubscriptionRepo } = require("../repositories/subscriptionRepo");
-
 
 async function sendConfirmationEmail(to, confirmUrl) {
     const subject = 'Confirm your weather subscription';
@@ -24,9 +23,8 @@ async function sendConfirmationEmail(to, confirmUrl) {
     return true;
 }
 
-
 async function sendUnsubscribeEmail(to, city) {
-    const subject = 'You’ve been unsubscribed';
+    const subject = "You've been unsubscribed";
     const body = unsubscribeEmailTemplate(city);
 
     const { success, error } = await sendEmail(to, subject, body);
@@ -56,7 +54,7 @@ async function sendWeatherUpdate(email, city, weather, token) {
 }
 
 async function sendUpdates(frequency) {
-    const subs = await SubscriptionRepo.findAllBy({ confirmed: true, frequency })
+    const subs = await SubscriptionRepo.findAllBy({ confirmed: true, frequency });
 
     let sent   = 0;
     let failed = 0;
@@ -64,7 +62,7 @@ async function sendUpdates(frequency) {
 
     for (const sub of subs) {
         try {
-            const weather = await WeatherData.findByPk(sub.city);
+            const weather = await WeatherDataRepo.findByPk(sub.city);
             if (!weather) {
                 console.warn(`⚠️ No weather data cached for ${sub.city}, skipping ${sub.email}`);
                 skipped++;
