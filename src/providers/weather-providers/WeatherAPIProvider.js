@@ -1,5 +1,4 @@
 const IWeatherProvider = require( "./weatherProviderBase" );
-const { Op } = require('sequelize');
 
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 
