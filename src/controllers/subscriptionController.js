@@ -7,7 +7,7 @@ const subscribeController = async (req, res) => {
     try {
         const token = await createSub(email, city, frequency);
 
-        const env = process.env.NODE_ENV || 'docker';
+        const env = process.env.NODE_ENV;
         const config = require('../config/config.js')[env];
 
         const confirmUrl = `${config.baseUrl}/confirm/${token}`;
@@ -39,7 +39,8 @@ const subscribeController = async (req, res) => {
         }
         else
         {
-            res.status(500).json({ error: 'Failed to subscribe' });
+            err.message
+            res.status(500).json({ error: `Failed to subscribe: ${err.message}` });
         }
     }
 }

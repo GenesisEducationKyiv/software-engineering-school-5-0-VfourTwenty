@@ -1,6 +1,7 @@
 const readline = require('readline');
 const { Sequelize, Op } = require('sequelize');
-const { Subscription, WeatherCity, WeatherData } = require('../src/db/models'); // adjust if needed
+const { WeatherCity, WeatherData } = require('../src/db/models'); // adjust if needed
+const SubscriptionRepo = require('../src/repositories/subscriptionRepo');
 const { incrementCityCounter } = require('../src/utils/subtracker'); // adjust if needed
 const crypto = require('crypto');
 
@@ -17,7 +18,7 @@ async function clearTables() {
     console.log('⚠️  Clearing all data...');
 
     await Promise.all([
-        Subscription.destroy({ where: {}, truncate: true, cascade: true }),
+        SubscriptionRepo.destroy({}),
         WeatherData.destroy({ where: {}, truncate: true, cascade: true }),
         WeatherCity.destroy({ where: {}, truncate: true, cascade: true }),
     ]);
@@ -52,7 +53,7 @@ async function promptAndSeed() {
             const city = cities[i % cities.length];
             const token = crypto.randomBytes(16).toString('hex');
 
-            await Subscription.create({
+            await SubscriptionRepo.create({
                 email,
                 city,
                 frequency,
@@ -71,9 +72,9 @@ async function confirmAllUnconfirmed() {
     const confirm = (await ask('Confirm all unconfirmed subscriptions? (y/n): ')).toLowerCase() === 'y';
     if (!confirm) return;
 
-    const updated = await Subscription.update(
+    const updated = await SubscriptionRepo.update(
         { confirmed: true },
-        { where: { confirmed: false } }
+        { confirmed: false }
     );
 
     console.log(`✅ Confirmed ${updated[0]} subscriptions.`);

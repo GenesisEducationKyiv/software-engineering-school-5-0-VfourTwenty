@@ -1,7 +1,7 @@
 const { join } = require('path');
 
 const { findSub } = require('../services/subscriptionService');
-const env = process.env.NODE_ENV || 'docker';
+const env = process.env.NODE_ENV;
 const config = require('../config/config.js')[env];
 
 const homepageController = (req, res) => {

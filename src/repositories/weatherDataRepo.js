@@ -1,0 +1,1 @@
+const { WeatherData } = require('../db/models/weather')

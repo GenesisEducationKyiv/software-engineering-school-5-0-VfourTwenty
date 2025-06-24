@@ -1,12 +1,13 @@
 const {Subscription, WeatherData} = require("../db/models");
 
 require('dotenv').config();
-const env = process.env.NODE_ENV || 'docker';
+const env = process.env.NODE_ENV;
 const config = require('../config/config.js')[env];
 const BASE_URL = config.baseUrl;
 
 const { confirmEmailTemplate, unsubscribeEmailTemplate, weatherUpdateEmailTemplate } = require('./emailTemplates');
 const { sendEmail } = require('../services/emailService');
+const { SubscriptionRepo } = require("../repositories/subscriptionRepo");
 
 
 async function sendConfirmationEmail(to, confirmUrl) {
@@ -55,7 +56,7 @@ async function sendWeatherUpdate(email, city, weather, token) {
 }
 
 async function sendUpdates(frequency) {
-    const subs = await Subscription.findAll({ where: { confirmed: true, frequency } });
+    const subs = await SubscriptionRepo.findAllBy({ confirmed: true, frequency })
 
     let sent   = 0;
     let failed = 0;

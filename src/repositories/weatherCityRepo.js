@@ -1,0 +1,1 @@
+const { WeatherCity } = require('../db/models/citysubtracker')

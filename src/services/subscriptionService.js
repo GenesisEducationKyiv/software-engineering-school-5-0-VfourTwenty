@@ -1,4 +1,4 @@
-const { Subscription } = require('../db/models');
+const SubscriptionRepo = require('../repositories/subscriptionRepo');
 const crypto = require('crypto');
 const { incrementCityCounter, decrementCityCounter } = require('../utils/subtracker');
 
@@ -21,7 +21,7 @@ async function createSub(email, city, frequency) {
         throw new Error('INVALID FREQUENCY');
     }
 
-    const exists = await Subscription.findOne({ where: { email, city, frequency } });
+    const exists = await SubscriptionRepo.findOneBy({ email, city, frequency });
 
     if (exists)
     {
@@ -29,35 +29,35 @@ async function createSub(email, city, frequency) {
     }
     const token = genToken();
 
-    await Subscription.create({ email, city, frequency, confirmed: false, token });
+    await SubscriptionRepo.create({ email, city, frequency, confirmed: false, token });
     return token;
 }
 
 async function confirmSub(token) {
     if (!token || token.length < 10) throw new Error('INVALID TOKEN');
-    const sub = await Subscription.findOne({ where: { token } });
+    const sub = await SubscriptionRepo.findOneBy({ token });
     if (!sub)  throw new Error('TOKEN NOT FOUND');
     if (sub.confirmed) throw new Error('ALREADY CONFIRMED');
 
     sub.confirmed = true;
-    await sub.save();
+    await SubscriptionRepo.saveInstance(sub);
     await incrementCityCounter(sub.city, sub.frequency);
     return sub;
 }
 
 async function deleteSub(token) {
     if (!token || token.length < 10) throw new Error('INVALID TOKEN');
-    const sub = await Subscription.findOne({ where: { token } });
+    const sub = await SubscriptionRepo.findOneBy({ token });
     if (!sub) throw new Error('TOKEN NOT FOUND');
 
     await decrementCityCounter(sub.city, sub.frequency);
-    await sub.destroy();
+    await SubscriptionRepo.destroyInstance(sub);
     return sub;
 }
 
 async function findSub(params)
 {
-    return await Subscription.findOne({where: params});
+    return await SubscriptionRepo.findOneBy(params);
 }
 
 module.exports = { createSub, confirmSub, deleteSub, findSub };
