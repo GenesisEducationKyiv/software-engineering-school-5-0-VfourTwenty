@@ -30,7 +30,7 @@ const weatherController = async (req, res) => {
         }
         else
         {
-            res.status(500).json({ error: 'Failed to fetch weather data' });
+            res.status(500).json({ error: err.message });
         }
     }
 }
