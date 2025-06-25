@@ -2,7 +2,7 @@ const WeatherCityRepo = require('../repositories/weatherCityRepo');
 const WeatherDataRepo = require('../repositories/weatherDataRepo');
 const { Op } = require('sequelize');
 
-const { fetchWeather } = require("../services/weatherService");
+const WeatherService = require("../services/weatherService");
 
 // for cron jobs
 async function fetchHourlyWeather() {
@@ -12,7 +12,7 @@ async function fetchHourlyWeather() {
 
     for (const { city } of cities) {
         try {
-            const data = await fetchWeather(city);
+            const data = await WeatherService.fetchWeather(city);
             await WeatherDataRepo.upsert({
                 city,
                 temperature: data.temperature,
@@ -35,7 +35,7 @@ async function fetchDailyWeather() {
 
     for (const { city } of cities) {
         try {
-            const data = await fetchWeather(city);
+            const data = await WeatherService.fetchWeather(city);
             await WeatherDataRepo.upsert({
                 city,
                 temperature: data.temperature,
