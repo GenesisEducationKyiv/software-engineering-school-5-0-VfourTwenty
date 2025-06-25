@@ -1,14 +1,7 @@
 const SubscriptionRepo = require('../repositories/subscriptionRepo');
-const crypto = require('crypto');
+// split for subscription and weather services
 const { incrementCityCounter, decrementCityCounter } = require('../utils/subtracker');
-
-// i'll move this to utils
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function genToken() {
-    return crypto.randomBytes(20).toString('hex');
-}
-///
+const { emailRegex, genToken } = require('../utils/strings');
 
 class SubscriptionService {
 

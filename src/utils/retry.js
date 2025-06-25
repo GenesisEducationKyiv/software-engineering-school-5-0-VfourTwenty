@@ -13,4 +13,4 @@ async function retry(func, retries, delay) {
     throw lastError;
 }
 
-module.exports = { retry }
+module.exports = retry;
