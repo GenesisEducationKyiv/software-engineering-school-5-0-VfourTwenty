@@ -1,6 +1,6 @@
 const { join } = require('path');
 
-const { findSub } = require('../services/subscriptionService');
+const SubscriptionService = require('../services/subscriptionService');
 const env = process.env.NODE_ENV;
 const config = require('../config/config.js')[env];
 
@@ -25,7 +25,7 @@ const confirmPublicController = async (req, res) => {
 
         if (apiRes.status === 200) {
             const url = new URL(`${config.baseUrl}/confirmed.html`);
-            const sub = await findSub({token: token});
+            const sub = await SubscriptionService.findSub({token: token});
 
             url.searchParams.set('city', sub.city || '');
             url.searchParams.set('frequency', sub.frequency || '');

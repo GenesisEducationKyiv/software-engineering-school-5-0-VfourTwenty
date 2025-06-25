@@ -1,11 +1,11 @@
-const { createSub, confirmSub, deleteSub } = require('../services/subscriptionService');
+const SubscriptionService = require('../services/subscriptionService');
 const { sendConfirmationEmail, sendUnsubscribeEmail } = require('../utils/mailer');
 
 const subscribeController = async (req, res) => {
     const { email, city, frequency } = req.body;
 
     try {
-        const token = await createSub(email, city, frequency);
+        const token = await SubscriptionService.createSub(email, city, frequency);
 
         const env = process.env.NODE_ENV;
         const config = require('../config/config.js')[env];
@@ -49,7 +49,7 @@ const confirmController = async (req, res) => {
     const { token } = req.params;
 
     try {
-        await confirmSub(token);
+        await SubscriptionService.confirmSub(token);
         res.status(200).json({ message: 'Subscription confirmed successfully' });
 
     } catch (err) {
@@ -76,7 +76,7 @@ const unsubscribeController = async (req, res) => {
     const { token } = req.params;
 
     try {
-        const sub = await deleteSub(token);
+        const sub = await SubscriptionService.deleteSub(token);
 
         const emailResult = await sendUnsubscribeEmail(sub.email, sub.city);
 
