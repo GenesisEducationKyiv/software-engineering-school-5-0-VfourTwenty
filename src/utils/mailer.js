@@ -6,12 +6,12 @@ const env = process.env.NODE_ENV;
 const config = require('../config/config.js')[env];
 const BASE_URL = config.baseUrl;
 
-const { confirmEmailTemplate, unsubscribeEmailTemplate, weatherUpdateEmailTemplate } = require('./emailTemplates');
+const { buildConfirmEmail, buildUnsubscribeEmail, buildWeatherUpdateEmail } = require('./emailTemplates');
 const { sendEmail } = require('../services/emailService');
 
 async function sendConfirmationEmail(to, confirmUrl) {
     const subject = 'Confirm your weather subscription';
-    const body = confirmEmailTemplate(confirmUrl);
+    const body = buildConfirmEmail(confirmUrl);
 
     const { success, error } = await sendEmail(to, subject, body);
 
@@ -25,7 +25,7 @@ async function sendConfirmationEmail(to, confirmUrl) {
 
 async function sendUnsubscribeEmail(to, city) {
     const subject = "You've been unsubscribed";
-    const body = unsubscribeEmailTemplate(city);
+    const body = buildUnsubscribeEmail(city);
 
     const { success, error } = await sendEmail(to, subject, body);
 
@@ -40,7 +40,7 @@ async function sendUnsubscribeEmail(to, city) {
 async function sendWeatherUpdate(email, city, weather, token) {
     const subject = `SkyFetch Weather Update for ${city}`;
     const unsubUrl = `${BASE_URL}/unsubscribe/${token}`;
-    const html = weatherUpdateEmailTemplate(city, weather, unsubUrl);
+    const html = buildWeatherUpdateEmail(city, weather, unsubUrl);
 
     const { success, error } = await sendEmail(email, subject, html);
 

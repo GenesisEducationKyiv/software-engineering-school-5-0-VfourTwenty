@@ -1,13 +1,13 @@
-const confirmEmailTemplate = (confirmUrl) => `
+const buildConfirmEmail = (confirmUrl) => `
         <p>Thanks for subscribing! Click below to confirm your subscription:</p>
         <a href="${confirmUrl}">${confirmUrl}</a>
       `;
 
-const unsubscribeEmailTemplate = (city) => `
+const buildUnsubscribeEmail = (city) => `
         <p>You have been unsubscribed from weather updates for <strong>${city}</strong>.</p>
       `
 
-const weatherUpdateEmailTemplate = (city, weather, unsubUrl) => `
+const buildWeatherUpdateEmail = (city, weather, unsubUrl) => `
     <p>Here's your latest weather update for <strong>${city}</strong>:</p>
     <ul>
       <li><strong>Temperature:</strong> ${weather.temperature}°C</li>
@@ -19,4 +19,4 @@ const weatherUpdateEmailTemplate = (city, weather, unsubUrl) => `
   `
 
 
-module.exports = { confirmEmailTemplate, unsubscribeEmailTemplate, weatherUpdateEmailTemplate };
+module.exports = { buildConfirmEmail, buildUnsubscribeEmail, buildWeatherUpdateEmail };
