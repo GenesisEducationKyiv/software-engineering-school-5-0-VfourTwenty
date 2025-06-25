@@ -1,13 +1,24 @@
-const buildConfirmEmail = (confirmUrl) => `
-        <p>Thanks for subscribing! Click below to confirm your subscription:</p>
-        <a href="${confirmUrl}">${confirmUrl}</a>
+const config = require('../config/config.js')[process.env.NODE_ENV];
+
+function buildConfirmEmail(token)
+{
+    const confirmLink = `${config.baseUrl}/confirm/${token}`;
+    return `
+        <p>Thanks for subscribing! Click <a href="${confirmLink}">here</a> to confirm your subscription :)</p>
       `;
+}
 
-const buildUnsubscribeEmail = (city) => `
+function buildUnsubscribeEmail (city)
+{
+    return `
         <p>You have been unsubscribed from weather updates for <strong>${city}</strong>.</p>
-      `
+      `;
+}
 
-const buildWeatherUpdateEmail = (city, weather, unsubUrl) => `
+function buildWeatherUpdateEmail(city, weather, token)
+{
+    const unsubUrl = `${config.baseUrl}/unsubscribe/${token}`;
+    return  `
     <p>Here's your latest weather update for <strong>${city}</strong>:</p>
     <ul>
       <li><strong>Temperature:</strong> ${weather.temperature}°C</li>
@@ -15,8 +26,8 @@ const buildWeatherUpdateEmail = (city, weather, unsubUrl) => `
       <li><strong>Condition:</strong> ${weather.description}</li>
     </ul>
     <p>To unsubscribe, click <a href="${unsubUrl}">here</a>.</p>
-    <p style="font-size: 0.8rem; color: gray;">SkyFetch 2025 by VfourTwenty</p>
+    <p style="font-size: 0.8rem; color: gray;">SkyFetch 2025 by <a href="https://github.com/VfourTwenty">VfourTwenty</a></p>
   `
-
+}
 
 module.exports = { buildConfirmEmail, buildUnsubscribeEmail, buildWeatherUpdateEmail };
