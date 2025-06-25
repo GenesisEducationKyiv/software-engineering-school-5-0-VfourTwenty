@@ -75,4 +75,4 @@ const unsubscribePublicController = async (req, res) => {
     }
 }
 
-module.exports = {homepageController, confirmPublicController, unsubscribePublicController};
+module.exports = { homepageController, confirmPublicController, unsubscribePublicController };
