@@ -1,4 +1,4 @@
-const { fetchWeather } = require("../services/weatherService");
+const WeatherService = require("../services/weatherService");
 
 const weatherController = async (req, res) => {
     const city = req.query.city;
@@ -7,7 +7,7 @@ const weatherController = async (req, res) => {
     }
 
     try {
-        const data = await fetchWeather(city);
+        const data = await WeatherService.fetchWeather(city);
 
         if (
             typeof data.temperature !== 'number' ||
