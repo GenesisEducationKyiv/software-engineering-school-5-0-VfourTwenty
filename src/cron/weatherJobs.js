@@ -1,7 +1,7 @@
 const cron = require("node-cron");
 const {fetchDailyWeather, fetchHourlyWeather} = require("../utils/fetchweather");
 
-function startDailyWeatherJob() {
+function setUpDailyWeatherCronJob() {
     cron.schedule('59 10 * * *', async () => {
         console.log('Running daily weather fetch job...');
         try {
@@ -13,7 +13,7 @@ function startDailyWeatherJob() {
     });
 }
 
-function startHourlyWeatherJob() {
+function setUpHourlyWeatherCronJob() {
     cron.schedule('59 * * * *', async () => {
         console.log('Running hourly weather fetch job...');
         try {
@@ -27,4 +27,4 @@ function startHourlyWeatherJob() {
 
 
 
-module.exports = { startDailyWeatherJob, startHourlyWeatherJob };
+module.exports = { setUpDailyWeatherCronJob, setUpHourlyWeatherCronJob };

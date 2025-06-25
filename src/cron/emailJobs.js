@@ -2,7 +2,7 @@ const cron = require("node-cron");
 const {sendUpdates} = require("../utils/mailer");
 
 
-function startDailyEmailJob() {
+function setUpDailyEmailCronJob() {
     cron.schedule(
         '0 11 * * *',
         async () => {
@@ -18,7 +18,7 @@ function startDailyEmailJob() {
     );
 }
 
-function startHourlyEmailJob() {
+function setUpHourlyEmailCronJob() {
     cron.schedule(
         '0 * * * *',
         async () => {
@@ -34,4 +34,4 @@ function startHourlyEmailJob() {
     );
 }
 
-module.exports = { startDailyEmailJob, startHourlyEmailJob };
+module.exports = { setUpDailyEmailCronJob, setUpHourlyEmailCronJob };
