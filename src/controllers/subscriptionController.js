@@ -1,5 +1,5 @@
 const SubscriptionService = require('../services/subscriptionService');
-const { sendConfirmationEmail, sendUnsubscribeEmail } = require('../utils/mailer');
+const EmailService = require('../services/emailService');
 
 const subscribeController = async (req, res) => {
     const { email, city, frequency } = req.body;
@@ -12,7 +12,7 @@ const subscribeController = async (req, res) => {
 
         const confirmUrl = `${config.baseUrl}/confirm/${token}`;
 
-        const emailResult = await sendConfirmationEmail(email, confirmUrl);
+        const emailResult = await EmailService.sendConfirmationEmail(email, token);
 
         if (!emailResult || emailResult.error) {
             return res.status(500).json({ error: 'Subscription saved but failed to send confirmation email.' });
@@ -78,7 +78,7 @@ const unsubscribeController = async (req, res) => {
     try {
         const sub = await SubscriptionService.deleteSub(token);
 
-        const emailResult = await sendUnsubscribeEmail(sub.email, sub.city);
+        const emailResult = await EmailService.sendUnsubscribeEmail(sub.email, sub.city);
 
         if (!emailResult || emailResult.error) {
             console.log(`error: ${emailResult.error.message}`);
