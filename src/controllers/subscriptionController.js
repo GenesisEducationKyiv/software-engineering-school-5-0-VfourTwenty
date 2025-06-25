@@ -7,11 +7,6 @@ const subscribeController = async (req, res) => {
     try {
         const token = await SubscriptionService.createSub(email, city, frequency);
 
-        const env = process.env.NODE_ENV;
-        const config = require('../config/config.js')[env];
-
-        const confirmUrl = `${config.baseUrl}/confirm/${token}`;
-
         const emailResult = await EmailService.sendConfirmationEmail(email, token);
 
         if (!emailResult || emailResult.error) {
