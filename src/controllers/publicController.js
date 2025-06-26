@@ -1,8 +1,7 @@
 const { join } = require('path');
-
 const SubscriptionService = require('../services/subscriptionService');
-const env = process.env.NODE_ENV;
-const config = require('../config/config.js')[env];
+
+const config = require('../config/config.js')[process.env.NODE_ENV];
 
 const homepageController = (req, res) => {
     res.sendFile(join(__dirname, '../public/subscribe.html'));
@@ -46,6 +45,7 @@ const confirmPublicController = async (req, res) => {
     }
 }
 
+// need to handle duplicate unsubscribe
 const unsubscribePublicController = async (req, res) => {
     const { token } = req.params;
 
