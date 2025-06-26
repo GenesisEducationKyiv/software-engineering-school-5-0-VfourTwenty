@@ -1,7 +1,7 @@
 const { setUpHourlyWeatherCronJob, setUpDailyWeatherCronJob } = require('./weatherJobs');
 const { setUpHourlyEmailCronJob, setUpDailyEmailCronJob} = require('./emailJobs')
 
-function cronMain()
+function startCronMain()
 {
     setUpHourlyWeatherCronJob();
     setUpHourlyEmailCronJob();
@@ -10,4 +10,4 @@ function cronMain()
     setUpDailyEmailCronJob();
 }
 
-module.exports = cronMain;
+module.exports = startCronMain;
