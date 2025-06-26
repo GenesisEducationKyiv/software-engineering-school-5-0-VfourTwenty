@@ -1,10 +1,10 @@
+const crypto = require('crypto');
 const readline = require('readline');
 const { Sequelize, Op } = require('sequelize');
 const SubscriptionRepo = require('../src/repositories/subscriptionRepo');
 const WeatherDataRepo = require('../src/repositories/weatherDataRepo');
 const WeatherCityRepo = require('../src/repositories/weatherCityRepo');
-const { incrementCityCounter } = require('../src/utils/subtracker'); // adjust if needed
-const crypto = require('crypto');
+const SubscriptionService = require('../src/services/subscriptionService');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -62,7 +62,7 @@ async function promptAndSeed() {
                 token,
             });
 
-            await incrementCityCounter(city, frequency);
+            await SubscriptionService.incrementCityCounter(city, frequency);
         }
     }
 
