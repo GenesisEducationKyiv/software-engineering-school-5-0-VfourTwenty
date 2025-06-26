@@ -53,21 +53,26 @@ class WeatherCityRepo {
     }
 
     /**
-     * Delete cities matching params.
-     * @param {WeatherCitySearchParams} where
-     * @returns {Promise<number>}
-     */
-    static async destroy(where) {
-        return WeatherCity.destroy({ where });
-    }
-
-    /**
      * Save changes to a city instance.
      * @param {WeatherCity} instance
      * @returns {Promise<WeatherCity>}
      */
     static async saveInstance(instance) {
         return instance.save();
+    }
+
+    /**
+     * Delete a city
+     * @returns {Promise<number>}
+     * @param {import('../db/models/subscription').WeatherCity} instance
+     */
+    static async destroyInstance(instance) {
+        return instance.destroy();
+    }
+
+    // clear all matching entries
+    static async destroy(where) {
+        return WeatherCity.destroy({ where });
     }
 }
 
