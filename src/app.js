@@ -8,7 +8,7 @@ const weatherRouter = require('./routes/weather');
 const subscriptionRouter = require('./routes/subscription');
 const publicRouter = require('./routes/public')
 
-const cronMain = require('./cron/main');
+const startCronMain = require('./cron/main');
 
 const app = express();
 
@@ -37,6 +37,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-cronMain();
+startCronMain();
 
 module.exports = app;
