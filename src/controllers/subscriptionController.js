@@ -1,6 +1,18 @@
 const SubscriptionService = require('../services/subscriptionService');
 const EmailService = require('../services/emailService');
 
+const handleError = require('../utils/errors');
+
+const errorMap = {
+    'MISSING REQUIRED FIELDS': { status: 400, message: 'Missing required fields.' },
+    'INVALID EMAIL FORMAT': { status: 400, message: 'Invalid email format.' },
+    'INVALID FREQUENCY': { status: 400, message: 'Invalid frequency.' },
+    'ALREADY CONFIRMED': { status: 400, message: 'Subscription already confirmed' },
+    'TOKEN NOT FOUND': { status: 404, message: 'Token not found' },
+    'INVALID TOKEN': { status: 400, message: 'Invalid token' },
+    'DUPLICATE': { status: 409, message: 'Subscription already exists for this city and frequency.' },
+};
+
 const subscribeController = async (req, res) => {
     const { email, city, frequency } = req.body;
 
@@ -16,27 +28,7 @@ const subscribeController = async (req, res) => {
         res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
 
     } catch (err) {
-        if (err.message === 'DUPLICATE')
-        {
-            res.status(409).json({error: 'Subscription already exists for this city and frequency.'});
-        }
-        else if (err.message === 'MISSING REQUIRED FIELDS')
-        {
-            res.status(400).json({error: 'Missing required fields.'});
-        }
-        else if (err.message === 'INVALID EMAIL FORMAT')
-        {
-            res.status(400).json({error: 'Invalid email format.'});
-        }
-        else if (err.message === 'INVALID FREQUENCY')
-        {
-            res.status(400).json({error: 'Invalid frequency.'});
-        }
-        else
-        {
-            err.message
-            res.status(500).json({ error: `Failed to subscribe: ${err.message}` });
-        }
+        handleError(err, errorMap, res);
     }
 }
 
@@ -48,22 +40,7 @@ const confirmController = async (req, res) => {
         res.status(200).json({ message: 'Subscription confirmed successfully' });
 
     } catch (err) {
-        if (err.message === 'INVALID TOKEN')
-        {
-            res.status(400).json({error: 'Invalid token'});
-        }
-        else if (err.message === 'TOKEN NOT FOUND')
-        {
-            res.status(404).json({error: 'Token not found'});
-        }
-        else if (err.message === 'ALREADY CONFIRMED')
-        {
-            res.status(400).json({error: 'Subscription already confirmed'});
-        }
-        else
-        {
-            res.status(500).json({ error: 'Failed to confirm subscription' });
-        }
+        handleError(err, errorMap, res);
     }
 }
 
@@ -83,18 +60,7 @@ const unsubscribeController = async (req, res) => {
         res.status(200).json({ message: 'Unsubscribed successfully'});
 
     } catch (err) {
-        if (err.message === 'INVALID TOKEN')
-        {
-            res.status(400).json({error: 'Invalid token'});
-        }
-        else if (err.message === 'TOKEN NOT FOUND')
-        {
-            res.status(404).json({error: 'Token not found'});
-        }
-        else
-        {
-            res.status(500).json({ error: 'Failed to unsubscribe' });
-        }
+        handleError(err, errorMap, res);
     }
 }
 
