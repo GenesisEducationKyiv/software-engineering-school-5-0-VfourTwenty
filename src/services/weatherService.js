@@ -3,6 +3,7 @@ const WeatherCityRepo = require("../repositories/weatherCityRepo");
 const WeatherDataRepo = require("../repositories/weatherDataRepo");
 // need to abstract from sequelize operators
 const {Op} = require("sequelize");
+const { logProviderResponse } = require('../utils/logger');
 
 class WeatherService {
     /**
@@ -28,18 +29,13 @@ class WeatherService {
         for (const provider of weatherProviders) {
             try {
                 const result = await provider.fetchWeather(city);
-                WeatherService.logProviderResponse(provider.name, result);
+                logProviderResponse(WeatherService.logPath, provider.name, result);
                 if (result) return result;
             } catch (err) {
-                WeatherService.logProviderResponse(provider.name, err.message, true);
+                logProviderResponse(WeatherService.logPath, provider.name, err.message, true);
             }
         }
         throw new Error('No data available for this location');
-    }
-
-    static logProviderResponse(providerName, data, isError = false) {
-        const logEntry = `${new Date().toISOString()} [${providerName}] ${isError ? 'Error:' : 'Response:'} ${JSON.stringify(data)}\n`;
-        require('fs').appendFileSync(WeatherService.logPath, logEntry);
     }
 
     static async fetchHourlyWeather() {

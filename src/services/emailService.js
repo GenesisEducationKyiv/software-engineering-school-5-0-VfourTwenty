@@ -3,6 +3,7 @@ const emailProviders = require('../providers/email-providers/emailProvidersAll')
 const WeatherDataRepo = require('../repositories/weatherDataRepo');
 const SubscriptionRepo = require('../repositories/subscriptionRepo');
 const { buildConfirmEmail, buildUnsubscribeEmail, buildWeatherUpdateEmail } = require('../utils/emailTemplates');
+const { logProviderResponse } = require('../utils/logger');
 
 /**
  * @typedef {Object} EmailProvider
@@ -35,24 +36,13 @@ class EmailService {
         for (const provider of emailProviders) {
             try {
                 const result = await provider.sendEmail(to, subject, body);
-                EmailService.logProviderResponse(provider.name, result);
+                logProviderResponse(EmailService.logPath, provider.name, result);
                 if (result) return result;
             } catch (err) {
-                EmailService.logProviderResponse(provider.name, err, true);
+                logProviderResponse(EmailService.logPath, provider.name, err, true);
             }
         }
         throw new Error('All email providers failed');
-    }
-
-    /**
-     * Log the provider response or error to a file
-     * @param {string} providerName
-     * @param {any} data
-     * @param {boolean} [isError=false]
-     */
-    static logProviderResponse(providerName, data, isError = false) {
-        const logEntry = `${new Date().toISOString()} [${providerName}] ${isError ? 'Error:' : 'Response:'} ${JSON.stringify(data)}\n`;
-        require('fs').appendFileSync(EmailService.logPath, logEntry);
     }
 
     static async sendConfirmationEmail(to, token, provider = null) {
