@@ -29,10 +29,10 @@ class WeatherService {
         for (const provider of weatherProviders) {
             try {
                 const result = await provider.fetchWeather(city);
-                logProviderResponse(WeatherService.logPath, provider.name, result);
+                logProviderResponse(WeatherService.logPath, provider.name, {city, ...result});
                 if (result) return result;
             } catch (err) {
-                logProviderResponse(WeatherService.logPath, provider.name, err.message, true);
+                logProviderResponse(WeatherService.logPath, provider.name, {city, ...err.message }, true);
             }
         }
         throw new Error('No data available for this location');

@@ -36,10 +36,10 @@ class EmailService {
         for (const provider of emailProviders) {
             try {
                 const result = await provider.sendEmail(to, subject, body);
-                logProviderResponse(EmailService.logPath, provider.name, result);
+                logProviderResponse(EmailService.logPath, provider.name, {to, subject, ...result});
                 if (result) return result;
             } catch (err) {
-                logProviderResponse(EmailService.logPath, provider.name, err, true);
+                logProviderResponse(EmailService.logPath, provider.name, {to, subject, ...err}, true);
             }
         }
         throw new Error('All email providers failed');
