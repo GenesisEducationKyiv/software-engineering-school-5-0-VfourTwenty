@@ -3,6 +3,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const createError = require('http-errors');
+const { register } = require('./utils/metrics');
 
 const weatherRouter = require('./routes/weather');
 const subscriptionRouter = require('./routes/subscription');
@@ -24,6 +25,12 @@ app.use('/api', subscriptionRouter);
 
 // public route
 app.use('/', publicRouter);
+
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+
 
 // 404 handler
 app.use(function(req, res, next) {
