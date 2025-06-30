@@ -1,5 +1,6 @@
 const SubscriptionService = require('../services/subscriptionService');
 const EmailService = require('../services/emailService');
+const validateCity = require('../validators/validateCity');
 
 const handleError = require('../utils/errors');
 
@@ -11,12 +12,14 @@ const errorMap = {
     'TOKEN NOT FOUND': { status: 404, message: 'Token not found' },
     'INVALID TOKEN': { status: 400, message: 'Invalid token' },
     'DUPLICATE': { status: 409, message: 'Subscription already exists for this city and frequency.' },
+    'INVALID CITY': { status: 400, message: 'Invalid city.' },
 };
 
 const subscribeController = async (req, res) => {
     const { email, city, frequency } = req.body;
 
     try {
+        await validateCity(city);
         const token = await SubscriptionService.createSub(email, city, frequency);
 
         const emailResult = await EmailService.sendConfirmationEmail(email, token);
