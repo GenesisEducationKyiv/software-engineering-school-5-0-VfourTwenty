@@ -1,11 +1,5 @@
-const { join } = require('path');
-const SubscriptionService = require('../services/subscriptionService');
-
+const SubscriptionService = require("../services/subscriptionService");
 const config = require('../config/config.js')[process.env.NODE_ENV];
-
-const homepageController = (req, res) => {
-    res.sendFile(join(__dirname, '../public/subscribe.html'));
-}
 
 const confirmPublicController = async (req, res) => {
     const { token } = req.params;
@@ -75,4 +69,4 @@ const unsubscribePublicController = async (req, res) => {
     }
 }
 
-module.exports = { homepageController, confirmPublicController, unsubscribePublicController };
+module.exports = { confirmPublicController, unsubscribePublicController }

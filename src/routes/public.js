@@ -1,7 +1,8 @@
 const express = require('express');
 const publicRouter = express.Router();
 
-const {homepageController, confirmPublicController, unsubscribePublicController} = require('../controllers/publicController');
+const { homepageController} = require('../controllers/homepageController');
+const { confirmPublicController, unsubscribePublicController } = require('../controllers/subscriptionPublicController');
 
 
 publicRouter.get('/', homepageController);

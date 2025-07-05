@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {subscribeController, confirmController, unsubscribeController} = require('../controllers/subscriptionController');
+const { subscribeController, confirmController, unsubscribeController } = require('../controllers/subscriptionController');
 
 
 // subscription
