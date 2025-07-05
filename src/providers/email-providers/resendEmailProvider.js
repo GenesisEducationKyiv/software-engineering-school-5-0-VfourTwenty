@@ -1,4 +1,4 @@
-const IEmailProvider = require("./emailProviderBase");
+const IEmailProvider = require("./emailProviderInterface");
 const { Resend } = require('resend');
 require('dotenv').config();
 const retry = require('../../utils/retry');

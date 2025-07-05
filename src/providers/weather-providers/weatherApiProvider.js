@@ -1,8 +1,8 @@
-const IWeatherProvider = require( "./weatherProviderBase" );
+const IWeatherProvider = require( "./weatherProviderInterface" );
 require('dotenv').config()
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 
-class WeatherAPIProvider extends IWeatherProvider
+class WeatherApiProvider extends IWeatherProvider
 {
     get name() {
         return "WeatherAPI.com";
@@ -24,4 +24,4 @@ class WeatherAPIProvider extends IWeatherProvider
     }
 }
 
-module.exports = WeatherAPIProvider;
+module.exports = WeatherApiProvider;
