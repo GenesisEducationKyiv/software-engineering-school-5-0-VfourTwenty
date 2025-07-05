@@ -1,5 +1,7 @@
 const SequelizeSubscriptionRepo = require('./repositories/sequelizeSubscriptionRepo');
 
+const EmailProviderManager = require('./providers/email-providers/emailProviderManager')
+
 const SubscriptionService = require('./services/subscriptionService');
 const WeatherService = require('./services/weatherService');
 const EmailService = require('./services/emailService');
@@ -16,11 +18,14 @@ const CronMain = require('./cron/main')
 const subscriptionRepo = new SequelizeSubscriptionRepo();
 
 // 2
-const weatherService = new WeatherService();
-const emailService = new EmailService(weatherService, subscriptionRepo);
-const subscriptionService = new SubscriptionService(emailService, subscriptionRepo);
+const emailProviderManager = new EmailProviderManager();
 
 // 3
+const weatherService = new WeatherService();
+const emailService = new EmailService(weatherService, subscriptionRepo, emailProviderManager);
+const subscriptionService = new SubscriptionService(emailService, subscriptionRepo);
+
+// 4
 const homepageController = new HomepageController();
 const subscriptionPublicController = new SubscriptionPublicController(subscriptionService);
 const subscriptionApiController = new SubscriptionApiController(subscriptionService, weatherService);

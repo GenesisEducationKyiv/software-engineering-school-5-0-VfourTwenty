@@ -1,63 +1,24 @@
-// mock this array for tests
-const emailProviders = require('../providers/email-providers/emailProvidersAll');
 const { buildConfirmEmail, buildUnsubscribeEmail, buildWeatherUpdateEmail } = require('../utils/emailTemplates');
-const { logProviderResponse } = require('../utils/logger');
-
-/**
- * @typedef {Object} EmailProvider
- * @property {function(string, string, string): Promise<any>} sendEmail
- * @property {string} name
- */
 
 class EmailService {
-    /**
-     * Try each provider in order until one succeeds.
-     * @param {string} to
-     * @param {string} subject
-     * @param {string} body
-     * @returns {Promise<any>}
-     */
-
-    // logPath = require('path').join(__dirname, '../../logs/emailProvider.log');
-    // loggingEnabled = true;
-
     weatherService;
     subscriptionRepo;
+    emailProviderManager;
 
-    constructor(weatherService, subscriptionRepo)
-    {
+    constructor(weatherService, subscriptionRepo, emailProviderManager) {
         this.weatherService = weatherService;
         this.subscriptionRepo = subscriptionRepo;
+        this.emailProviderManager = emailProviderManager;
     }
 
-    // turn of logs for tests
-    // setLoggingEnabled(enabled) {
-    //     this.loggingEnabled = enabled;
-    // }
-
-
-    // call same function on provider manager for selecting provider
-    async sendEmail(to, subject, body, provider = null) {
-        if (provider != null)
-        {
-            return await provider.sendEmail(to, subject, body);
-        }
-        for (const provider of emailProviders) {
-            try {
-                const result = await provider.sendEmail(to, subject, body);
-            //    logProviderResponse(EmailService.logPath, provider.name, {to, subject, ...result});
-                if (result) return result;
-            } catch (err) {
-               // logProviderResponse(EmailService.logPath, provider.name, {to, subject, ...err}, true);
-            }
-        }
-        throw new Error('All email providers failed');
+    async sendEmail(to, subject, body) {
+        return this.emailProviderManager.sendEmail(to, subject, body);
     }
 
-    async sendConfirmationEmail(to, token, provider = null) {
+    async sendConfirmationEmail(to, token) {
         const subject = 'Confirm your weather subscription';
         const body = buildConfirmEmail(token);
-        const { success, error } = await this.sendEmail(to, subject, body, provider);
+        const { success, error } = await this.sendEmail(to, subject, body);
         if (!success) {
             console.error('❌ Failed to send confirmation email:', error);
             return false;
@@ -65,10 +26,10 @@ class EmailService {
         return true;
     }
 
-    async sendUnsubscribeEmail(to, city, provider = null) {
+    async sendUnsubscribeEmail(to, city) {
         const subject = "You've been unsubscribed";
         const body = buildUnsubscribeEmail(city);
-        const { success, error } = await this.sendEmail(to, subject, body, provider);
+        const { success, error } = await this.sendEmail(to, subject, body);
         if (!success) {
             console.error('❌ Failed to send unsubscribe email:', error);
             return false;
@@ -76,10 +37,10 @@ class EmailService {
         return true;
     }
 
-    async sendWeatherUpdate(email, city, weather, token, provider = null) {
+    async sendWeatherUpdate(email, city, weather, token) {
         const subject = `SkyFetch Weather Update for ${city}`;
         const html = buildWeatherUpdateEmail(city, weather, token);
-        const { success, error } = await this.sendEmail(email, subject, html, provider);
+        const { success, error } = await this.sendEmail(email, subject, html);
         if (!success) {
             console.error(`❌ Failed to send weather update to ${email}:`, error?.message || error);
             return false;
@@ -88,7 +49,7 @@ class EmailService {
         return true;
     }
 
-    async sendUpdates(frequency, provider = null) {
+    async sendUpdates(frequency) {
         const subs = await this.subscriptionRepo.findAllSubs({ confirmed: true, frequency });
         let sent = 0;
         let failed = 0;
@@ -101,7 +62,7 @@ class EmailService {
                     skipped++;
                     continue;
                 }
-                const ok = await this.sendWeatherUpdate(sub.email, sub.city, weather, sub.token, provider);
+                const ok = await this.sendWeatherUpdate(sub.email, sub.city, weather, sub.token);
                 if (ok) {
                     sent++;
                     console.log(`✅ ${frequency} email sent to ${sub.email}`);
