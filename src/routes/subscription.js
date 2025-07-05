@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { subscribeController, confirmController, unsubscribeController } = require('../controllers/subscriptionController');
+const SubscriptionController = require('../controllers/subscriptionApiController');
 
 
 // subscription
-router.post('/subscribe', subscribeController);
+router.post('/subscribe', SubscriptionController.subscribe);
 
 // confirmation
-router.get('/confirm/:token', confirmController);
+router.get('/confirm/:token', SubscriptionController.confirm);
 
 // cancel subscription
-router.get('/unsubscribe/:token', unsubscribeController);
+router.get('/unsubscribe/:token', SubscriptionController.unsubscribe);
 
 
 module.exports = router;

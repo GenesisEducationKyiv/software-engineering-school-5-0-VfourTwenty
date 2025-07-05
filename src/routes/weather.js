@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const weatherController = require('../controllers/weatherController');
+const WeatherController = require('../controllers/weatherApiController');
 
 
 // expose the weather api endpoint
-router.get('/weather', weatherController);
+// mount city validation here
+router.get('/weather', WeatherController.getWeather);
 
 module.exports = router;

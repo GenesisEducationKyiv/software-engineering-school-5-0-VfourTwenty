@@ -1,15 +1,15 @@
 const express = require('express');
 const publicRouter = express.Router();
 
-const { homepageController} = require('../controllers/homepageController');
-const { confirmPublicController, unsubscribePublicController } = require('../controllers/subscriptionPublicController');
+const HomepageController = require('../controllers/homepageController');
+const SubscriptionPublicController = require('../controllers/subscriptionPublicController');
 
 
-publicRouter.get('/', homepageController);
+publicRouter.get('/', HomepageController.getStaticHomepage);
 
-publicRouter.get('/confirm/:token', confirmPublicController);
+publicRouter.get('/confirm/:token', SubscriptionPublicController.confirm);
 
-publicRouter.get('/unsubscribe/:token', unsubscribePublicController);
+publicRouter.get('/unsubscribe/:token', SubscriptionPublicController.unsubscribe);
 
 
 module.exports = publicRouter;
