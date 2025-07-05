@@ -1,9 +1,9 @@
 // mock this array for tests
 const emailProviders = require('../providers/email-providers/emailProvidersAll');
-const WeatherDataRepo = require('../repositories/weatherDataRepo');
 const SubscriptionRepo = require('../repositories/subscriptionRepo');
 const { buildConfirmEmail, buildUnsubscribeEmail, buildWeatherUpdateEmail } = require('../utils/emailTemplates');
 const { logProviderResponse } = require('../utils/logger');
+const WeatherService = require('./weatherService');
 
 /**
  * @typedef {Object} EmailProvider
@@ -69,7 +69,6 @@ class EmailService {
 
     static async sendWeatherUpdate(email, city, weather, token, provider = null) {
         const subject = `SkyFetch Weather Update for ${city}`;
-        // const unsubUrl = `${BASE_URL}/unsubscribe/${token}`;
         const html = buildWeatherUpdateEmail(city, weather, token);
         const { success, error } = await EmailService.sendEmail(email, subject, html, provider);
         if (!success) {
@@ -87,13 +86,13 @@ class EmailService {
         let skipped = 0;
         for (const sub of subs) {
             try {
-                const weather = await WeatherDataRepo.findByPk(sub.city);
+                const weather = await WeatherService.fetchWeather(sub.city);
                 if (!weather) {
-                    console.warn(`⚠️ No weather data cached for ${sub.city}, skipping ${sub.email}`);
+                    console.warn(`⚠️ No weather data available for ${sub.city}, skipping ${sub.email}`);
                     skipped++;
                     continue;
                 }
-                const ok = await EmailService.sendWeatherUpdate(sub.email, sub.city, weather.toJSON(), sub.token, provider);
+                const ok = await EmailService.sendWeatherUpdate(sub.email, sub.city, weather, sub.token, provider);
                 if (ok) {
                     sent++;
                     console.log(`✅ ${frequency} email sent to ${sub.email}`);

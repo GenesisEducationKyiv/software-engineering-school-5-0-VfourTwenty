@@ -10,7 +10,7 @@ function setUpDailyEmailCronJob()
 
 function setUpHourlyEmailCronJob()
 {
-    cron.schedule('0 * * * *', () => handler.runHourly(), { timezone: 'Europe/Kyiv' });
+    cron.schedule('25 * * * *', () => handler.runHourly(), { timezone: 'Europe/Kyiv' });
 }
 
 module.exports = { setUpDailyEmailCronJob, setUpHourlyEmailCronJob };
