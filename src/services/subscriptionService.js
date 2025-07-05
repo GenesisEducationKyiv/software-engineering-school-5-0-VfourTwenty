@@ -1,91 +1,58 @@
-const SubscriptionRepo = require('../repositories/subscriptionRepo');
-const WeatherCityRepo = require("../repositories/weatherCityRepo");
 const { emailRegex, genToken } = require('../utils/strings');
 
-class SubscriptionService {
+class SubscriptionService
+{
+    emailService;
+    subscriptionRepo;
 
-    static async createSub(email, city, frequency) {
+    constructor(emailService, subscriptionRepo)
+    {
+        this.emailService = emailService;
+        this.subscriptionRepo = subscriptionRepo;
+    }
+
+    async subscribeUser(email, city, frequency) {
         if (!email || !city || !frequency) {
             throw new Error('MISSING REQUIRED FIELDS');
         }
-
         if (!emailRegex.test(email)) {
             throw new Error('INVALID EMAIL FORMAT');
         }
-
         if (!['hourly', 'daily'].includes(frequency)) {
             throw new Error('INVALID FREQUENCY');
         }
-
-        const exists = await SubscriptionRepo.findOneBy({ email, city, frequency });
-
+        const exists = await this.subscriptionRepo.findSub({ email, city, frequency });
         if (exists) {
             throw new Error('DUPLICATE');
         }
         const token = genToken();
-
-        await SubscriptionRepo.create({ email, city, frequency, confirmed: false, token });
+        await this.subscriptionRepo.createSub({ email, city, frequency, confirmed: false, token });
+        const emailResult = await this.emailService.sendConfirmationEmail(email, token);
+        if (!emailResult || emailResult.error) {
+            throw new Error('EMAIL_FAILED');
+        }
         return token;
     }
 
-    static async confirmSub(token) {
+    async confirmSubscription(token) {
         if (!token || token.length < 10) throw new Error('INVALID TOKEN');
-        const sub = await SubscriptionRepo.findOneBy({ token });
-        if (!sub)  throw new Error('TOKEN NOT FOUND');
-        if (sub.confirmed) throw new Error('ALREADY CONFIRMED');
-
-        sub.confirmed = true;
-        await SubscriptionRepo.saveInstance(sub);
-        await SubscriptionService.incrementCityCounter(sub.city, sub.frequency);
-        return sub;
+        return await this.subscriptionRepo.confirmSub(token);
     }
 
-    static async deleteSub(token) {
+    async unsubscribeUser(token) {
         if (!token || token.length < 10) throw new Error('INVALID TOKEN');
-        const sub = await SubscriptionRepo.findOneBy({ token });
+        const sub = await this.subscriptionRepo.findSub({ token });
         if (!sub) throw new Error('TOKEN NOT FOUND');
-
-        await SubscriptionService.decrementCityCounter(sub.city, sub.frequency);
-        await SubscriptionRepo.destroyInstance(sub);
+        await this.subscriptionRepo.deleteSub(token);
+        const emailResult = await this.emailService.sendUnsubscribeEmail(sub.email, sub.city);
+        if (!emailResult || emailResult.error) {
+            throw new Error('EMAIL_FAILED');
+        }
         return sub;
     }
 
-    static async findSub(params) {
-        return await SubscriptionRepo.findOneBy(params);
-    }
-
-    static async incrementCityCounter(city, frequency) {
-        const cityEntry = await WeatherCityRepo.findOneBy({ city });
-
-        if (!cityEntry) {
-            await WeatherCityRepo.create({
-                city,
-                hourly_count: frequency === 'hourly' ? 1 : 0,
-                daily_count: frequency === 'daily' ? 1 : 0,
-            });
-        } else {
-            if (frequency === 'hourly') cityEntry.hourly_count += 1;
-            if (frequency === 'daily') cityEntry.daily_count += 1;
-            await WeatherCityRepo.saveInstance(cityEntry);
-        }
-    }
-
-    static async decrementCityCounter(city, frequency) {
-        const cityEntry = await WeatherCityRepo.findOneBy({city});
-        if (!cityEntry) return;
-
-        if (frequency === 'daily') cityEntry.daily_count -= 1;
-        if (frequency === 'hourly') cityEntry.hourly_count -= 1;
-
-        // delete the entry if both counters reach 0
-        if (cityEntry.daily_count <= 0 && cityEntry.hourly_count <= 0) {
-            await WeatherCityRepo.destroyInstance(cityEntry);
-        } else {
-            // Prevent negatives
-            cityEntry.daily_count = Math.max(0, cityEntry.daily_count);
-            cityEntry.hourly_count = Math.max(0, cityEntry.hourly_count);
-            await WeatherCityRepo.saveInstance(cityEntry);
-        }
+    async findSub(params) {
+        return await this.subscriptionRepo.findSub(params);
     }
 }
 

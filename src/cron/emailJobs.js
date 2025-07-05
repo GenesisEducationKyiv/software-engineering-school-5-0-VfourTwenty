@@ -1,16 +1,19 @@
 const cron = require("node-cron");
 const EmailJobHandler = require('./handlers/emailJobHandler');
 
-const handler = new EmailJobHandler();
+class EmailJobs {
+    constructor(emailService)
+    {
+        this.handler = new EmailJobHandler(emailService);
+    }
 
-function setUpDailyEmailCronJob()
-{
-    cron.schedule('0 11 * * *', () => handler.runDaily(), { timezone: 'Europe/Kyiv' });
+    setUpDailyEmailCronJob() {
+        cron.schedule('0 11 * * *', () => this.handler.runDaily(), { timezone: 'Europe/Kyiv' });
+    }
+
+    setUpHourlyEmailCronJob() {
+        cron.schedule('0 * * * *', () => this.handler.runHourly(), { timezone: 'Europe/Kyiv' });
+    }
 }
 
-function setUpHourlyEmailCronJob()
-{
-    cron.schedule('0 * * * *', () => handler.runHourly(), { timezone: 'Europe/Kyiv' });
-}
-
-module.exports = { setUpDailyEmailCronJob, setUpHourlyEmailCronJob };
+module.exports = EmailJobs;

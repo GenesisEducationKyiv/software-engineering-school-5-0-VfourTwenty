@@ -1,13 +1,18 @@
-const EmailService = require('../../services/emailService');
-
 class EmailJobHandler
 {
+    emailService;
+
+    constructor(emailService)
+    {
+        this.emailService = emailService;
+    }
+
     async runDaily()
     {
         console.log('Running daily email job…');
         try
         {
-            const { sent, failed, skipped } = await EmailService.sendUpdates('daily');
+            const { sent, failed, skipped } = await this.emailService.sendUpdates('daily');
             console.log(`Daily stats ➜ sent: ${sent}, skipped: ${skipped}, failed: ${failed}`);
         }
         catch (err)
@@ -21,7 +26,7 @@ class EmailJobHandler
         console.log('Running hourly email job…');
         try
         {
-            const { sent, failed, skipped } = await EmailService.sendUpdates('hourly');
+            const { sent, failed, skipped } = await this.emailService.sendUpdates('hourly');
             console.log(`Hourly stats ➜ sent: ${sent}, skipped: ${skipped}, failed: ${failed}`);
         }
         catch (err)

@@ -1,13 +1,15 @@
-const { setUpHourlyWeatherCronJob, setUpDailyWeatherCronJob } = require('./weatherJobs');
-const { setUpHourlyEmailCronJob, setUpDailyEmailCronJob} = require('./emailJobs')
-
-function startCronMain()
+class CronMain
 {
-    setUpHourlyWeatherCronJob();
-    setUpHourlyEmailCronJob();
+    constructor(emailJobs)
+    {
+        this.emailJobs = emailJobs;
+    }
 
-    setUpDailyWeatherCronJob();
-    setUpDailyEmailCronJob();
+    start()
+    {
+        this.emailJobs.setUpHourlyEmailCronJob();
+        this.emailJobs.setUpDailyEmailCronJob();
+    }
 }
 
-module.exports = startCronMain;
+module.exports = CronMain;
