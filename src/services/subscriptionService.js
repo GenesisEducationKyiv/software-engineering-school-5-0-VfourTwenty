@@ -1,53 +1,50 @@
-const SubscriptionRepo = require('../repositories/subscriptionRepo');
+const SubscriptionRepo = require('../repositories/sequelizeSubscriptionRepo');
+const EmailService = require('../services/emailService');
 const { emailRegex, genToken } = require('../utils/strings');
 
 class SubscriptionService {
-
-    static async createSub(email, city, frequency) {
+    static async subscribeUser(email, city, frequency) {
         if (!email || !city || !frequency) {
             throw new Error('MISSING REQUIRED FIELDS');
         }
-
         if (!emailRegex.test(email)) {
             throw new Error('INVALID EMAIL FORMAT');
         }
-
         if (!['hourly', 'daily'].includes(frequency)) {
             throw new Error('INVALID FREQUENCY');
         }
-
-        const exists = await SubscriptionRepo.findOneBy({ email, city, frequency });
-
+        const exists = await SubscriptionRepo.findSub({ email, city, frequency });
         if (exists) {
             throw new Error('DUPLICATE');
         }
         const token = genToken();
-
-        await SubscriptionRepo.create({ email, city, frequency, confirmed: false, token });
+        await SubscriptionRepo.createSub({ email, city, frequency, confirmed: false, token });
+        const emailResult = await EmailService.sendConfirmationEmail(email, token);
+        if (!emailResult || emailResult.error) {
+            throw new Error('EMAIL_FAILED');
+        }
         return token;
     }
 
-    static async confirmSub(token) {
+    static async confirmSubscription(token) {
         if (!token || token.length < 10) throw new Error('INVALID TOKEN');
-        const sub = await SubscriptionRepo.findOneBy({ token });
-        if (!sub)  throw new Error('TOKEN NOT FOUND');
-        if (sub.confirmed) throw new Error('ALREADY CONFIRMED');
-
-        sub.confirmed = true;
-        await SubscriptionRepo.saveInstance(sub);
-        return sub;
+        return await SubscriptionRepo.confirmSub(token);
     }
 
-    static async deleteSub(token) {
+    static async unsubscribeUser(token) {
         if (!token || token.length < 10) throw new Error('INVALID TOKEN');
-        const sub = await SubscriptionRepo.findOneBy({ token });
+        const sub = await SubscriptionRepo.findSub({ token });
         if (!sub) throw new Error('TOKEN NOT FOUND');
-        await SubscriptionRepo.destroyInstance(sub);
+        await SubscriptionRepo.deleteSub(token);
+        const emailResult = await EmailService.sendUnsubscribeEmail(sub.email, sub.city);
+        if (!emailResult || emailResult.error) {
+            throw new Error('EMAIL_FAILED');
+        }
         return sub;
     }
 
     static async findSub(params) {
-        return await SubscriptionRepo.findOneBy(params);
+        return await SubscriptionRepo.findSub(params);
     }
 }
 

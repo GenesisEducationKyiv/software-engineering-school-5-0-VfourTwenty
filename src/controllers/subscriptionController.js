@@ -1,7 +1,5 @@
 const SubscriptionService = require('../services/subscriptionService');
-const EmailService = require('../services/emailService');
 const validateCity = require('../validators/validateCity');
-
 const handleError = require('../utils/errors');
 
 const errorMap = {
@@ -13,58 +11,38 @@ const errorMap = {
     'INVALID TOKEN': { status: 400, message: 'Invalid token' },
     'DUPLICATE': { status: 409, message: 'Subscription already exists for this city and frequency.' },
     'INVALID CITY': { status: 400, message: 'Invalid city.' },
+    'EMAIL_FAILED': { status: 500, message: 'Subscription operation succeeded but failed to send email.' },
 };
 
 const subscribeController = async (req, res) => {
     const { email, city, frequency } = req.body;
-
     try {
         await validateCity(city);
-        const token = await SubscriptionService.createSub(email, city, frequency);
-
-        const emailResult = await EmailService.sendConfirmationEmail(email, token);
-
-        if (!emailResult || emailResult.error) {
-            return res.status(500).json({ error: 'Subscription saved but failed to send confirmation email.' });
-        }
-
+        await SubscriptionService.subscribeUser(email, city, frequency);
         res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
-
     } catch (err) {
         handleError(err, errorMap, res);
     }
-}
+};
 
 const confirmController = async (req, res) => {
     const { token } = req.params;
-
     try {
-        await SubscriptionService.confirmSub(token);
+        await SubscriptionService.confirmSubscription(token);
         res.status(200).json({ message: 'Subscription confirmed successfully' });
-
     } catch (err) {
         handleError(err, errorMap, res);
     }
-}
+};
 
 const unsubscribeController = async (req, res) => {
     const { token } = req.params;
-
     try {
-        const sub = await SubscriptionService.deleteSub(token);
-
-        const emailResult = await EmailService.sendUnsubscribeEmail(sub.email, sub.city);
-
-        if (!emailResult || emailResult.error) {
-            console.log(`error: ${emailResult.error.message}`);
-            return res.status(500).json({ error: 'Unsubscribed, but failed to send confirmation email.' });
-        }
-
+        await SubscriptionService.unsubscribeUser(token);
         res.status(200).json({ message: 'Unsubscribed successfully'});
-
     } catch (err) {
         handleError(err, errorMap, res);
     }
-}
+};
 
-module.exports = {subscribeController, confirmController, unsubscribeController}
+module.exports = { subscribeController, confirmController, unsubscribeController };

@@ -1,6 +1,6 @@
 // mock this array for tests
 const emailProviders = require('../providers/email-providers/emailProvidersAll');
-const SubscriptionRepo = require('../repositories/subscriptionRepo');
+const SubscriptionRepo = require('../repositories/sequelizeSubscriptionRepo');
 const { buildConfirmEmail, buildUnsubscribeEmail, buildWeatherUpdateEmail } = require('../utils/emailTemplates');
 const { logProviderResponse } = require('../utils/logger');
 const WeatherService = require('./weatherService');
