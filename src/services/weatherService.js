@@ -2,6 +2,12 @@ const weatherProviders = require('../providers/weather-providers/weatherProvider
 const { logProviderResponse } = require('../utils/logger');
 
 class WeatherService {
+    weatherProviderManager;
+
+    constructor(weatherProviderManager) {
+        this.weatherProviderManager = weatherProviderManager;
+    }
+
     /**
      * Try each provider in order until one succeeds.
      * @param {string} city
@@ -18,21 +24,8 @@ class WeatherService {
     // }
 
     // possible to pass a specific provider, or rely on the chain of responsibility
-    async fetchWeather(city, provider = null) {
-        if (provider !== null)
-        {
-            return await provider.fetchWeather(city);
-        }
-        for (const provider of weatherProviders) {
-            try {
-                const result = await provider.fetchWeather(city);
-           //     logProviderResponse(WeatherService.logPath, provider.name, {city, ...result});
-                if (result) return result;
-            } catch (err) {
-             //   logProviderResponse(WeatherService.logPath, provider.name, {city, ...err.message }, true);
-            }
-        }
-        throw new Error('No data available for this location');
+    async fetchWeather(city) {
+        return this.weatherProviderManager.fetchWeather(city);
     }
 }
 
