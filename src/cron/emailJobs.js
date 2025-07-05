@@ -12,7 +12,7 @@ class EmailJobs {
     }
 
     setUpHourlyEmailCronJob() {
-        cron.schedule('27 * * * *', () => this.handler.runHourly(), { timezone: 'Europe/Kyiv' });
+        cron.schedule('0 * * * *', () => this.handler.runHourly(), { timezone: 'Europe/Kyiv' });
     }
 }
 
