@@ -1,4 +1,4 @@
-const ISubscriptionRepo = require('./ISubscriptionRepo')
+const ISubscriptionRepo = require('./subscriptionRepoInterface')
 const { Subscription } = require('../db/models')
 
 /**
