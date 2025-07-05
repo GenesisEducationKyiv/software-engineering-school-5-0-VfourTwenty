@@ -1,14 +1,21 @@
-const WeatherService = require("../services/weatherService");
+class WeatherApiController
+{
+    weatherService;
 
-class WeatherApiController {
-    static async getWeather(req, res) {
+    constructor(weatherService)
+    {
+        this.weatherService = weatherService;
+    }
+
+    getWeather = async (req, res) => {
         const city = req.query.city;
         if (!city) {
             return res.status(400).json({ error: 'City is required' });
         }
 
         try {
-            const data = await WeatherService.fetchWeather(city);
+            const data = await this.weatherService.fetchWeather(city);
+            console.log(data);
 
             if (
                 typeof data.temperature !== 'number' ||

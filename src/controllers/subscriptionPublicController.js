@@ -1,8 +1,15 @@
-const SubscriptionService = require("../services/subscriptionService");
 const config = require('../config/config.js')[process.env.NODE_ENV];
 
-class SubscriptionPublicController {
-    static async confirm(req, res) {
+class SubscriptionPublicController
+{
+    subscriptionService;
+
+    constructor(subscriptionService)
+    {
+        this.subscriptionService = subscriptionService;
+    }
+
+    confirm = async (req, res) => {
         const { token } = req.params;
         try {
             const apiUrl = `${config.baseUrl}/api/confirm/${token}`;
@@ -15,7 +22,7 @@ class SubscriptionPublicController {
             console.log("response status: ", apiRes.status);
             if (apiRes.status === 200) {
                 const url = new URL(`${config.baseUrl}/confirmed.html`);
-                const sub = await SubscriptionService.findSub({token: token});
+                const sub = await this.subscriptionService.findSub({token: token});
                 url.searchParams.set('city', sub.city || '');
                 url.searchParams.set('frequency', sub.frequency || '');
                 url.searchParams.set('token', token);
@@ -34,7 +41,7 @@ class SubscriptionPublicController {
         }
     }
 
-    static async unsubscribe(req, res) {
+    unsubscribe = async (req, res) => {
         const { token } = req.params;
         try {
             const apiUrl = `${config.baseUrl}/api/unsubscribe/${token}`;

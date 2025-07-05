@@ -1,9 +1,15 @@
-const { setUpHourlyEmailCronJob, setUpDailyEmailCronJob} = require('./emailJobs')
-
-function startCronMain()
+class CronMain
 {
-    setUpHourlyEmailCronJob();
-    setUpDailyEmailCronJob();
+    constructor(emailJobs)
+    {
+        this.emailJobs = emailJobs;
+    }
+
+    start()
+    {
+        this.emailJobs.setUpHourlyEmailCronJob();
+        this.emailJobs.setUpDailyEmailCronJob();
+    }
 }
 
-module.exports = startCronMain;
+module.exports = CronMain;

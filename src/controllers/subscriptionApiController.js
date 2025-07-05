@@ -1,4 +1,3 @@
-const SubscriptionService = require('../services/subscriptionService');
 const validateCity = require('../validators/validateCity');
 const handleError = require('../utils/errors');
 
@@ -14,33 +13,42 @@ const errorMap = {
     'EMAIL_FAILED': { status: 500, message: 'Subscription operation succeeded but failed to send email.' },
 };
 
-class SubscriptionApiController {
-    static async subscribe(req, res) {
+class SubscriptionApiController
+{
+    subscriptionService;
+    weatherService;
+
+    constructor(subscriptionService, weatherService)
+    {
+        this.subscriptionService = subscriptionService;
+        this.weatherService = weatherService;
+    }
+
+    subscribe = async (req, res) => {
         const { email, city, frequency } = req.body;
         try {
-            // do this in routes
-            await validateCity(city);
-            await SubscriptionService.subscribeUser(email, city, frequency);
+            await validateCity(city, this.weatherService);
+            await this.subscriptionService.subscribeUser(email, city, frequency);
             res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
         } catch (err) {
             handleError(err, errorMap, res);
         }
     }
 
-    static async confirm(req, res) {
+    confirm = async (req, res) => {
         const { token } = req.params;
         try {
-            await SubscriptionService.confirmSubscription(token);
+            await this.subscriptionService.confirmSubscription(token);
             res.status(200).json({ message: 'Subscription confirmed successfully' });
         } catch (err) {
             handleError(err, errorMap, res);
         }
     }
 
-    static async unsubscribe(req, res) {
+    unsubscribe = async (req, res) => {
         const { token } = req.params;
         try {
-            await SubscriptionService.unsubscribeUser(token);
+            await this.subscriptionService.unsubscribeUser(token);
             res.status(200).json({ message: 'Unsubscribed successfully'});
         } catch (err) {
             handleError(err, errorMap, res);

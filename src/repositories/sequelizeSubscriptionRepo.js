@@ -11,7 +11,7 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
      * @param {Subscription} data
      * @returns {Promise<Subscription>}
      */
-    static async createSub(data) {
+    async createSub(data) {
         return Subscription.create(data);
     }
 
@@ -19,7 +19,7 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
      * @param {Partial<Subscription>} params
      * @returns {Promise<Subscription|null>}
      */
-    static async findSub(params) {
+    async findSub(params) {
         return Subscription.findOne({ where: params });
     }
 
@@ -27,7 +27,7 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
      * @param {string} token
      * @returns {Promise<Subscription>}
      */
-    static async confirmSub(token) {
+    async confirmSub(token) {
         const sub = await Subscription.findOne({ where: { token } });
         if (!sub) throw new Error('TOKEN NOT FOUND');
         if (sub.confirmed) throw new Error('ALREADY CONFIRMED');
@@ -40,10 +40,18 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
      * @param {string} token
      * @returns {Promise<void>}
      */
-    static async deleteSub(token) {
+    async deleteSub(token) {
         const sub = await Subscription.findOne({ where: { token } });
         if (!sub) throw new Error('TOKEN NOT FOUND');
         await sub.destroy();
+    }
+
+    /**
+     * @param {Partial<Subscription>} params
+     * @returns {Promise<Subscription[]>}
+     */
+    async findAllSubs(params) {
+        return Subscription.findAll({ where: params });
     }
 }
 
