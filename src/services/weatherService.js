@@ -25,8 +25,13 @@ class WeatherService {
     // possible to pass a specific provider, or rely on the chain of responsibility
     static async fetchWeather(city, provider = null) {
         const cacheKey = `weather:${city.toLowerCase()}`;
+        let cached = null;
         // 1. Try Redis cache
-        const cached = await redisClient.get(cacheKey);
+        try {
+            cached = await redisClient.get(cacheKey);
+        } catch (err) {
+            console.error('Redis GET error:', err.message);
+        }
         if (cached) {
             weatherCacheHit.inc();
             return JSON.parse(cached);
@@ -35,8 +40,17 @@ class WeatherService {
         // 2. Fallback to provider chain
         if (provider !== null)
         {
-            const result = await provider.fetchWeather(city);
-            await redisClient.setEx(cacheKey, 600, JSON.stringify(result));
+            let result;
+            try {
+                result = await provider.fetchWeather(city);
+                try {
+                    await redisClient.setEx(cacheKey, 600, JSON.stringify(result));
+                } catch (err) {
+                    console.error('Redis SETEX error:', err.message);
+                }
+            } catch (err) {
+                throw err;
+            }
             return result;
         }
         for (const provider of weatherProviders) {
@@ -44,7 +58,11 @@ class WeatherService {
                 const result = await provider.fetchWeather(city);
                 logProviderResponse(WeatherService.logPath, provider.name, {city, ...result});
                 if (result) {
-                    await redisClient.setEx(cacheKey, 600, JSON.stringify(result));
+                    try {
+                        await redisClient.setEx(cacheKey, 600, JSON.stringify(result));
+                    } catch (err) {
+                        console.error('Redis SETEX error:', err.message);
+                    }
                     return result;
                 }
             } catch (err) {
