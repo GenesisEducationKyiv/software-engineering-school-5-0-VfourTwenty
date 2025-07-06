@@ -1,4 +1,4 @@
-const config = require('../config/config.js')[process.env.NODE_ENV];
+const config = require('../config/index');
 
 function buildConfirmEmail(token)
 {

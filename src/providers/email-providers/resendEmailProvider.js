@@ -1,10 +1,11 @@
 const IEmailProvider = require("./emailProviderInterface");
 const { Resend } = require('resend');
-require('dotenv').config();
+//require('dotenv').config();
 const retry = require('../../utils/retry');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const fromEmail = process.env.FROM_EMAIL;
+const config = require('../../config/index')
+const resend = new Resend(config.resendApiKey);
+const fromEmail = config.fromEmail;
 
 class ResendEmailProvider extends IEmailProvider {
     get name() {
