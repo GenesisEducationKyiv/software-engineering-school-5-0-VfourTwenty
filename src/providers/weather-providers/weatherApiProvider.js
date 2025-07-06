@@ -1,6 +1,6 @@
 const IWeatherProvider = require( "./weatherProviderInterface" );
-require('dotenv').config()
-const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+const config = require('../../config/index')
+const WEATHER_API_KEY = config.weatherApiKey;
 
 class WeatherApiProvider extends IWeatherProvider
 {

@@ -1,4 +1,3 @@
-const weatherProviders = require('../providers/weather-providers/weatherProvidersAll');
 const { logProviderResponse } = require('../utils/logger');
 
 class WeatherService {

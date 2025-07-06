@@ -4,11 +4,10 @@ services:
   db:
     image: postgres:15
     restart: always
+    env_file:
+      - .env.docker
     environment:
       NODE_ENV: docker
-      POSTGRES_DB: weather_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: alwayssunny
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
@@ -20,15 +19,10 @@ services:
     restart: always
     depends_on:
       - db
+    env_file:
+      - .env.docker
     environment:
       NODE_ENV: docker
-      # local
-      DATABASE_URL: postgres://postgres:alwayssunny@db:5432/weather_db
-
-      WEATHER_API_KEY: 588e4679207f459c9d893949251405
-      RESEND_API_KEY: re_D4x576dB_Cp74P9pQKpvuUwjqGyEEHeUo
-      FROM_EMAIL: skyfetch@resend.dev
-      PORT: 3000
     ports:
       - "3000:3000"
     command: npm start
@@ -38,18 +32,20 @@ services:
     command: node scripts/seeder.js
     depends_on:
       - db
+    env_file:
+      - .env.docker
     environment:
       NODE_ENV: docker
-      DATABASE_URL: postgres://postgres:alwayssunny@db:5432/weather_db
 
   debug:
     build: .
     command: node scripts/debug.js
     depends_on:
       - db
+    env_file:
+      - .env.docker
     environment:
       NODE_ENV: docker
-      DATABASE_URL: postgres://postgres:alwayssunny@db:5432/weather_db
 
 volumes:
   pgdata:
