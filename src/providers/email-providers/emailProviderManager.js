@@ -28,7 +28,7 @@ class EmailProviderManager extends IEmailProvider
                 //   logProviderResponse(this.logPath, provider.name, { to, subject, error: err }, true);
             }
         }
-        throw new Error('All email providers failed');
+        return null;
     }
 }
 
