@@ -9,5 +9,4 @@ publicRouter.get('/confirm/:token', subscriptionPublicController.confirm);
 
 publicRouter.get('/unsubscribe/:token', subscriptionPublicController.unsubscribe);
 
-
 module.exports = publicRouter;

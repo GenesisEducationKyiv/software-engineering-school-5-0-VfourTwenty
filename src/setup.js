@@ -1,19 +1,19 @@
 const SequelizeSubscriptionRepo = require('./repositories/sequelizeSubscriptionRepo');
 
 const WeatherProviderManger = require('./providers/weather-providers/weatherProviderManager');
-const EmailProviderManager = require('./providers/email-providers/emailProviderManager')
+const EmailProviderManager = require('./providers/email-providers/emailProviderManager');
 
 const SubscriptionService = require('./services/subscriptionService');
 const WeatherService = require('./services/weatherService');
 const EmailService = require('./services/emailService');
 
 const HomepageController = require('./controllers/homepageController');
-const SubscriptionPublicController = require('./controllers/subscriptionPublicController')
+const SubscriptionPublicController = require('./controllers/subscriptionPublicController');
 const SubscriptionApiController = require('./controllers/subscriptionApiController');
 const WeatherApiController = require('./controllers/weatherApiController');
 
-const EmailJobs = require('./cron/emailJobs')
-const CronMain = require('./cron/main')
+const EmailJobs = require('./cron/emailJobs');
+const CronMain = require('./cron/main');
 
 // 1
 const subscriptionRepo = new SequelizeSubscriptionRepo();
@@ -43,4 +43,4 @@ module.exports = {
     subscriptionApiController,
     weatherApiController,
     cronMain
-}
+};

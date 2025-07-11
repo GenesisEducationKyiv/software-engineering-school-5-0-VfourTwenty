@@ -5,6 +5,9 @@ import stylistic from '@stylistic/eslint-plugin';
 
 export default defineConfig([
     {
+        ignores: ['scripts/**'],
+    },
+    {
         files: ['**/*.{js,mjs,cjs}'],
         plugins: {
             js,
@@ -47,6 +50,13 @@ export default defineConfig([
             globals: {
                 ...globals.mocha,
             },
+        },
+    },
+    // Disable no-unused-vars for all interface files
+    {
+        files: ['src/**/*Interface.js'],
+        rules: {
+            'no-unused-vars': 'off',
         },
     },
 ]);

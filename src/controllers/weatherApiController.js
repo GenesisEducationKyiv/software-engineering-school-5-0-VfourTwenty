@@ -7,13 +7,16 @@ class WeatherApiController
         this.weatherService = weatherService;
     }
 
-    getWeather = async (req, res) => {
+    getWeather = async (req, res) => 
+    {
         const city = req.query.city;
-        if (!city) {
+        if (!city) 
+        {
             return res.status(400).json({ error: 'City is required' });
         }
 
-        try {
+        try 
+        {
             const data = await this.weatherService.fetchWeather(city);
             console.log(data);
 
@@ -21,7 +24,8 @@ class WeatherApiController
                 typeof data.temperature !== 'number' ||
                 typeof data.humidity !== 'number' ||
                 typeof data.description !== 'string'
-            ) {
+            ) 
+            {
                 return res.status(404).json({ error: 'Invalid weather data format' });
             }
 
@@ -30,18 +34,19 @@ class WeatherApiController
                 humidity: data.humidity,
                 description: data.description
             });
-
-        } catch (err) {
+        }
+        catch (err) 
+        {
             if (err.message === 'No matching location found.')
             {
-                res.status(404).json({error: err.message});
+                res.status(404).json({ error: err.message });
             }
             else
             {
                 res.status(500).json({ error: err.message });
             }
         }
-    }
+    };
 }
 
 module.exports = WeatherApiController;

@@ -2,7 +2,8 @@ const { join } = require('path');
 
 class HomepageController
 {
-    getStaticHomepage(req, res) {
+    getStaticHomepage(req, res) 
+    {
         res.sendFile(join(__dirname, '../public/subscribe.html'));
     }
 }

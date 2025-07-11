@@ -1,8 +1,12 @@
-function handleError(err, map, res) {
+function handleError(err, map, res) 
+{
     const mapped = map[err.message];
-    if (mapped) {
+    if (mapped) 
+    {
         res.status(mapped.status).json({ error: mapped.message });
-    } else {
+    }
+    else 
+    {
         res.status(500).json({ error: err.message });
     }
 }

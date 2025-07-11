@@ -27,7 +27,7 @@ function buildWeatherUpdateEmail(city, weather, token)
     </ul>
     <p>To unsubscribe, click <a href="${unsubUrl}">here</a>.</p>
     <p style="font-size: 0.8rem; color: gray;">SkyFetch 2025 by <a href="https://github.com/VfourTwenty">VfourTwenty</a></p>
-  `
+  `;
 }
 
 module.exports = { buildConfirmEmail, buildUnsubscribeEmail, buildWeatherUpdateEmail };

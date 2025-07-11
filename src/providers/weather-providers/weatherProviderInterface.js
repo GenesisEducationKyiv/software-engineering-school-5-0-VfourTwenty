@@ -1,7 +1,8 @@
 class IWeatherProvider
 {
-    async fetchWeather(city) {
-        throw new Error("getData() must be implemented by subclass");
+    async fetchWeather(city) 
+    {
+        throw new Error('getData() must be implemented by subclass');
     }
 }
 

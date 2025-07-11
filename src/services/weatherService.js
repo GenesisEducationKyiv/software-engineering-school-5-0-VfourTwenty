@@ -1,9 +1,11 @@
-const { logProviderResponse } = require('../utils/logger');
+// const { logProviderResponse } = require('../utils/logger');
 
-class WeatherService {
+class WeatherService 
+{
     weatherProviderManager;
 
-    constructor(weatherProviderManager) {
+    constructor(weatherProviderManager) 
+    {
         this.weatherProviderManager = weatherProviderManager;
     }
 
@@ -13,8 +15,8 @@ class WeatherService {
      * @returns {Promise<any>}
      */
 
-   // logPath = require('path').join(__dirname, '../../logs/weatherProvider.log');
-   // loggingEnabled = true;
+    // logPath = require('path').join(__dirname, '../../logs/weatherProvider.log');
+    // loggingEnabled = true;
 
     // // turn of logs for tests
     // setLoggingEnabled(enabled) {
@@ -22,7 +24,8 @@ class WeatherService {
     // }
 
     // possible to pass a specific provider, or rely on the chain of responsibility
-    async fetchWeather(city) {
+    async fetchWeather(city) 
+    {
         return this.weatherProviderManager.fetchWeather(city);
     }
 }

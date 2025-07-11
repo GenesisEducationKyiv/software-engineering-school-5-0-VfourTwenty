@@ -16,6 +16,7 @@ const errorMap = {
 class SubscriptionApiController
 {
     subscriptionService;
+
     weatherService;
 
     constructor(subscriptionService, weatherService)
@@ -24,36 +25,48 @@ class SubscriptionApiController
         this.weatherService = weatherService;
     }
 
-    subscribe = async (req, res) => {
+    subscribe = async (req, res) => 
+    {
         const { email, city, frequency } = req.body;
-        try {
+        try 
+        {
             await validateCity(city, this.weatherService);
             await this.subscriptionService.subscribeUser(email, city, frequency);
             res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
-        } catch (err) {
+        }
+        catch (err) 
+        {
             handleError(err, errorMap, res);
         }
-    }
+    };
 
-    confirm = async (req, res) => {
+    confirm = async (req, res) => 
+    {
         const { token } = req.params;
-        try {
+        try 
+        {
             await this.subscriptionService.confirmSubscription(token);
             res.status(200).json({ message: 'Subscription confirmed successfully' });
-        } catch (err) {
+        }
+        catch (err) 
+        {
             handleError(err, errorMap, res);
         }
-    }
+    };
 
-    unsubscribe = async (req, res) => {
+    unsubscribe = async (req, res) => 
+    {
         const { token } = req.params;
-        try {
+        try 
+        {
             await this.subscriptionService.unsubscribeUser(token);
-            res.status(200).json({ message: 'Unsubscribed successfully'});
-        } catch (err) {
+            res.status(200).json({ message: 'Unsubscribed successfully' });
+        }
+        catch (err) 
+        {
             handleError(err, errorMap, res);
         }
-    }
+    };
 }
 
 module.exports = SubscriptionApiController;

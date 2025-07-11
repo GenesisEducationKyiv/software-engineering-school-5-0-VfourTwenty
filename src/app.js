@@ -6,7 +6,7 @@ const createError = require('http-errors');
 
 const weatherRouter = require('./routes/weather');
 const subscriptionRouter = require('./routes/subscription');
-const publicRouter = require('./routes/public')
+const publicRouter = require('./routes/public');
 
 const { cronMain } = require('./setup');
 
@@ -26,15 +26,17 @@ app.use('/api', subscriptionRouter);
 app.use('/', publicRouter);
 
 // 404 handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function(req, res, next) 
+{
+    next(createError(404));
 });
 
 // Error handler
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500).json({
-    error: err.message
-  });
+app.use(function(err, req, res)
+{
+    res.status(err.status || 500).json({
+        error: err.message
+    });
 });
 
 cronMain.start();

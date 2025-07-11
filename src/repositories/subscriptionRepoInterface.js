@@ -1,21 +1,27 @@
-class ISubscriptionRepo {
-    async createSub(data) {
+class ISubscriptionRepo 
+{
+    async createSub(data) 
+    {
         throw new Error('Not implemented');
     }
 
-    async findSub(params) {
+    async findSub(params) 
+    {
         throw new Error('Not implemented');
     }
 
-    async findAllSubs(params) {
+    async findAllSubs(params) 
+    {
         throw new Error('Not implemented');
     }
 
-    async confirmSub(token) {
+    async confirmSub(token) 
+    {
         throw new Error('Not implemented');
     }
 
-    async deleteSub(token) {
+    async deleteSub(token) 
+    {
         throw new Error('Not implemented');
     }
 }

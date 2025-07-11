@@ -3,36 +3,45 @@ const SubscriptionRepo = require('../src/repositories/subscriptionRepo');
 const WeatherDataRepo = require('../src/repositories/weatherDataRepo');
 const WeatherCityRepo = require('../src/repositories/weatherCityRepo');
 
-async function listSubscriptions() {
+async function listSubscriptions() 
+{
     const all = await SubscriptionRepo.findAllBy({});
     console.log('\nAll Subscriptions:\n', all.map(s => s.toJSON()));
 }
 
-async function findSubscriptionByEmail(email) {
+async function findSubscriptionByEmail(email) 
+{
     const match = await SubscriptionRepo.findAllBy({ email });
     console.log(`\nSubscriptions for ${email}:\n`, match.map(s => s.toJSON()));
 }
 
-async function listWeather() {
+async function listWeather() 
+{
     const all = await WeatherDataRepo.findAllBy({});
     console.log('\nAll Weather Data:\n', all.map(w => w.toJSON()));
 }
 
-async function findWeatherByCity(city) {
+async function findWeatherByCity(city) 
+{
     const match = await WeatherDataRepo.findAllBy({ city });
     console.log(`\nWeather for ${city}:\n`, match.map(w => w.toJSON()));
 }
 
-async function listTrackedCities() {
+async function listTrackedCities() 
+{
     const cities = await WeatherCityRepo.findAllBy({});
     console.log('\nTracked Cities:\n', cities.map(c => c.toJSON()));
 }
 
-async function findTrackedCity(city) {
+async function findTrackedCity(city) 
+{
     const entry = await WeatherCityRepo.findOneBy({ city });
-    if (!entry) {
+    if (!entry) 
+    {
         console.log(`❌ No tracking info found for ${city}`);
-    } else {
+    }
+    else 
+    {
         console.log(`\nTracker for ${city}:\n`, entry.toJSON());
     }
 }
@@ -40,12 +49,14 @@ async function findTrackedCity(city) {
 // CLI runner
 const [,, command, arg] = process.argv; // command will be 'sub:list' or 'weather:find'
 
-(async () => {
+(async () => 
+{
     await sequelize.authenticate();
 
     const [domain, method] = (command || '').split(':');
 
-    switch (`${domain}:${method}`) {
+    switch (`${domain}:${method}`) 
+    {
         case 'sub:list':
             await listSubscriptions();
             break;
