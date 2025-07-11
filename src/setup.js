@@ -7,6 +7,9 @@ const SubscriptionService = require('./services/subscriptionService');
 const WeatherService = require('./services/weatherService');
 const EmailService = require('./services/emailService');
 
+const CityValidator = require('./validators/validateCity');
+const SubscriptionValidator = require('./validators/validateNewSubscription');
+
 const HomepageController = require('./controllers/homepageController');
 const SubscriptionPublicController = require('./controllers/subscriptionPublicController');
 const SubscriptionApiController = require('./controllers/subscriptionApiController');
@@ -25,12 +28,16 @@ const emailProviderManager = new EmailProviderManager();
 // 3
 const weatherService = new WeatherService(weatherProviderManager);
 const emailService = new EmailService(weatherService, subscriptionRepo, emailProviderManager);
-const subscriptionService = new SubscriptionService(emailService, subscriptionRepo);
+
+const cityValidator = new CityValidator(weatherService);
+const subscriptionValidator = new SubscriptionValidator(subscriptionRepo, cityValidator);
+
+const subscriptionService = new SubscriptionService(emailService, subscriptionRepo, subscriptionValidator);
 
 // 4
 const homepageController = new HomepageController();
 const subscriptionPublicController = new SubscriptionPublicController(subscriptionService);
-const subscriptionApiController = new SubscriptionApiController(subscriptionService, weatherService);
+const subscriptionApiController = new SubscriptionApiController(subscriptionService);
 const weatherApiController = new WeatherApiController(weatherService);
 
 // cron
