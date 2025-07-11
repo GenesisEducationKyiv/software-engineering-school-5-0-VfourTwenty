@@ -1,46 +1,38 @@
-const { Subscription, WeatherData, WeatherCity, sequelize } = require('../models');
+const { sequelize } = require('../src/db/models');
+const SubscriptionRepo = require('../src/repositories/subscriptionRepo');
+const WeatherDataRepo = require('../src/repositories/weatherDataRepo');
+const WeatherCityRepo = require('../src/repositories/weatherCityRepo');
 
-async function listSubscriptions() 
-{
-    const all = await Subscription.findAll();
+async function listSubscriptions() {
+    const all = await SubscriptionRepo.findAllBy({});
     console.log('\nAll Subscriptions:\n', all.map(s => s.toJSON()));
 }
 
-async function findSubscriptionByEmail(email) 
-{
-    const match = await Subscription.findAll({ where: { email } });
+async function findSubscriptionByEmail(email) {
+    const match = await SubscriptionRepo.findAllBy({ email });
     console.log(`\nSubscriptions for ${email}:\n`, match.map(s => s.toJSON()));
 }
 
-async function listWeather() 
-{
-    const all = await WeatherData.findAll();
+async function listWeather() {
+    const all = await WeatherDataRepo.findAllBy({});
     console.log('\nAll Weather Data:\n', all.map(w => w.toJSON()));
 }
 
-async function findWeatherByCity(city) 
-{
-    const match = await WeatherData.findAll({
-        where: { city }
-    });
+async function findWeatherByCity(city) {
+    const match = await WeatherDataRepo.findAllBy({ city });
     console.log(`\nWeather for ${city}:\n`, match.map(w => w.toJSON()));
 }
 
-async function listTrackedCities() 
-{
-    const cities = await WeatherCity.findAll({ order: [['city', 'ASC']] });
+async function listTrackedCities() {
+    const cities = await WeatherCityRepo.findAllBy({});
     console.log('\nTracked Cities:\n', cities.map(c => c.toJSON()));
 }
 
-async function findTrackedCity(city) 
-{
-    const entry = await WeatherCity.findOne({ where: { city } });
-    if (!entry) 
-    {
+async function findTrackedCity(city) {
+    const entry = await WeatherCityRepo.findOneBy({ city });
+    if (!entry) {
         console.log(`❌ No tracking info found for ${city}`);
-    }
-    else 
-    {
+    } else {
         console.log(`\nTracker for ${city}:\n`, entry.toJSON());
     }
 }
@@ -48,14 +40,12 @@ async function findTrackedCity(city)
 // CLI runner
 const [,, command, arg] = process.argv; // command will be 'sub:list' or 'weather:find'
 
-(async () => 
-{
+(async () => {
     await sequelize.authenticate();
 
     const [domain, method] = (command || '').split(':');
 
-    switch (`${domain}:${method}`) 
-    {
+    switch (`${domain}:${method}`) {
         case 'sub:list':
             await listSubscriptions();
             break;
@@ -70,7 +60,7 @@ const [,, command, arg] = process.argv; // command will be 'sub:list' or 'weathe
             if (!arg) return console.error('❗ Usage: npm run debug weather:find <city>');
             await findWeatherByCity(arg);
             break;
-        case 'weather:inspect': {
+        case 'weather:inspect':
             const [columns] = await sequelize.query(`
               SELECT column_name, data_type
               FROM information_schema.columns
@@ -78,7 +68,6 @@ const [,, command, arg] = process.argv; // command will be 'sub:list' or 'weathe
             `);
             console.table(columns);
             break;
-        }
         case 'tracker:list':
             await listTrackedCities();
             break;

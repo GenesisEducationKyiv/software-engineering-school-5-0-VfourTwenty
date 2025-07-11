@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm run migrate && node bin/www",
+    "start": "mkdir -p logs && npm run migrate && node bin/www",
     "migrate": "npx sequelize-cli db:migrate",
     "test": "NODE_ENV=test mocha --timeout 5000 --exit",
     "debug": "node scripts/debug.js",
