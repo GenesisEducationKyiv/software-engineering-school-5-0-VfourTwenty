@@ -1,7 +1,5 @@
 class EmailJobHandler
 {
-    emailService;
-
     constructor(emailService)
     {
         this.emailService = emailService;

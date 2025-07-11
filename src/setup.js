@@ -15,6 +15,7 @@ const SubscriptionPublicController = require('./controllers/subscriptionPublicCo
 const SubscriptionApiController = require('./controllers/subscriptionApiController');
 const WeatherApiController = require('./controllers/weatherApiController');
 
+const EmailJobHandler = require('./cron/handlers/emailJobHandler');
 const EmailJobs = require('./cron/emailJobs');
 const CronMain = require('./cron/main');
 
@@ -41,7 +42,8 @@ const subscriptionApiController = new SubscriptionApiController(subscriptionServ
 const weatherApiController = new WeatherApiController(weatherService);
 
 // cron
-const emailJobs = new EmailJobs(emailService);
+const emailJobHandler = new EmailJobHandler(emailService);
+const emailJobs = new EmailJobs(emailJobHandler);
 const cronMain = new CronMain(emailJobs);
 
 module.exports = {

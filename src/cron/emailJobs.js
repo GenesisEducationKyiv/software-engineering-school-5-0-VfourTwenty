@@ -3,9 +3,9 @@ const EmailJobHandler = require('./handlers/emailJobHandler');
 
 class EmailJobs 
 {
-    constructor(emailService)
+    constructor(emailJobHandler)
     {
-        this.handler = new EmailJobHandler(emailService);
+        this.handler = emailJobHandler;
     }
 
     setUpDailyEmailCronJob() 
