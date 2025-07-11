@@ -27,13 +27,12 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
 
     /**
      * @param {string} token
-     * @returns {Promise<Subscription>}
+     * @returns {Promise<Subscription|null>}
      */
     async confirmSub(token) 
     {
         const sub = await Subscription.findOne({ where: { token } });
-        if (!sub) throw new Error('TOKEN NOT FOUND');
-        if (sub.confirmed) throw new Error('ALREADY CONFIRMED');
+        if (!sub) return null;
         sub.confirmed = true;
         await sub.save();
         return sub;
@@ -41,13 +40,14 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
 
     /**
      * @param {string} token
-     * @returns {Promise<void>}
+     * @returns {Promise<Subscription|null>}
      */
     async deleteSub(token) 
     {
         const sub = await Subscription.findOne({ where: { token } });
-        if (!sub) throw new Error('TOKEN NOT FOUND');
+        if (!sub) return null;
         await sub.destroy();
+        return sub;
     }
 
     /**

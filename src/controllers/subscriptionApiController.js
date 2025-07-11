@@ -1,4 +1,3 @@
-const validateCity = require('../validators/validateCity');
 const handleError = require('../utils/errors');
 
 const errorMap = {
@@ -11,18 +10,14 @@ const errorMap = {
     'DUPLICATE': { status: 409, message: 'Subscription already exists for this city and frequency.' },
     'INVALID CITY': { status: 400, message: 'Invalid city.' },
     'EMAIL_FAILED': { status: 500, message: 'Subscription operation succeeded but failed to send email.' },
+    'NO WEATHER DATA': { status: 404, message: 'No weather data available for this location' }
 };
 
 class SubscriptionApiController
 {
-    subscriptionService;
-
-    weatherService;
-
-    constructor(subscriptionService, weatherService)
+    constructor(subscriptionService)
     {
         this.subscriptionService = subscriptionService;
-        this.weatherService = weatherService;
     }
 
     subscribe = async (req, res) => 
@@ -30,7 +25,7 @@ class SubscriptionApiController
         const { email, city, frequency } = req.body;
         try 
         {
-            await validateCity(city, this.weatherService);
+            // await validateCity(city, this.weatherService);
             await this.subscriptionService.subscribeUser(email, city, frequency);
             res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
         }

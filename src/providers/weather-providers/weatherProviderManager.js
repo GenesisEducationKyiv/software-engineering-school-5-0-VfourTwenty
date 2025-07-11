@@ -28,7 +28,7 @@ class WeatherProviderManager extends IWeatherProvider
                 // logProviderResponse(this.logPath, provider.name, { city, error: err }, true);
             }
         }
-        throw new Error('No data available for this location');
+        return null; // No data from any provider
     }
 }
 

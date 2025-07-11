@@ -1,9 +1,8 @@
+const WeatherError = require('../errors/WeatherError');
 // const { logProviderResponse } = require('../utils/logger');
 
 class WeatherService 
 {
-    weatherProviderManager;
-
     constructor(weatherProviderManager) 
     {
         this.weatherProviderManager = weatherProviderManager;
@@ -14,19 +13,15 @@ class WeatherService
      * @param {string} city
      * @returns {Promise<any>}
      */
-
-    // logPath = require('path').join(__dirname, '../../logs/weatherProvider.log');
-    // loggingEnabled = true;
-
-    // // turn of logs for tests
-    // setLoggingEnabled(enabled) {
-    //     this.loggingEnabled = enabled;
-    // }
-
     // possible to pass a specific provider, or rely on the chain of responsibility
     async fetchWeather(city) 
     {
-        return this.weatherProviderManager.fetchWeather(city);
+        const data = await this.weatherProviderManager.fetchWeather(city);
+        if (!data) 
+        {
+            throw new WeatherError('NO WEATHER DATA');
+        }
+        return data;
     }
 }
 

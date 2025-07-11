@@ -1,7 +1,5 @@
 class WeatherApiController
 {
-    weatherService;
-
     constructor(weatherService)
     {
         this.weatherService = weatherService;
@@ -37,11 +35,11 @@ class WeatherApiController
         }
         catch (err) 
         {
-            if (err.message === 'No matching location found.')
+            if (err.message === 'NO WEATHER DATA') 
             {
-                res.status(404).json({ error: err.message });
+                res.status(404).json({ error: 'No data available for this location' });
             }
-            else
+            else 
             {
                 res.status(500).json({ error: err.message });
             }

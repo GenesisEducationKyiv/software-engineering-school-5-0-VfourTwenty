@@ -1,13 +1,8 @@
 const { buildConfirmEmail, buildUnsubscribeEmail, buildWeatherUpdateEmail } = require('../utils/emailTemplates');
+const EmailError = require('../errors/EmailError');
 
 class EmailService 
 {
-    weatherService;
-
-    subscriptionRepo;
-
-    emailProviderManager;
-
     constructor(weatherService, subscriptionRepo, emailProviderManager) 
     {
         this.weatherService = weatherService;
@@ -28,7 +23,7 @@ class EmailService
         if (!success) 
         {
             console.error('❌ Failed to send confirmation email:', error);
-            return false;
+            throw new EmailError('EMAIL_FAILED');
         }
         return true;
     }
@@ -41,7 +36,7 @@ class EmailService
         if (!success) 
         {
             console.error('❌ Failed to send unsubscribe email:', error);
-            return false;
+            throw new EmailError('EMAIL_FAILED');
         }
         return true;
     }
@@ -54,7 +49,7 @@ class EmailService
         if (!success) 
         {
             console.error(`❌ Failed to send weather update to ${email}:`, error?.message || error);
-            return false;
+            throw new EmailError('EMAIL_FAILED');
         }
         console.log(`📧 Weather update sent to ${email}`);
         return true;

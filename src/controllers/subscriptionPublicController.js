@@ -2,8 +2,6 @@ const config = require('../config/index');
 
 class SubscriptionPublicController
 {
-    subscriptionService;
-
     constructor(subscriptionService)
     {
         this.subscriptionService = subscriptionService;
