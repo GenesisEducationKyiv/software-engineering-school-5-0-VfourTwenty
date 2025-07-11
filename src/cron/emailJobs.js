@@ -1,5 +1,4 @@
 const cron = require('node-cron');
-const EmailJobHandler = require('./handlers/emailJobHandler');
 
 class EmailJobs 
 {
