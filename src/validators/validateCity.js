@@ -1,18 +1,29 @@
-async function validateCity(city, weatherService) 
+const WeatherError = require('../errors/WeatherError');
+
+class CityValidator
 {
-    try 
+    constructor(weatherService)
     {
-        await weatherService.fetchWeather(city);
-        return true;
+        this.weatherService = weatherService;
     }
-    catch (err) 
+
+    async validate(city)
     {
-        if (err.message === 'No data available for this location' || err.message === 'No matching location found.') 
+        try
         {
-            throw new Error('INVALID CITY');
+            await this.weatherService.fetchWeather(city);
+            return true;
         }
-        throw err;
+        catch (err)
+        {
+            if (err.message === 'No data available for this location' || err.message === 'No matching location found.')
+            {
+                throw new WeatherError('INVALID CITY');
+            }
+            throw err;
+        }
     }
+
 }
 
-module.exports = validateCity;
+module.exports = CityValidator;
