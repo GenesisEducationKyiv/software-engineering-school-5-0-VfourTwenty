@@ -58,6 +58,11 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
     {
         return Subscription.findAll({ where: params });
     }
+
+    async clear()
+    {
+        await Subscription.destroy({ where: {}, truncate: true, force: true });
+    }
 }
 
 module.exports = SequelizeSubscriptionRepo;

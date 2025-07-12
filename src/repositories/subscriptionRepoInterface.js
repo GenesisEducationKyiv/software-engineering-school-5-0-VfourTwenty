@@ -24,6 +24,11 @@ class ISubscriptionRepo
     {
         throw new Error('Not implemented');
     }
+
+    async clear() 
+    {
+        throw new Error('Not implemented');
+    }
 }
 
 module.exports = ISubscriptionRepo;
