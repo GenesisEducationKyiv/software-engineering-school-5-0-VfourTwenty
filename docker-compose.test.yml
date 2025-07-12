@@ -5,7 +5,7 @@ services:
   db-test:
     image: postgres:15
     env_file:
-      - .env.test.docker
+      - .env.test.intgr.docker
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $DB_USER" ]
       interval: 5s
@@ -18,7 +18,7 @@ services:
     depends_on:
       - db-test
     env_file:
-      - .env.test.docker
+      - .env.test.intgr.docker
     ports:
       - "3000:3000"
     command: npm start
@@ -28,8 +28,8 @@ services:
     depends_on:
       - db-test
     env_file:
-      - .env.test.docker
-    entrypoint: [ "/bin/sh", "-c", "echo $DB_HOST npm run migrate && NODE_ENV=docker_test npm run test-docker:integration" ]
+      - .env.test.intgr.docker
+    entrypoint: [ "/bin/sh", "-c", "npm run migrate && NODE_ENV=docker_test npm run test-docker:integration" ]
 
   test-e2e:
     build:
@@ -39,7 +39,5 @@ services:
       - db-test
       - backend-test
     env_file:
-      - .env.test.docker
-    command: >
-      sh -c "npx sequelize-cli db:migrate --env docker_test &&
-             npm run test-docker:e2e"
+      - .env.test.e2e.docker
+    entrypoint: [ "/bin/sh", "-c", "npm run migrate && NODE_ENV=docker_test npm run test-docker:integration" ]

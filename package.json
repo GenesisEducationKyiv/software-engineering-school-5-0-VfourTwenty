@@ -6,10 +6,14 @@
     "start": "mkdir -p logs && npm run migrate && node bin/www",
     "migrate": "npx sequelize-cli db:migrate",
 
-    "test:integration": "NODE_ENV=test mocha test/integration --timeout 5000 --exit",
+    "test:integration": "NODE_ENV=test.intgr mocha test/integration --timeout 5000 --exit",
     "test:integration:docker": "docker compose -f docker-compose.test.yml up --build test-integration --abort-on-container-exit",
 
-    "test-docker:integration": "if [ \\\"$NODE_ENV\\\" != \\\"docker_test\\\" ]; then echo '❌ This script is Docker-only'; exit 1; fi && NODE_ENV=test.docker mocha test/integration --timeout 5000 --exit",
+    "test:e2e": "NODE_ENV=test.e2e mocha test/e2e --timeout 7000 --exit",
+    "test:e2e:docker": "docker compose -f docker-compose.test.yml up --build test-e2e --abort-on-container-exit",
+
+    "test-docker:integration": "if [ \\\"$NODE_ENV\\\" != \\\"docker_test\\\" ]; then echo '❌ This script is Docker-only'; exit 1; fi && mocha test/integration --timeout 5000 --exit",
+    "test-docker:e2e": "if [ \"$NODE_ENV\" != \"docker_test\" ]; then echo '❌ This script is Docker-only'; exit 1; fi && mocha test/e2e --timeout 7000 --exit",
 
     "debug": "node scripts/debug.js",
     "seed": "node scripts/seeder.js",
@@ -17,6 +21,7 @@
     "lint:fix": "npx eslint . --fix"
   },
   "dependencies": {
+    "@playwright/test": "^1.54.1",
     "chai": "^4.3.7",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
@@ -28,6 +33,7 @@
     "node-cron": "^4.0.5",
     "pg": "^8.16.0",
     "pg-hstore": "^2.3.4",
+    "playwright": "^1.54.1",
     "resend": "^4.5.1",
     "sequelize": "^6.37.7",
     "supertest": "^7.1.1"

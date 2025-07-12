@@ -2,24 +2,20 @@ const { chromium } = require('playwright');
 const { expect } = require('chai');
 const { spawn, exec } = require('child_process');
 
-// unused vars are actually used in the tests commented (see line 218)
-const { createSub, confirmSub, deleteSub } = require('../../src/services/subscriptionService');
+// Import the real app and service/repo for E2E
+const app = require('../../src/app');
+const { subscriptionService, subscriptionRepo } = require('../../src/setup');
 
 // port 3000 for docker, 3001 for local runs
 const PORT = process.env.NODE_ENV === 'docker_test' ? '3000' : '3001';
-// backend-test is the host inside docker
-console.log("using env:", process.env.NODE_ENV);
 const host = process.env.NODE_ENV === 'docker_test' ? 'backend-test' : 'localhost';
 const baseURL = `http://${host}:${PORT}`;
 const confirmUrl = (token) => `${baseURL}/confirm/${token}`
 const unsubscribeUrl = (token) => `${baseURL}/unsubscribe/${token}`
 
-
 function delay(ms) {
     return new Promise((res) => setTimeout(res, ms));
 }
-
-const { Subscription, sequelize } = require("../../src/db/models");
 
 let serverProcess;
 
@@ -66,7 +62,6 @@ if (process.env.NODE_ENV !== 'docker_test')
 }
 
 
-
 describe('SkyFetch E2E Tests', () => {
     let browser;
     let page;
@@ -82,7 +77,7 @@ describe('SkyFetch E2E Tests', () => {
         await browser.close();
     });
 
-    // Subscription page ------------------------------------ \\
+    // Subscription page ------------------------------------ \
     it('should display all input fields and submit button on homepage', async () => {
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
@@ -105,10 +100,7 @@ describe('SkyFetch E2E Tests', () => {
     });
 
     it('should handle subscription form submission and show success message', async () => {
-        for (const model of Object.values(sequelize.models)) {
-            await model.destroy({ where: {}, truncate: true, force: true });
-        }
-
+        await subscriptionRepo.clear();
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
 
@@ -128,11 +120,10 @@ describe('SkyFetch E2E Tests', () => {
         await delay(5000);
 
         await expect(await page.textContent('#message')).to.equal('Subscription successful. Confirmation email sent.');
-
-        await sequelize.sync(); // Drops and recreates all tables
     });
 
     it('should reject subscription for invalid city and show a message', async () => {
+        await subscriptionRepo.clear();
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
 
@@ -151,19 +142,15 @@ describe('SkyFetch E2E Tests', () => {
         // Wait for success message (up to 3 seconds to account for API delay)
         await delay(6000);
 
-        await expect(await page.textContent('#message')).to.equal('❌ Invalid city: No matching location found.');
-
-        await sequelize.sync(); // Drops and recreates all tables
+        await expect(await page.textContent('#message')).to.equal('❌ Invalid city: No data available for this location');
     });
 
     it('should reject duplicate subscription and show a message', async () => {
-        for (const model of Object.values(sequelize.models)) {
-            await model.destroy({ where: {}, truncate: true, force: true });
-        }
+        await subscriptionRepo.clear();
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
 
-        await createSub(sub.email, sub.city, sub.frequency);
+        await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
         // Fill out the form
         await page.fill('input[name="email"]', sub.email);
         await page.fill('input[name="city"]', sub.city);
@@ -180,11 +167,10 @@ describe('SkyFetch E2E Tests', () => {
         await delay(5000);
 
         await expect(await page.textContent('#message')).to.equal('Subscription already exists for this city and frequency.');
-
-        await sequelize.sync(); // Drops and recreates all tables
     });
 
     it('should not allow submission if not all fields are filled', async () => {
+        await subscriptionRepo.clear();
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
 
@@ -203,6 +189,7 @@ describe('SkyFetch E2E Tests', () => {
     });
 
     it('should not allow submission if email format is invalid', async () => {
+        await subscriptionRepo.clear();
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
 
@@ -215,7 +202,7 @@ describe('SkyFetch E2E Tests', () => {
         await expect(await page.textContent('#message')).to.equal('');
     });
 
-    // HELP NEEDED!!! \\
+    // HELP NEEDED!!! \
     // All 11 tests in the file pass locally, and in docker
     // While the above 6 run fine on the homepage (/ route)
     // other 5 keep failing (on /confirm and /unsubscribe routes):
@@ -240,49 +227,37 @@ describe('SkyFetch E2E Tests', () => {
     // Apparently, this has to do with docker networking(most likely) or/and playwright
     // I would appreciate your thoughts on this issue!
 
-    // Confirmation page ------------------------------------ \\
-/**
-    it('should confirm a new subscription with a valid token', async () => {
-        for (const model of Object.values(sequelize.models)) {
-            await model.destroy({ where: {}, truncate: true, force: true });
-        }
+    // Confirmation page ------------------------------------ \
 
-        const token = await createSub(sub.email, sub.city, sub.frequency);
+    it('should confirm a new subscription with a valid token', async () => {
+        await subscriptionRepo.clear();
+
+        const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
 
         await page.goto(confirmUrl(token));
         await delay(2000);
         await expect(page.url()).to.equal(baseURL + `/confirmed.html?city=${sub.city}&frequency=${sub.frequency}&token=${token}`);
-
-        await sequelize.sync(); // Drops and recreates all tables
     });
 
-    // Unsubscribed page ------------------------------------ \\
+    // Unsubscribed page ------------------------------------ \
     it('should unsubscribe a user with a valid token', async () => {
 
-        for (const model of Object.values(sequelize.models)) {
-            await model.destroy({ where: {}, truncate: true, force: true });
-        }
-        const token = await createSub(sub.email, sub.city, sub.frequency);
+        await subscriptionRepo.clear();
+        const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
         await page.goto(unsubscribeUrl(token));
         await expect(page.url()).to.equal(baseURL + '/unsubscribed.html');
-
-        await sequelize.sync()
     });
 
-    // Error page ------------------------------------ \\
+    // Error page ------------------------------------ \
     it('should not not allow duplicate confirmation and navigate to error page', async () => {
-        for (const model of Object.values(sequelize.models)) {
-            await model.destroy({ where: {}, truncate: true, force: true });
-        }
+        await subscriptionRepo.clear();
 
-        const token = await createSub(sub.email, sub.city, sub.frequency);
-        await confirmSub(token);
+        const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
+        await subscriptionService.confirmSubscription(token);
 
         await page.goto(confirmUrl(token));
         await expect(page.url()).to.equal(baseURL + `/error.html?error=Subscription+already+confirmed`);
         await expect(await page.textContent('#error-message')).to.equal('Subscription already confirmed');
-
-        await sequelize.sync(); // Drops and recreates all tables
     });
 
     it('should require a valid token and navigate to error page if one is missing', async () => {
@@ -299,11 +274,9 @@ describe('SkyFetch E2E Tests', () => {
     });
 
     it('should not allow to reuse a token that was deleted and should navigate to error page', async () => {
-        for (const model of Object.values(sequelize.models)) {
-            await model.destroy({ where: {}, truncate: true, force: true });
-        }
-        const token = await createSub(sub.email, sub.city, sub.frequency);
-        await deleteSub(token);
+        await subscriptionRepo.clear();
+        const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
+        await subscriptionService.unsubscribeUser(token);
 
         await page.goto(confirmUrl(token));
         await expect(page.url()).to.equal(baseURL + '/error.html?error=Token+not+found');
@@ -312,8 +285,6 @@ describe('SkyFetch E2E Tests', () => {
         await page.goto(unsubscribeUrl(token));
         await expect(page.url()).to.equal(baseURL + '/error.html?error=Token+not+found');
         await expect(await page.textContent('#error-message')).to.equal('Token not found');
-
-        await sequelize.sync();
     });
-        **/
+
 });
