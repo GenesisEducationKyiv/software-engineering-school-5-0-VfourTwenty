@@ -4,12 +4,10 @@ version: "3.9"
 services:
   db-test:
     image: postgres:15
-    environment:
-      POSTGRES_DB: weather_db_test
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: alwayssunny
+    env_file:
+      - .env.test.docker
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: [ "CMD-SHELL", "pg_isready -U $DB_USER" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -19,15 +17,8 @@ services:
     restart: always
     depends_on:
       - db-test
-    environment:
-      NODE_ENV: docker_test
-      # local
-      DATABASE_URL: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
-
-      WEATHER_API_KEY: 588e4679207f459c9d893949251405
-      RESEND_API_KEY: re_D4x576dB_Cp74P9pQKpvuUwjqGyEEHeUo
-      FROM_EMAIL: skyfetch@resend.dev
-      PORT: 3000
+    env_file:
+      - .env.test.docker
     ports:
       - "3000:3000"
     command: npm start
@@ -36,10 +27,9 @@ services:
     build: .
     depends_on:
       - db-test
-    entrypoint: [ "/bin/sh", "-c", "npx sequelize-cli db:migrate --env docker_test && npm run test-docker:integration" ]
-    environment:
-      NODE_ENV: docker_test
-      DATABASE_URL_TEST: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
+    env_file:
+      - .env.test.docker
+    entrypoint: [ "/bin/sh", "-c", "echo $DB_HOST npm run migrate && NODE_ENV=docker_test npm run test-docker:integration" ]
 
   test-e2e:
     build:
@@ -48,9 +38,8 @@ services:
     depends_on:
       - db-test
       - backend-test
-    environment:
-      NODE_ENV: docker_test
-      DATABASE_URL_TEST: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
+    env_file:
+      - .env.test.docker
     command: >
       sh -c "npx sequelize-cli db:migrate --env docker_test &&
              npm run test-docker:e2e"

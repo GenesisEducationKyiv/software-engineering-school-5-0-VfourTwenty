@@ -7,6 +7,9 @@
     "migrate": "npx sequelize-cli db:migrate",
 
     "test:integration": "NODE_ENV=test mocha test/integration --timeout 5000 --exit",
+    "test:integration:docker": "docker compose -f docker-compose.test.yml up --build test-integration --abort-on-container-exit",
+
+    "test-docker:integration": "if [ \\\"$NODE_ENV\\\" != \\\"docker_test\\\" ]; then echo '❌ This script is Docker-only'; exit 1; fi && NODE_ENV=test.docker mocha test/integration --timeout 5000 --exit",
 
     "debug": "node scripts/debug.js",
     "seed": "node scripts/seeder.js",
