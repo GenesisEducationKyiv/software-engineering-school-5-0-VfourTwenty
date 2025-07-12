@@ -51,5 +51,8 @@ module.exports = {
     subscriptionPublicController,
     subscriptionApiController,
     weatherApiController,
-    cronMain
+    cronMain,
+    // exported only for e2e tests
+    subscriptionService,
+    subscriptionRepo
 };
