@@ -1,5 +1,6 @@
 // redirection can be a separate frontend service
 const { buildConfirmedUrl, buildUnsubscribedUrl, buildErrorUrl } = require('../utils/redirectUtils');
+const { mapErrorToClientMessage } = require('../utils/errors');
 
 class SubscriptionPublicController
 {
@@ -19,8 +20,8 @@ class SubscriptionPublicController
         }
         catch (err) 
         {
-            console.error('Confirmation frontend error:', err);
-            let errorMsg = err.message || 'Internal server error 1';
+            let errorMsg = mapErrorToClientMessage(err) || 'Internal server error 1';
+            console.log('the error message is:', errorMsg);
             const errorUrl = buildErrorUrl(errorMsg);
             return res.redirect(errorUrl);
         }
@@ -37,8 +38,7 @@ class SubscriptionPublicController
         }
         catch (err) 
         {
-            console.error('Unsubscribe frontend error:', err);
-            let errorMsg = err.message || 'Internal server error';
+            let errorMsg = mapErrorToClientMessage(err) || 'Internal server error';
             const errorUrl = buildErrorUrl(errorMsg);
             return res.redirect(errorUrl);
         }
