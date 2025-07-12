@@ -5,7 +5,9 @@
   "scripts": {
     "start": "mkdir -p logs && npm run migrate && node bin/www",
     "migrate": "npx sequelize-cli db:migrate",
-    "test": "NODE_ENV=test mocha --timeout 5000 --exit",
+
+    "test:integration": "NODE_ENV=test mocha test/integration --timeout 5000 --exit",
+
     "debug": "node scripts/debug.js",
     "seed": "node scripts/seeder.js",
     "lint": "npx eslint .",

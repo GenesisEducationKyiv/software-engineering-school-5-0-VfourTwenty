@@ -1,24 +1,46 @@
 const request = require('supertest');
-
-const app = require('../../src/app');
 const { expect } = require('chai');
-const { sequelize } = require("../../src/db/models");
-const { createSub, findSub } = require('../../src/services/subscriptionService');
+const express = require('express');
+
+const SubscriptionRepo = require('../../src/repositories/sequelizeSubscriptionRepo');
+const SubscriptionApiController = require('../../src/controllers/subscriptionApiController');
+const SubscriptionService = require('../../src/services/subscriptionService');
+const EmailService = require('../../src/services/emailService');
+const WeatherService = require('../../src/services/weatherService');
+const SubscriptionValidator = require('../../src/validators/validateNewSubscription');
+const CityValidator = require('../../src/validators/validateCity');
+const MockEmailProviderManager = require('../mocks/emailProviderManager.mock');
+const MockWeatherProviderManager = require('../mocks/weatherProviderManager.mock');
+
+const subscriptionRepo = new SubscriptionRepo();
+const mockEmailProviderManager = new MockEmailProviderManager();
+const mockWeatherProviderManager = new MockWeatherProviderManager();
+
+const weatherService = new WeatherService(mockWeatherProviderManager);
+const emailService = new EmailService(weatherService, subscriptionRepo, mockEmailProviderManager);
+const cityValidator = new CityValidator(weatherService);
+const subscriptionValidator = new SubscriptionValidator(subscriptionRepo, cityValidator);
+const subscriptionService = new SubscriptionService(emailService, subscriptionRepo, subscriptionValidator);
+const subscriptionApiController = new SubscriptionApiController(subscriptionService);
+
+const app = express();
+app.use(express.json());
+
+app.post('/api/subscribe', subscriptionApiController.subscribe);
+app.get('/api/confirm/:token', subscriptionApiController.confirm);
+app.get('/api/unsubscribe/:token', subscriptionApiController.unsubscribe);
 
 
 describe('POST /api/subscribe', () => {
-    before(async () => {
-        await sequelize.sync();
-        for (const model of Object.values(sequelize.models)) {
-            await model.destroy({ where: {}, truncate: true, force: true });
-        }
+    beforeEach(async () => {
+        await subscriptionRepo.clear();
     });
 
     // missing email
     it('should return 400 for missing email', async () => {
         const res = await request(app)
             .post('/api/subscribe')
-            .type('form')
+            .type('json')
             .send({ city: 'Kyiv', frequency: 'daily' });
 
         expect(res.status).to.equal(400);
@@ -29,7 +51,7 @@ describe('POST /api/subscribe', () => {
     it('should return 400 for missing city', async () => {
         const res = await request(app)
             .post('/api/subscribe')
-            .type('form')
+            .type('json')
             .send({ email: 'test@gmail.com', frequency: 'daily' });
 
         expect(res.status).to.equal(400);
@@ -40,7 +62,7 @@ describe('POST /api/subscribe', () => {
     it('should return 400 for missing frequency', async () => {
         const res = await request(app)
             .post('/api/subscribe')
-            .type('form')
+            .type('json')
             .send({ email: 'test@gmail.com', city: 'Kyiv'});
 
         expect(res.status).to.equal(400);
@@ -51,7 +73,7 @@ describe('POST /api/subscribe', () => {
     it('should return 400 for invalid email format', async () => {
         const res = await request(app)
             .post('/api/subscribe')
-            .type('form')
+            .type('json')
             .send({ email: 'invalid_email', city: 'Kyiv', frequency: 'daily' });
 
         expect(res.status).to.equal(400);
@@ -62,25 +84,24 @@ describe('POST /api/subscribe', () => {
     it('should return 400 for invalid frequency string', async () => {
         const res = await request(app)
             .post('/api/subscribe')
-            .type('form')
+            .type('json')
             .send({ email: 'test@gmail.com', city: 'Kyiv', frequency: 'hgkdfhgsh' });
 
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Invalid frequency.');
     });
 
-
     // successful subscription
     it('should return 200 and create a subscription', async () => {
         const res = await request(app)
             .post('/api/subscribe')
-            .type('form')
+            .type('json')
             .send({ email: 'delivered@resend.dev', city: 'Kyiv', frequency: 'daily' });
 
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('Subscription successful. Confirmation email sent.');
 
-        const sub = await findSub({ email: 'delivered@resend.dev', city: 'Kyiv', frequency: 'daily' })
+        const sub = await subscriptionRepo.findSub({ email: 'delivered@resend.dev', city: 'Kyiv', frequency: 'daily' })
         expect(sub).to.exist;
         expect(sub.confirmed).to.be.false;
         expect(sub.token).to.be.a('string');
@@ -88,11 +109,11 @@ describe('POST /api/subscribe', () => {
 
     // duplicate subscription
     it('should return 409 for duplicate subscription', async () => {
-        await createSub('test@example.com', 'Kyiv', 'daily');
+        await subscriptionRepo.createSub({ email: 'test@example.com', city: 'Kyiv', frequency: 'daily', confirmed: false, token: 'token123' });
 
         const res = await request(app)
             .post('/api/subscribe')
-            .type('form')
+            .type('json')
             .send({ email: 'test@example.com', city: 'Kyiv', frequency: 'daily' });
 
         expect(res.status).to.equal(409);
@@ -103,12 +124,10 @@ describe('POST /api/subscribe', () => {
 describe('GET /api/confirm/:token', () => {
     let token;
 
-    before(async () => {
-        await sequelize.sync();
-        for (const model of Object.values(sequelize.models)) {
-            await model.destroy({ where: {}, truncate: true, force: true });
-        }
-        token = await createSub('confirm@test.com', 'Kyiv', 'daily');
+    beforeEach(async () => {
+        await subscriptionRepo.clear();
+        token = 'token_confirm';
+        await subscriptionRepo.createSub({ email: 'confirm@test.com', city: 'Kyiv', frequency: 'daily', confirmed: false, token });
     });
 
     // confirmation successful
@@ -117,12 +136,13 @@ describe('GET /api/confirm/:token', () => {
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('Subscription confirmed successfully');
 
-        const sub = await findSub({token: token});
+        const sub = await subscriptionRepo.findSub({token: token});
         expect(sub.confirmed).to.be.true;
     });
 
     // already confirmed
     it('should return 400 if already confirmed', async () => {
+        await subscriptionRepo.confirmSub(token);
         const res = await request(app).get(`/api/confirm/${token}`);
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Subscription already confirmed');
@@ -146,12 +166,10 @@ describe('GET /api/confirm/:token', () => {
 describe('GET /api/unsubscribe/:token', () => {
     let token;
 
-    before(async () => {
-        await sequelize.sync();
-        for (const model of Object.values(sequelize.models)) {
-            await model.destroy({ where: {}, truncate: true, force: true });
-        }
-        token = await createSub('test@example.com', 'Odesa', 'daily');
+    beforeEach(async () => {
+        await subscriptionRepo.clear();
+        token = 'token_unsub';
+        await subscriptionRepo.createSub({ email: 'test@example.com', city: 'Odesa', frequency: 'daily', confirmed: true, token });
     });
 
     it('should return 200 and delete the subscription', async () => {
@@ -159,10 +177,9 @@ describe('GET /api/unsubscribe/:token', () => {
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('Unsubscribed successfully');
 
-        const check = await findSub({ token: token })
+        const check = await subscriptionRepo.findSub({ token: token })
         expect(check).to.be.null;
     });
-
 
     it('should return 404 if token not found', async () => {
         const res = await request(app).get(`/api/unsubscribe/not-a-real-token`);
