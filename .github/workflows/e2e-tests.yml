@@ -25,7 +25,7 @@ jobs:
 
       - name: Start database for E2E
         run: |
-          docker compose -f docker-compose.test.yml up --build db-test
+          docker run -d --name db-test -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=alwayssunny -e POSTGRES_DB=weather_db_test -p 5432:5432 postgres
           echo "Waiting for container to start..."
           sleep 5
           # Check if container is running
@@ -33,8 +33,8 @@ jobs:
             echo "db-test container is running"
           else
             echo "ERROR: db-test container is not running"
-            docker compose -f docker-compose.test.yml ps
-            docker compose -f docker-compose.test.yml logs db-test
+            docker ps -a
+            docker logs db-test
             exit 1
           fi
 
@@ -68,7 +68,7 @@ jobs:
       - name: Wait for Database
         run: |
           echo "Waiting for PostgreSQL to be ready..."
-          timeout 60 bash -c "until docker compose -f docker-compose.test.yml exec -T db-test pg_isready -U postgres; do
+          timeout 60 bash -c "until docker exec db-test pg_isready -U postgres; do
             echo 'Waiting for PostgreSQL...'
             sleep 2
           done"
@@ -76,7 +76,7 @@ jobs:
             echo "PostgreSQL is ready"
           else
             echo "ERROR: Timeout waiting for PostgreSQL"
-            docker compose -f docker-compose.test.yml logs db-test
+            docker logs db-test
             exit 1
           fi
         env:
@@ -104,4 +104,7 @@ jobs:
 
       - name: Cleanup Docker Compose
         if: always()
-        run: docker compose -f docker-compose.test.yml down -v
+        run: |
+          docker stop db-test || true
+          docker rm db-test || true
+          docker compose -f docker-compose.test.yml down -v || true
