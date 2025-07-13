@@ -1,0 +1,63 @@
+name: End to End Tests
+
+on: [push, pull_request]
+
+jobs:
+  test-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker compose version
+
+      - name: Start database for E2E
+        run: |
+          docker compose -f docker-compose.test.yml up -d db-test
+          # Wait for PostgreSQL to be ready
+          until docker compose -f docker-compose.test.yml exec -T db-test pg_isready -U postgres; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+        env:
+          DATABASE_URL_TEST: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
+          DB_USER: postgres
+          DB_PASS: alwayssunny
+          DB_NAME: weather_db_test
+          DB_HOST: db-test
+          DB_PORT: 5432
+          DB_DIALECT: postgres
+
+      - name: Run E2E tests
+        run: npm run test:e2e:docker
+        env:
+          DATABASE_URL_TEST: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
+          WEATHER_API_KEY: 5d458fa571c848659f892351252506  # TODO: Move to GitHub Secrets
+          RESEND_API_KEY: re_2p9UeLrX_JqFPbkAYmLvYjobPBqe6aNhf  # TODO: Move to GitHub Secrets
+          FROM_EMAIL: skyfetch@resend.dev
+          BASE_URL: http://backend-test:3000
+          NODE_ENV: docker_test
+          BACKEND_PORT: 3000
+
+      - name: Debug logs on failure
+        if: failure()
+        run: |
+          docker compose -f docker-compose.test.yml logs db-test
+          docker compose -f docker-compose.test.yml logs backend-test
+          docker compose -f docker-compose.test.yml logs test-e2e
+
+      - name: Cleanup Docker Compose
+        if: always()
+        run: docker compose -f docker-compose.test.yml down -v 
