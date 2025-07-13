@@ -64,6 +64,7 @@ jobs:
           export DB_DIALECT=postgres
           npm run test:e2e:docker
         env:
+          POSTGRES_PASSWORD: alwayssunny
           DATABASE_URL: postgres://postgres:alwayssunny@localhost:5432/weather_db_test
           WEATHER_API_KEY: 5d458fa571c848659f892351252506  # TODO: Replace with ${{ secrets.WEATHER_API_KEY }} after moving to GitHub Secrets
           RESEND_API_KEY: re_2p9UeLrX_JqFPbkAYmLvYjobPBqe6aNhf  # TODO: Replace with ${{ secrets.RESEND_API_KEY }} after moving to GitHub Secrets
