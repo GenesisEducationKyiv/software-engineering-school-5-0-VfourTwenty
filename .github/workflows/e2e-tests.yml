@@ -50,6 +50,38 @@ jobs:
           DB_PORT: 5432
           DB_DIALECT: postgres
 
+      - name: Initialize Database
+        run: |
+          echo "Running database migrations..."
+          npm run migrate:test
+        env:
+          DATABASE_URL: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
+          DB_USER: postgres
+          DB_PASS: alwayssunny
+          DB_NAME: weather_db_test
+          DB_HOST: db-test
+          DB_PORT: 5432
+          DB_DIALECT: postgres
+
+      - name: Wait for Database
+        run: |
+          echo "Waiting for PostgreSQL to be ready..."
+          timeout 60 bash -c "until docker compose -f docker-compose.test.yml exec -T db-test pg_isready -U postgres; do
+            echo 'Waiting for PostgreSQL...'
+            sleep 2
+          done"
+          if [ $? -eq 0 ]; then
+            echo "PostgreSQL is ready"
+          else
+            echo "ERROR: Timeout waiting for PostgreSQL"
+            docker compose -f docker-compose.test.yml logs db-test
+            exit 1
+          fi
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: alwayssunny
+          POSTGRES_DB: weather_db_test
+
       - name: Run E2E tests
         run: npm run test:e2e:docker
         env:
