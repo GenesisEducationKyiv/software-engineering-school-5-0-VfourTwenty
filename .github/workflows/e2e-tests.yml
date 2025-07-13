@@ -52,11 +52,6 @@ jobs:
             docker logs db-test
             exit 1
           fi
-        env:
-          POSTGRES_HOST_AUTH_METHOD: "trust"
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: alwayssunny
-          POSTGRES_DB: weather_db_test
 
       - name: Run E2E tests
         run: |
@@ -64,8 +59,8 @@ jobs:
           export DB_HOST=localhost
           export DB_PORT=5432
           export DB_NAME=weather_db_test
-          export DB_USER=postgres
-          export DB_PASS=alwayssunny
+          export POSTGRES_USER=postgres
+          export POSTGRES_PASSWORD=alwayssunny
           export DB_DIALECT=postgres
           npm run test:e2e:docker
         env:
