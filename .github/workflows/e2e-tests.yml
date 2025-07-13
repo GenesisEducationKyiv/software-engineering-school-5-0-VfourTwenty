@@ -50,6 +50,9 @@ jobs:
             exit 1
           fi
         env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: alwayssunny
+          POSTGRES_DB: weather_db_test
           DATABASE_URL: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
           DB_USER: postgres
           DB_PASS: alwayssunny
@@ -62,9 +65,6 @@ jobs:
           FROM_EMAIL: skyfetch@resend.dev
           BASE_URL: http://backend-test:3000
           BACKEND_PORT: 3000
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: alwayssunny
-          POSTGRES_DB: weather_db_test
 
       - name: Run E2E tests
         run: npm run test:e2e:docker
