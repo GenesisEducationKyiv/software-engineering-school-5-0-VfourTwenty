@@ -38,20 +38,6 @@ jobs:
             exit 1
           fi
 
-      - name: Initialize Database
-        run: |
-          echo "Running database migrations..."
-          npm run migrate
-        env:
-          POSTGRES_HOST_AUTH_METHOD: "trust"
-          DATABASE_URL: postgres://postgres:alwayssunny@localhost:5432/weather_db_test
-          DB_USER: postgres
-          DB_PASS: alwayssunny
-          DB_NAME: weather_db_test
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_DIALECT: postgres
-
       - name: Wait for Database
         run: |
           echo "Waiting for PostgreSQL to be ready..."
