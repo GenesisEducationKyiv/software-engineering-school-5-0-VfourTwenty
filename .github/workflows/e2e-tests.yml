@@ -39,6 +39,7 @@ jobs:
           fi
 
         env:
+          POSTGRES_HOST_AUTH_METHOD: "trust"
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: alwayssunny
           POSTGRES_DB: weather_db_test
@@ -55,6 +56,7 @@ jobs:
           echo "Running database migrations..."
           npm run migrate:test
         env:
+          POSTGRES_HOST_AUTH_METHOD: "trust"
           DATABASE_URL: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
           DB_USER: postgres
           DB_PASS: alwayssunny
@@ -78,6 +80,7 @@ jobs:
             exit 1
           fi
         env:
+          POSTGRES_HOST_AUTH_METHOD: "trust"
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: alwayssunny
           POSTGRES_DB: weather_db_test
