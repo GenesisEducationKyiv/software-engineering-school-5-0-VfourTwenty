@@ -5,7 +5,7 @@ services:
       # create a separate env for the db
       - .env.test.e2e.docker
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U $DB_USER" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 5s
       retries: 5
