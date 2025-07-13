@@ -54,7 +54,7 @@ jobs:
       - name: Initialize Database
         run: |
           echo "Running database migrations..."
-          npm run migrate:test
+          npm run migrate
         env:
           POSTGRES_HOST_AUTH_METHOD: "trust"
           DATABASE_URL: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
