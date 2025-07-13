@@ -1,6 +1,8 @@
 services:
   db-test:
     image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: alwayssunny
     env_file:
       # create a separate env for the db
       - .env.test.e2e.docker
