@@ -2,7 +2,8 @@ services:
   db-test:
     image: postgres:15
     env_file:
-      - .env.test.intgr.docker
+      # create a separate env for the db
+      - .env.test.e2e.docker
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U $DB_USER" ]
       interval: 5s
