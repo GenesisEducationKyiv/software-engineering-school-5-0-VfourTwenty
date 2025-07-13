@@ -24,7 +24,7 @@ jobs:
           docker compose version
       - name: Start database for E2E
         run: |
-          docker run -d --name db-test -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=alwayssunny -e POSTGRES_DB=weather_db_test -p 5432:5432 postgres
+          docker compose -f docker-compose.test.yml up --build db-test
           echo "Waiting for container to start..."
           sleep 5
           # Check if container is running
