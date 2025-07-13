@@ -1,65 +1,72 @@
-name: E2E Tests
-on:
-  push:
-  pull_request:
+name: End to End Tests
+
+on: [push, pull_request]
 
 jobs:
-  e2e-tests:
+  test-e2e:
     runs-on: ubuntu-latest
-    environment: test
-    env:
-      NODE_ENV: test
-      BASE_URL: http://backend-test:3000
-      BACKEND_PORT: 3000
-      DB_HOST: db-test
-      DB_PORT: 5432
-      DB_NAME: skyfetch_test
-      DB_USER: skyfetch_test_user
-      DB_PASSWORD: skyfetch_test_pass
-      DATABASE_URL: postgresql://skyfetch_test_user:skyfetch_test_pass@db-test:5432/skyfetch_test?schema=public
-      WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
-      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-      POSTGRES_USER: skyfetch_test_user
-      POSTGRES_PASSWORD: skyfetch_test_pass
-      POSTGRES_DB: skyfetch_test
     steps:
-      - uses: actions/checkout@v4
-      - name: Install Dependencies
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
         run: npm ci
+
       - name: Install Docker Compose
         run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
-          docker-compose --version
-      - name: Start Test Database
-        run: docker compose -f docker-compose.test.yml up -d db-test
-      - name: Check if db-test Container is Running
+          docker compose version
+
+      - name: Start database for E2E
         run: |
-          echo "Checking if db-test container is running..."
+          docker compose -f docker-compose.test.yml up --build db-test
+          echo "Waiting for container to start..."
+          sleep 5
+          # Check if container is running
           if docker ps | grep -q db-test; then
             echo "db-test container is running"
           else
             echo "ERROR: db-test container is not running"
             docker compose -f docker-compose.test.yml ps
             docker compose -f docker-compose.test.yml logs db-test
-            docker images
-            docker network ls
             exit 1
           fi
-      - name: Wait for Database
-        run: |
-          echo "Waiting for PostgreSQL to be ready..."
-          for i in {1..30}; do
-            if docker exec db-test pg_isready -U $POSTGRES_USER -d $POSTGRES_DB; then
-              echo "Database is ready!"
-              break
-            fi
-            echo "Attempt $i: Database not ready, waiting..."
-            sleep 2
-          done
-          docker exec db-test pg_isready -U $POSTGRES_USER -d $POSTGRES_DB || { echo "Database failed to start"; docker logs db-test; exit 1; }
-      - name: Run E2E Tests in Docker
+
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: alwayssunny
+          POSTGRES_DB: weather_db_test
+          DATABASE_URL: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
+          DB_USER: postgres
+          DB_PASS: alwayssunny
+          DB_NAME: weather_db_test
+          DB_HOST: db-test
+          DB_PORT: 5432
+          DB_DIALECT: postgres
+
+      - name: Run E2E tests
         run: npm run test:e2e:docker
-      - name: Cleanup
+        env:
+          DATABASE_URL: postgres://postgres:alwayssunny@db-test:5432/weather_db_test
+          WEATHER_API_KEY: 5d458fa571c848659f892351252506  # TODO: Replace with ${{ secrets.WEATHER_API_KEY }} after moving to GitHub Secrets
+          RESEND_API_KEY: re_2p9UeLrX_JqFPbkAYmLvYjobPBqe6aNhf  # TODO: Replace with ${{ secrets.RESEND_API_KEY }} after moving to GitHub Secrets
+          FROM_EMAIL: skyfetch@resend.dev
+          BASE_URL: http://backend-test:3000
+          BACKEND_PORT: 3000
+
+      - name: Debug logs on failure
+        if: failure()
+        run: |
+          docker compose -f docker-compose.test.yml logs db-test
+          docker compose -f docker-compose.test.yml logs backend-test
+          docker compose -f docker-compose.test.yml logs test-e2e
+
+      - name: Cleanup Docker Compose
         if: always()
-        run: docker compose -f docker-compose.test.yml down --volumes 
+        run: docker compose -f docker-compose.test.yml down -v
