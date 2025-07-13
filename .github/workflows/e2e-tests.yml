@@ -33,6 +33,19 @@ jobs:
           docker-compose --version
       - name: Start Test Database
         run: docker compose -f docker-compose.test.yml up -d db-test
+      - name: Check if db-test Container is Running
+        run: |
+          echo "Checking if db-test container is running..."
+          if docker ps | grep -q db-test; then
+            echo "db-test container is running"
+          else
+            echo "ERROR: db-test container is not running"
+            docker compose -f docker-compose.test.yml ps
+            docker compose -f docker-compose.test.yml logs db-test
+            docker images
+            docker network ls
+            exit 1
+          fi
       - name: Wait for Database
         run: |
           echo "Waiting for PostgreSQL to be ready..."
