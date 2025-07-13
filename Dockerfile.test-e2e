@@ -4,6 +4,9 @@ FROM node:22
 # Install Playwright with Chromium and all dependencies
 RUN npx playwright install --with-deps chromium
 
+# Install netcat for wait-for-it.sh script
+RUN apt-get update && apt-get install -y netcat-traditional
+
 # Create app directory
 WORKDIR /app/tests
 

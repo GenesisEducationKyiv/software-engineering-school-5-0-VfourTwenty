@@ -231,12 +231,22 @@ describe('SkyFetch E2E Tests', () => {
 
     it('should confirm a new subscription with a valid token', async () => {
         await subscriptionRepo.clear();
-
         const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
-
-        await page.goto(confirmUrl(token));
+        const url = confirmUrl(token);
+        console.log('Navigating to confirm URL:', url);
+        let redirectDetected = false;
+        page.on('response', response => {
+            if (response.url().includes('/confirm/') && response.status() === 302) {
+                console.log('Redirect detected with status 302 for confirm URL');
+                redirectDetected = true;
+            }
+        });
+        await page.goto(url, { timeout: 10000 });
         await delay(2000);
+        await expect(redirectDetected).to.equal(true, 'Expected a 302 redirect during confirmation');
         await expect(page.url()).to.equal(baseURL + `/confirmed.html?city=${sub.city}&frequency=${sub.frequency}&token=${token}`);
+        const headerText = await page.textContent('h1');
+        await expect(headerText).to.include('Your subscription is confirmed!', 'Expected confirmation page header');
     });
 
     // Unsubscribed page ------------------------------------ \
@@ -244,18 +254,37 @@ describe('SkyFetch E2E Tests', () => {
 
         await subscriptionRepo.clear();
         const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
-        await page.goto(unsubscribeUrl(token));
+        await subscriptionService.confirmSubscription(token);
+        const url = `${baseURL}/unsubscribe/${token}`;
+        console.log('Navigating to unsubscribe URL:', url);
+        let redirectDetected = false;
+        page.on('response', response => {
+            if (response.url().includes('/unsubscribe/') && response.status() === 302) {
+                console.log('Redirect detected with status 302 for unsubscribe URL');
+                redirectDetected = true;
+            }
+        });
+        await page.goto(url, { timeout: 10000 });
+        await delay(2000);
+        await expect(redirectDetected).to.equal(true, 'Expected a 302 redirect during unsubscription');
         await expect(page.url()).to.equal(baseURL + '/unsubscribed.html');
+        const unsubscribeHeaderText = await page.textContent('h1');
+        await expect(unsubscribeHeaderText).to.include('You\'ve successfully unsubscribed!', 'Expected unsubscription page header');
     });
 
     // Error page ------------------------------------ \
     it('should not not allow duplicate confirmation and navigate to error page', async () => {
         await subscriptionRepo.clear();
-
         const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
         await subscriptionService.confirmSubscription(token);
-
-        await page.goto(confirmUrl(token));
+        console.log('Navigating to confirm URL for duplicate check:', confirmUrl(token));
+        try {
+            await page.goto(confirmUrl(token), { timeout: 10000 });
+        } catch (error) {
+            console.error('Error navigating to confirm URL for duplicate check:', error.message);
+            console.log('Retrying navigation...');
+            await page.goto(confirmUrl(token), { timeout: 10000 });
+        }
         await expect(page.url()).to.equal(baseURL + `/error.html?error=Subscription+already+confirmed`);
         await expect(await page.textContent('#error-message')).to.equal('Subscription already confirmed');
     });
@@ -264,11 +293,25 @@ describe('SkyFetch E2E Tests', () => {
 
         const invalidToken = 'fgdfgdsf';
 
-        await page.goto(confirmUrl(invalidToken));
+        console.log('Navigating to confirm URL with invalid token:', confirmUrl(invalidToken));
+        try {
+            await page.goto(confirmUrl(invalidToken), { timeout: 10000 });
+        } catch (error) {
+            console.error('Error navigating to confirm URL with invalid token:', error.message);
+            console.log('Retrying navigation...');
+            await page.goto(confirmUrl(invalidToken), { timeout: 10000 });
+        }
         await expect(page.url()).to.equal(baseURL + '/error.html?error=Invalid+token');
         await expect(await page.textContent('#error-message')).to.equal('Invalid token');
 
-        await page.goto(unsubscribeUrl(invalidToken));
+        console.log('Navigating to unsubscribe URL with invalid token:', unsubscribeUrl(invalidToken));
+        try {
+            await page.goto(unsubscribeUrl(invalidToken), { timeout: 10000 });
+        } catch (error) {
+            console.error('Error navigating to unsubscribe URL with invalid token:', error.message);
+            console.log('Retrying navigation...');
+            await page.goto(unsubscribeUrl(invalidToken), { timeout: 10000 });
+        }
         await expect(page.url()).to.equal(baseURL + '/error.html?error=Invalid+token');
         await expect(await page.textContent('#error-message')).to.equal('Invalid token');
     });
@@ -277,12 +320,24 @@ describe('SkyFetch E2E Tests', () => {
         await subscriptionRepo.clear();
         const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
         await subscriptionService.unsubscribeUser(token);
-
-        await page.goto(confirmUrl(token));
+        console.log('Navigating to confirm URL with deleted token:', confirmUrl(token));
+        try {
+            await page.goto(confirmUrl(token), { timeout: 10000 });
+        } catch (error) {
+            console.error('Error navigating to confirm URL with deleted token:', error.message);
+            console.log('Retrying navigation...');
+            await page.goto(confirmUrl(token), { timeout: 10000 });
+        }
         await expect(page.url()).to.equal(baseURL + '/error.html?error=Token+not+found');
         await expect(await page.textContent('#error-message')).to.equal('Token not found');
-
-        await page.goto(unsubscribeUrl(token));
+        console.log('Navigating to unsubscribe URL with deleted token:', unsubscribeUrl(token));
+        try {
+            await page.goto(unsubscribeUrl(token), { timeout: 10000 });
+        } catch (error) {
+            console.error('Error navigating to unsubscribe URL with deleted token:', error.message);
+            console.log('Retrying navigation...');
+            await page.goto(unsubscribeUrl(token), { timeout: 10000 });
+        }
         await expect(page.url()).to.equal(baseURL + '/error.html?error=Token+not+found');
         await expect(await page.textContent('#error-message')).to.equal('Token not found');
     });
