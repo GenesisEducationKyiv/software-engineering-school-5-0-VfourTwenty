@@ -14,19 +14,11 @@ services:
     ports:
       - "5434:5432"  # Host 5433 → Container 5432
 
-  db-init:
-    image: postgres:15
-    depends_on:
-      - db-test
-    env_file:
-      - .env.test.e2e.docker
-    entrypoint: [ "/bin/sh", "-c", "psql -h db-test -U postgres -d postgres -c \"CREATE DATABASE IF NOT EXISTS weather_db_test;\"" ]
-
   backend-test:
     build: .
     restart: always
     depends_on:
-      - db-init
+      - db-test
     env_file:
       - .env.test.e2e.docker
     ports:
@@ -36,7 +28,7 @@ services:
   test-integration:
     build: .
     depends_on:
-      - db-init
+      - db-test
     env_file:
       - .env.test.intgr.docker
     entrypoint: [ "/bin/sh", "-c", "npm run migrate && NODE_ENV=docker_test npm run test-docker:integration" ]
@@ -46,7 +38,7 @@ services:
       context: .
       dockerfile: Dockerfile.test-e2e
     depends_on:
-      - db-init
+      - db-test
       - backend-test
     env_file:
       - .env.test.e2e.docker
