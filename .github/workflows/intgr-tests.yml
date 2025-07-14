@@ -28,7 +28,7 @@ jobs:
 
       - name: Run Integration Tests
         run: |
-          npm run test:e2e:integration:docker
+          npm run test:integration:docker
 
       - name: Debug logs on failure
         if: failure()
