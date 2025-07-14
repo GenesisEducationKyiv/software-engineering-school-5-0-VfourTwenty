@@ -18,6 +18,8 @@ jobs:
             echo "Waiting for database to be ready..."
             sleep 2
           done
+          echo "Database is ready. Listing available databases:"
+          docker compose --env-file .env.test.e2e.docker -f docker-compose.test.yml exec -T db-test psql -U postgres -l
         timeout-minutes: 1
 
       - name: Run E2E tests
