@@ -35,7 +35,7 @@ class ResendEmailProvider extends IEmailProvider
             // Resend allows for 2 requests per second,
             // therefore delay of 510 ms ensures that the
             // next request will happen within next second
-            await retry(send, 2, 510);
+            await retry(send, 4, 510);
             return { success: true };
         }
         catch (err) 
