@@ -19,6 +19,7 @@ const EmailJobHandler = require('./cron/handlers/emailJobHandler');
 const EmailJobs = require('./cron/emailJobs');
 const CronMain = require('./cron/main');
 
+// oh well.. ;)
 // 1
 const subscriptionRepo = new SequelizeSubscriptionRepo();
 
