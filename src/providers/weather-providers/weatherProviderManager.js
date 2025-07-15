@@ -1,14 +1,13 @@
 const IWeatherProvider = require('./weatherProviderInterface');
-const WeatherApiProvider = require('./weatherApiProvider');
 // const { logProviderResponse } = require('../../utils/logger');
 // const path = require('path');
 
 class WeatherProviderManager extends IWeatherProvider 
 {
-    constructor() 
+    constructor(providers)
     {
         super();
-        this.providers = [new WeatherApiProvider()];
+        this.providers = providers;
         // this.logPath = path.join(__dirname, '../../../logs/weatherProvider.log');
     }
 

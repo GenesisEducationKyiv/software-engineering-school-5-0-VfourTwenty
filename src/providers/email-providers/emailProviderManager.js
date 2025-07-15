@@ -1,14 +1,13 @@
 const IEmailProvider = require('./emailProviderInterface');
-const ResendEmailProvider = require('./resendEmailProvider');
 // const { logProviderResponse } = require('../../utils/logger');
 // const path = require('path');
 
 class EmailProviderManager extends IEmailProvider 
 {
-    constructor() 
+    constructor(providers)
     {
         super();
-        this.providers = [new ResendEmailProvider()];
+        this.providers = providers;
         // this.logPath = path.join(__dirname, '../../../logs/emailProvider.log');
     }
 
