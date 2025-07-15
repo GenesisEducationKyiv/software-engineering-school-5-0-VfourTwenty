@@ -1,67 +1,57 @@
 const ISubscriptionRepo = require('./subscriptionRepoInterface');
 const { Subscription } = require('../db/models');
 
-/**
- * @typedef {import('../types/subscription').Subscription} Subscription
- */
-
 class SequelizeSubscriptionRepo extends ISubscriptionRepo
 {
-    /**
-     * @param {Subscription} data
-     * @returns {Promise<Subscription>}
-     */
-    async createSub(data) 
+    async createSub(data)
     {
-        return Subscription.create(data);
+        const sub = await Subscription.create(data);
+        return this.toPlainObject(sub);
     }
 
-    /**
-     * @param {Partial<Subscription>} params
-     * @returns {Promise<Subscription|null>}
-     */
-    async findSub(params) 
+    async findSub(params)
     {
-        return Subscription.findOne({ where: params });
+        const sub = await Subscription.findOne({ where: params });
+        return sub ? this.toPlainObject(sub) : null;
     }
 
-    /**
-     * @param {string} token
-     * @returns {Promise<Subscription|null>}
-     */
-    async confirmSub(token) 
+    async confirmSub(token)
     {
         const sub = await Subscription.findOne({ where: { token } });
         if (!sub) return null;
         sub.confirmed = true;
         await sub.save();
-        return sub;
+        return this.toPlainObject(sub);
     }
 
-    /**
-     * @param {string} token
-     * @returns {Promise<Subscription|null>}
-     */
-    async deleteSub(token) 
+    async deleteSub(token)
     {
         const sub = await Subscription.findOne({ where: { token } });
-        if (!sub) return null;
+        if (!sub) return false; // Return false if no subscription is found
         await sub.destroy();
-        return sub;
+        return true; // Return true if the subscription is successfully deleted
     }
 
-    /**
-     * @param {Partial<Subscription>} params
-     * @returns {Promise<Subscription[]>}
-     */
-    async findAllSubs(params) 
+    async findAllSubs(params)
     {
-        return Subscription.findAll({ where: params });
+        const subs = await Subscription.findAll({ where: params });
+        return subs.map(sub => this.toPlainObject(sub));
     }
 
     async clear()
     {
         await Subscription.destroy({ where: {}, truncate: true, force: true });
+    }
+
+    toPlainObject(sub)
+    {
+        return {
+            email: sub.email,
+            city: sub.city,
+            frequency: sub.frequency,
+            confirmed: sub.confirmed,
+            token: sub.token
+        };
     }
 }
 
