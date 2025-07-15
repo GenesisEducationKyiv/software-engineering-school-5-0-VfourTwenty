@@ -13,7 +13,6 @@ class WeatherService
      * @param {string} city
      * @returns {Promise<any>}
      */
-    // possible to pass a specific provider, or rely on the chain of responsibility
     async fetchWeather(city) 
     {
         const data = await this.weatherProviderManager.fetchWeather(city);
