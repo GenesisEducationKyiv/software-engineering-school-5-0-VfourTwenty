@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const WeatherProviderManager = require('../../../src/providers/weather-providers/weatherProviderManager');
-const { WeatherProviderMock1, WeatherProviderMock2 } = require('../../mocks/weatherProviders.mock');
+const { WeatherProviderMock1, WeatherProviderMock2 } = require('../../mocks/providers/weatherProviders.mock');
 
 const mockedWeatherProviders = [new WeatherProviderMock1(), new WeatherProviderMock2()];
 const weatherProviderManager = new WeatherProviderManager(mockedWeatherProviders);

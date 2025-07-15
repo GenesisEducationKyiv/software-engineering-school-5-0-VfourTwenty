@@ -9,8 +9,8 @@ const EmailService = require('../../src/services/emailService');
 const WeatherService = require('../../src/services/weatherService');
 const SubscriptionValidator = require('../../src/validators/validateNewSubscription');
 const CityValidator = require('../../src/validators/validateCity');
-const MockEmailProviderManager = require('../mocks/emailProviderManager.mock');
-const MockWeatherProviderManager = require('../mocks/weatherProviderManager.mock');
+const MockEmailProviderManager = require('../mocks/providers/emailProviderManager.mock');
+const MockWeatherProviderManager = require('../mocks/providers/weatherProviderManager.mock');
 
 const subscriptionRepo = new SubscriptionRepo();
 const mockEmailProviderManager = new MockEmailProviderManager();
