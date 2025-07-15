@@ -1,4 +1,4 @@
-const IEmailProvider = require('../../src/providers/email-providers/emailProviderInterface');
+const IEmailProvider = require('../../../src/providers/email-providers/emailProviderInterface');
 
 class EmailProviderMock1 extends IEmailProvider
 {
