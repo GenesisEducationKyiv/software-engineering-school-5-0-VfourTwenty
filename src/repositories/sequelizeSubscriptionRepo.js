@@ -5,8 +5,15 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
 {
     async createSub(data)
     {
-        const sub = await Subscription.create(data);
-        return this.toPlainObject(sub);
+        try
+        {
+            await Subscription.create(data);
+            return { success: true, err: '' };
+        }
+        catch (error)
+        {
+            return { success: false, err: error.message };
+        }
     }
 
     async findSub(params)
@@ -17,19 +24,33 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
 
     async confirmSub(token)
     {
-        const sub = await Subscription.findOne({ where: { token } });
-        if (!sub) return null;
-        sub.confirmed = true;
-        await sub.save();
-        return this.toPlainObject(sub);
+        try
+        {
+            const sub = await Subscription.findOne({ where: { token } });
+            if (!sub) return { success: false, err: 'Subscription not found' };
+            sub.confirmed = true;
+            await sub.save();
+            return { success: true, err: '' };
+        }
+        catch (error)
+        {
+            return { success: false, err: error.message };
+        }
     }
 
     async deleteSub(token)
     {
-        const sub = await Subscription.findOne({ where: { token } });
-        if (!sub) return false; // Return false if no subscription is found
-        await sub.destroy();
-        return true; // Return true if the subscription is successfully deleted
+        try 
+        {
+            const sub = await Subscription.findOne({ where: { token } });
+            if (!sub) return { success: false, err: 'Subscription not found' };
+            await sub.destroy();
+            return { success: true, err: '' };
+        }
+        catch (error) 
+        {
+            return { success: false, err: error.message };
+        }
     }
 
     async findAllSubs(params)
@@ -40,7 +61,15 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
 
     async clear()
     {
-        await Subscription.destroy({ where: {}, truncate: true, force: true });
+        try
+        {
+            await Subscription.destroy({ where: {}, truncate: true, force: true });
+            return { success: true, err: '' };
+        }
+        catch (error)
+        {
+            return { success: false, err: error.message };
+        }
     }
 
     toPlainObject(sub)

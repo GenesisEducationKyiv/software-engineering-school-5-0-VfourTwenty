@@ -6,7 +6,7 @@ class ISubscriptionRepo
 {
     /**
      * @param {Subscription} data
-     * @returns {Promise<Subscription>}
+     * @returns {Promise<{success: boolean, err: string}>}
      */
     async createSub(data) 
     {
@@ -33,7 +33,7 @@ class ISubscriptionRepo
 
     /**
      * @param {string} token
-     * @returns {Promise<Subscription|null>}
+     * @returns {Promise<{success: boolean, err: string}>}
      */
     async confirmSub(token) 
     {
@@ -42,7 +42,7 @@ class ISubscriptionRepo
 
     /**
      * @param {string} token
-     * @returns {Promise<boolean>}
+     * @returns {Promise<{success: boolean, err: string}>}
      */
     async deleteSub(token) 
     {
@@ -50,7 +50,7 @@ class ISubscriptionRepo
     }
 
     /**
-     * @returns {Promise<void>}
+     * @returns {Promise<{success: boolean, err: string}>}
      */
     async clear() 
     {
