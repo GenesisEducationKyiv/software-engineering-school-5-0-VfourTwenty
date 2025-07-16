@@ -1,5 +1,9 @@
-class MockSubscriptionRepo {
+const ISubscriptionRepo = require('../../../src/repositories/subscriptionRepoInterface');
+
+class SubscriptionRepoMock extends ISubscriptionRepo
+{
     constructor() {
+        super();
         this.subs = [];
     }
 
@@ -35,6 +39,10 @@ class MockSubscriptionRepo {
         }
         return false;
     }
+
+    async clear() {
+        this.subs = [];
+    }
 }
 
-module.exports = MockSubscriptionRepo;
+module.exports = SubscriptionRepoMock;

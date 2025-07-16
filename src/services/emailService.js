@@ -15,7 +15,7 @@ class EmailService
         const result = await this.emailProviderManager.sendEmail(to, subject, body);
         if (!result)
         {
-            throw new EmailError('EMAIL_FAILED');
+            throw new EmailError('EMAIL FAILED');
         }
         return result;
     }
@@ -28,7 +28,7 @@ class EmailService
         if (!success) 
         {
             console.error('❌ Failed to send confirmation email:', error);
-            throw new EmailError('EMAIL_FAILED');
+            throw new EmailError('EMAIL FAILED');
         }
         return true;
     }
@@ -41,7 +41,7 @@ class EmailService
         if (!success) 
         {
             console.error('❌ Failed to send unsubscribe email:', error);
-            throw new EmailError('EMAIL_FAILED');
+            throw new EmailError('EMAIL FAILED');
         }
         return true;
     }
@@ -54,7 +54,7 @@ class EmailService
         if (!success) 
         {
             console.error(`❌ Failed to send weather update to ${email}:`, error?.message || error);
-            throw new EmailError('EMAIL_FAILED');
+            throw new EmailError('EMAIL FAILED');
         }
         console.log(`📧 Weather update sent to ${email}`);
         return true;

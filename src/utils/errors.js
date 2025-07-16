@@ -6,8 +6,7 @@ const errorMap = {
     'TOKEN NOT FOUND': { status: 404, message: 'Token not found' },
     'INVALID TOKEN': { status: 400, message: 'Invalid token' },
     'DUPLICATE': { status: 409, message: 'Subscription already exists for this city and frequency.' },
-    'INVALID CITY': { status: 400, message: 'Invalid city.' },
-    'EMAIL_FAILED': { status: 500, message: 'Subscription operation succeeded but failed to send email.' },
+    'EMAIL FAILED': { status: 500, message: 'Subscription operation succeeded but failed to send email.' },
     'NO WEATHER DATA': { status: 404, message: 'No weather data available for this location' }
 };
 

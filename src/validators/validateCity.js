@@ -18,7 +18,7 @@ class CityValidator
         {
             if (err.message === 'No data available for this location' || err.message === 'No matching location found.')
             {
-                throw new WeatherError('INVALID CITY');
+                throw new WeatherError('No WEATHER DATA');
             }
             throw err;
         }
