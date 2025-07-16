@@ -5,6 +5,10 @@ class EmailProviderManagerMock {
         {
             return { success: false, err: "email failed"}
         }
+        else if (to === 'shouldreturnnull@mail.com')
+        {
+            return null;
+        }
         return { success: true }
     }
 }
