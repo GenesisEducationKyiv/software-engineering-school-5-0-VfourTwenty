@@ -1,11 +1,13 @@
 const IEmailProvider = require('./emailProviderInterface');
 const { Resend } = require('resend');
-//require('dotenv').config();
-const retry = require('../../utils/retry');
 
 const config = require('../../config/index');
-const resend = new Resend(config.resendApiKey);
 const fromEmail = config.fromEmail;
+const resend = new Resend(config.resendApiKey);
+
+const retry = require('../../utils/retry');
+
+const DTO = require('../../types/dto');
 
 class ResendEmailProvider extends IEmailProvider 
 {
@@ -28,7 +30,7 @@ class ResendEmailProvider extends IEmailProvider
             {
                 throw new Error('429');
             }
-            return result;
+            return new DTO(true, '');
         };
         try 
         {
@@ -36,12 +38,12 @@ class ResendEmailProvider extends IEmailProvider
             // therefore delay of 510 ms ensures that the
             // next request will happen within next second
             await retry(send, 4, 510);
-            return { success: true };
+            return new DTO(true, '');
         }
         catch (err) 
         {
             console.error('❌ Resend failed:', err);
-            return { success: false, error: err };
+            return new DTO(false, err);
         }
     }
 }

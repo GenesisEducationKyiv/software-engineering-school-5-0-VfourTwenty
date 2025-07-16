@@ -19,7 +19,8 @@ class EmailProviderManager extends IEmailProvider
             {
                 const result = await provider.sendEmail(to, subject, body);
                 //    logProviderResponse(this.logPath, provider.name, { to, subject, ...result });
-                if (result && result.success) return result;
+                if (result?.success) return true;
+                // else log result.err
             }
             catch (err)
             {

@@ -24,11 +24,10 @@ class EmailService
     {
         const subject = 'Confirm your weather subscription';
         const body = buildConfirmEmail(token);
-        const { success, error } = await this.sendEmail(to, subject, body);
+        const success = await this.sendEmail(to, subject, body);
         if (!success) 
         {
-            console.error('❌ Failed to send confirmation email:', error);
-            throw new EmailError('EMAIL FAILED');
+            throw new EmailError('CONFIRMATION EMAIL FAILED');
         }
         return true;
     }
@@ -37,11 +36,10 @@ class EmailService
     {
         const subject = 'You\'ve been unsubscribed';
         const body = buildUnsubscribeEmail(city);
-        const { success, error } = await this.sendEmail(to, subject, body);
+        const success = await this.sendEmail(to, subject, body);
         if (!success) 
         {
-            console.error('❌ Failed to send unsubscribe email:', error);
-            throw new EmailError('EMAIL FAILED');
+            throw new EmailError('UNSUBSCRIBE EMAIL FAILED');
         }
         return true;
     }
@@ -50,11 +48,10 @@ class EmailService
     {
         const subject = `SkyFetch Weather Update for ${city}`;
         const html = buildWeatherUpdateEmail(city, weather, token);
-        const { success, error } = await this.sendEmail(email, subject, html);
+        const success = await this.sendEmail(email, subject, html);
         if (!success) 
         {
-            console.error(`❌ Failed to send weather update to ${email}:`, error?.message || error);
-            throw new EmailError('EMAIL FAILED');
+            throw new EmailError('WEATHER UPDATE EMAIL FAILED');
         }
         console.log(`📧 Weather update sent to ${email}`);
         return true;
