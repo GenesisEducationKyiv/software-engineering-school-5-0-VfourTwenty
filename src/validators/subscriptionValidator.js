@@ -1,5 +1,4 @@
 const { emailRegex } = require('../utils/strings');
-const SubscriptionError = require('../errors/SubscriptionError');
 
 class SubscriptionValidator 
 {
@@ -13,23 +12,24 @@ class SubscriptionValidator
     {
         if (!email || !city || !frequency) 
         {
-            throw new SubscriptionError('MISSING REQUIRED FIELDS');
+            return { success: false, err: 'MISSING REQUIRED FIELDS' };
         }
         if (!emailRegex.test(email)) 
         {
-            throw new SubscriptionError('INVALID EMAIL FORMAT');
+            return { success: false, err: 'INVALID EMAIL FORMAT' };
         }
         if (!['hourly', 'daily'].includes(frequency)) 
         {
-            throw new SubscriptionError('INVALID FREQUENCY');
+            return { success: false, err: 'INVALID FREQUENCY' };
         }
         const cityIsValid = this.cityValidator.validate(city);
-        if (!cityIsValid) throw new SubscriptionError('INVALID CITY');
+        if (!cityIsValid) return { success: false, err: 'INVALID CITY' };
         const exists = await this.subscriptionRepo.findSub({ email, city, frequency });
         if (exists) 
         {
-            throw new SubscriptionError('DUPLICATE');
+            return { success: false, err: 'DUPLICATE' };
         }
+        return { success: true };
     }
 }
 

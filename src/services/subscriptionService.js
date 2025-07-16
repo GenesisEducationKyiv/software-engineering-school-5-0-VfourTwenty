@@ -12,7 +12,8 @@ class SubscriptionService
 
     async subscribeUser(email, city, frequency) 
     {
-        await this.validator.validateNewSubscription(email, city, frequency);
+        const { success, err } = await this.validator.validateNewSubscription(email, city, frequency);
+        if (!success) throw new SubscriptionError(err);
         const token = genToken();
         await this.subscriptionRepo.createSub({ email, city, frequency, confirmed: false, token });
         await this.emailService.sendConfirmationEmail(email, token);
