@@ -10,8 +10,8 @@ const SubscriptionService = require('./services/subscriptionService');
 const WeatherService = require('./services/weatherService');
 const EmailService = require('./services/emailService');
 
-const CityValidator = require('./validators/validateCity');
-const SubscriptionValidator = require('./validators/validateNewSubscription');
+const CityValidator = require('./validators/cityValidator');
+const SubscriptionValidator = require('./validators/subscriptionValidator');
 
 const HomepageController = require('./controllers/homepageController');
 const SubscriptionPublicController = require('./controllers/subscriptionPublicController');

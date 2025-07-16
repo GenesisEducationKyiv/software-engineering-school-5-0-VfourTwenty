@@ -7,8 +7,8 @@ const SubscriptionApiController = require('../../src/controllers/subscriptionApi
 const SubscriptionService = require('../../src/services/subscriptionService');
 const EmailService = require('../../src/services/emailService');
 const WeatherService = require('../../src/services/weatherService');
-const SubscriptionValidator = require('../../src/validators/validateNewSubscription');
-const CityValidator = require('../../src/validators/validateCity');
+const SubscriptionValidator = require('../../src/validators/subscriptionValidator');
+const CityValidator = require('../../src/validators/cityValidator');
 const MockEmailProviderManager = require('../mocks/providers/emailProviderManager.mock');
 const MockWeatherProviderManager = require('../mocks/providers/weatherProviderManager.mock');
 
