@@ -11,12 +11,12 @@ describe('EmailProviderManager Unit Tests', () => {
 
     it('should return success when the first available provider succeeds', async () => {
         const response = await emailProviderManager.sendEmail('email1@mail.com', 'hello', 'hello')
-        expect(response).to.deep.eq({ success: true });
+        expect(response).to.be.true;
     })
 
     it('should delegate to the next provider and return success when the first available provider fails', async () => {
         const response = await emailProviderManager.sendEmail('email2@mail.com', 'hello', 'hello')
-        expect(response).to.deep.eq({ success: true });
+        expect(response).to.be.true;
     })
 
     it('should return null if all available providers fail', async () => {
