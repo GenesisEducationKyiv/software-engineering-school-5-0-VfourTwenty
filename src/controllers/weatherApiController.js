@@ -1,3 +1,5 @@
+const WeatherDTO = require('../types/weather');
+
 class WeatherApiController
 {
     constructor(weatherService)
@@ -15,22 +17,22 @@ class WeatherApiController
 
         try 
         {
-            const data = await this.weatherService.fetchWeather(city);
-            console.log(data);
+            const weather = await this.weatherService.fetchWeather(city);
+            console.log(weather);
 
             if (
-                typeof data.temperature !== 'number' ||
-                typeof data.humidity !== 'number' ||
-                typeof data.description !== 'string'
-            ) 
+                typeof weather.temperature !== 'number' ||
+                typeof weather.humidity !== 'number' ||
+                typeof weather.description !== 'string'
+            )
             {
                 return res.status(404).json({ error: 'Invalid weather data format' });
             }
 
             res.json({
-                temperature: data.temperature,
-                humidity: data.humidity,
-                description: data.description
+                temperature: weather.temperature,
+                humidity: weather.humidity,
+                description: weather.description
             });
         }
         catch (err) 

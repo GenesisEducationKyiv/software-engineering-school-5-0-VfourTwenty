@@ -1,15 +1,16 @@
 const IWeatherProvider = require('../../../src/providers/weather-providers/weatherProviderInterface');
+const WeatherDTO = require('../../../src/types/weather');
 
 class WeatherProviderMock1 extends  IWeatherProvider
 {
     async fetchWeather(city)
     {
         if (["Kyiv", "Lviv"].includes(city)) {
-            return {
+            return new WeatherDTO(true, '', {
                 temperature: 22,
                 humidity: 60,
                 description: "Clear sky"
-            };
+            });
         }
         else
         {
@@ -23,11 +24,11 @@ class WeatherProviderMock2 extends  IWeatherProvider
     async fetchWeather(city)
     {
         if (["Odesa", "Dnipro"].includes(city)) {
-            return {
+            return new WeatherDTO(true, '', {
                 temperature: 22,
                 humidity: 60,
                 description: "Clear sky"
-            };
+            });
         }
         else
         {

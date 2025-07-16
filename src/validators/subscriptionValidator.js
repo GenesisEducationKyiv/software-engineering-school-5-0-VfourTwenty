@@ -22,14 +22,14 @@ class SubscriptionValidator
         {
             return { success: false, err: 'INVALID FREQUENCY' };
         }
-        const cityIsValid = this.cityValidator.validate(city);
+        const cityIsValid = await this.cityValidator.validate(city);
         if (!cityIsValid) return { success: false, err: 'INVALID CITY' };
         const exists = await this.subscriptionRepo.findSub({ email, city, frequency });
         if (exists) 
         {
             return { success: false, err: 'DUPLICATE' };
         }
-        return { success: true };
+        return { success: true , err: '' };
     }
 }
 

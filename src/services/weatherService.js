@@ -15,12 +15,13 @@ class WeatherService
      */
     async fetchWeather(city) 
     {
-        const data = await this.weatherProviderManager.fetchWeather(city);
-        if (!data) 
+        const weather = await this.weatherProviderManager.fetchWeather(city);
+        // all providers have failed
+        if (!weather)
         {
             throw new WeatherError('NO WEATHER DATA');
         }
-        return data;
+        return weather;
     }
 }
 

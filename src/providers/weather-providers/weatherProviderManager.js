@@ -17,13 +17,17 @@ class WeatherProviderManager extends IWeatherProvider
         {
             try 
             {
+                // Receives WeatherDTO
                 const result = await provider.fetchWeather(city);
                 // logProviderResponse(this.logPath, provider.name, { city, ...result });
-                if (result) return result;
+                if (result?.success) return result.weather;
+                // else log result.err
             }
             catch (err) 
             {
+                // should not happen with weatherDTO but still
                 console.log(err);
+                // log
                 // logProviderResponse(this.logPath, provider.name, { city, error: err }, true);
             }
         }

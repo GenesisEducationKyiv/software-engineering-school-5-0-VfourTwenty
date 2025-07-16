@@ -9,7 +9,7 @@ class SubscriptionRepoMock extends ISubscriptionRepo
 
     async createSub(data) {
         this.subs.push({ ...data });
-        return data;
+        return { success: true, err: '' };
     }
 
     async findSub(params) {
@@ -27,21 +27,25 @@ class SubscriptionRepoMock extends ISubscriptionRepo
 
     async confirmSub(token) {
         const sub = this.subs.find(sub => sub.token === token);
-        if (sub) sub.confirmed = true;
-        return sub;
+        if (sub) {
+            sub.confirmed = true;
+            return { success: true, err: '' };
+        }
+        return { success: false, err: 'Subscription not found' };
     }
 
     async deleteSub(token) {
         const idx = this.subs.findIndex(sub => sub.token === token);
         if (idx !== -1) {
             this.subs.splice(idx, 1);
-            return true;
+            return { success: true, err: '' };
         }
-        return false;
+        return { success: false, err: 'Subscription not found' };
     }
 
     async clear() {
         this.subs = [];
+        return { success: true, err: '' };
     }
 }
 

@@ -2,7 +2,6 @@ const DTO = require('./dto');
 
 /**
  * @typedef {Object} Weather
- * @property {string} city
  * @property {number} temperature
  * @property {number} humidity
  * @property {string} description
@@ -13,12 +12,12 @@ class WeatherDTO extends DTO
     /**
      * @param {boolean} success
      * @param {string} err
-     * @param {Weather|null} data
+     * @param {Weather|null} weather
      */
-    constructor(success, err, data)
+    constructor(success, err, weather)
     {
         super(success, err);
-        this.data = data;
+        this.weather = weather;
     }
 }
 

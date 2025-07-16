@@ -70,14 +70,14 @@ class EmailService
         {
             try 
             {
-                const weather = await this.weatherService.fetchWeather(sub.city);
-                if (!weather) 
+                const response = await this.weatherService.fetchWeather(sub.city);
+                if (!response.success)
                 {
                     console.warn(`⚠️ No weather data available for ${sub.city}, skipping ${sub.email}`);
                     skipped++;
                     continue;
                 }
-                const ok = await this.sendWeatherUpdate(sub.email, sub.city, weather, sub.token);
+                const ok = await this.sendWeatherUpdate(sub.email, sub.city, response.weather, sub.token);
                 if (ok) 
                 {
                     sent++;
