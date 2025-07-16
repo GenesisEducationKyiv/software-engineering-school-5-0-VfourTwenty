@@ -18,7 +18,6 @@ class CityValidator
             return false;
         }
     }
-
 }
 
 module.exports = CityValidator;
