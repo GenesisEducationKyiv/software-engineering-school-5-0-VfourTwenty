@@ -1,5 +1,3 @@
-const WeatherError = require('../errors/WeatherError');
-
 class CityValidator
 {
     constructor(weatherService)
@@ -16,11 +14,8 @@ class CityValidator
         }
         catch (err)
         {
-            if (err.message === 'No data available for this location' || err.message === 'No matching location found.')
-            {
-                throw new WeatherError('No WEATHER DATA');
-            }
-            throw err;
+            console.log('City validation error: ', err.message);
+            return false;
         }
     }
 

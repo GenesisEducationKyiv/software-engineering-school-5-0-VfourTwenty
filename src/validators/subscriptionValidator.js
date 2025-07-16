@@ -23,7 +23,8 @@ class SubscriptionValidator
         {
             throw new SubscriptionError('INVALID FREQUENCY');
         }
-        this.cityValidator.validate(city);
+        const cityIsValid = this.cityValidator.validate(city);
+        if (!cityIsValid) throw new SubscriptionError('INVALID CITY');
         const exists = await this.subscriptionRepo.findSub({ email, city, frequency });
         if (exists) 
         {
