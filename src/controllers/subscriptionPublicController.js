@@ -14,7 +14,8 @@ class SubscriptionPublicController
         const { token } = req.params;
         try 
         {
-            const sub = await this.subscriptionService.confirmSubscription(token);
+            await this.subscriptionService.confirmSubscription(token);
+            const sub = await this.subscriptionService.findSub({ token: token });
             const url = buildConfirmedUrl(sub.city, sub.frequency, token);
             return res.redirect(url);
         }
