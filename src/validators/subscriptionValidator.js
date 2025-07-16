@@ -1,4 +1,5 @@
 const { emailRegex } = require('../utils/strings');
+const DTO = require('../../src/types/dto');
 
 class SubscriptionValidator 
 {
@@ -12,24 +13,24 @@ class SubscriptionValidator
     {
         if (!email || !city || !frequency) 
         {
-            return { success: false, err: 'MISSING REQUIRED FIELDS' };
+            return new DTO(false, 'MISSING REQUIRED FIELDS');
         }
         if (!emailRegex.test(email)) 
         {
-            return { success: false, err: 'INVALID EMAIL FORMAT' };
+            return new DTO(false, 'INVALID EMAIL FORMAT');
         }
         if (!['hourly', 'daily'].includes(frequency)) 
         {
-            return { success: false, err: 'INVALID FREQUENCY' };
+            return new DTO(false, 'INVALID FREQUENCY');
         }
         const cityIsValid = await this.cityValidator.validate(city);
-        if (!cityIsValid) return { success: false, err: 'INVALID CITY' };
+        if (!cityIsValid) return new DTO(false, 'INVALID CITY');
         const exists = await this.subscriptionRepo.findSub({ email, city, frequency });
         if (exists) 
         {
-            return { success: false, err: 'DUPLICATE' };
+            return new DTO(false, 'DUPLICATE');
         }
-        return { success: true , err: '' };
+        return new DTO(true, '');
     }
 }
 
