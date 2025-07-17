@@ -1,4 +1,5 @@
 const ISubscriptionRepo = require('./subscriptionRepoInterface');
+const DTO = require('../types/dto');
 const { Subscription } = require('../db/models');
 
 class SequelizeSubscriptionRepo extends ISubscriptionRepo
@@ -8,11 +9,11 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
         try
         {
             await Subscription.create(data);
-            return { success: true, err: '' };
+            return new DTO(true, '');
         }
         catch (error)
         {
-            return { success: false, err: error.message };
+            return new DTO(false, error.message);
         }
     }
 
@@ -27,14 +28,14 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
         try
         {
             const sub = await Subscription.findOne({ where: { token } });
-            if (!sub) return { success: false, err: 'Subscription not found' };
+            if (!sub) return new DTO(false, 'Subscription not found');
             sub.confirmed = true;
             await sub.save();
-            return { success: true, err: '' };
+            return new DTO(true, '');
         }
         catch (error)
         {
-            return { success: false, err: error.message };
+            return new DTO(false, error.message);
         }
     }
 
@@ -43,13 +44,13 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
         try 
         {
             const sub = await Subscription.findOne({ where: { token } });
-            if (!sub) return { success: false, err: 'Subscription not found' };
+            if (!sub) return new DTO(false, 'Subscription not found');
             await sub.destroy();
-            return { success: true, err: '' };
+            return new DTO(true, '');
         }
         catch (error) 
         {
-            return { success: false, err: error.message };
+            return new DTO(false, error.message);
         }
     }
 
@@ -64,11 +65,11 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
         try
         {
             await Subscription.destroy({ where: {}, truncate: true, force: true });
-            return { success: true, err: '' };
+            return new DTO(true, '');
         }
         catch (error)
         {
-            return { success: false, err: error.message };
+            return new DTO(false, error.message);
         }
     }
 

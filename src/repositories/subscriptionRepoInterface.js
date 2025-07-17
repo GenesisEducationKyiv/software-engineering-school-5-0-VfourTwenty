@@ -1,4 +1,5 @@
 /**
+ * @typedef {import('../types/dto').DTO} DTO
  * @typedef {import('../types/subscription').Subscription} Subscription
  */
 
@@ -6,7 +7,7 @@ class ISubscriptionRepo
 {
     /**
      * @param {Subscription} data
-     * @returns {Promise<{success: boolean, err: string}>}
+     * @returns {Promise<DTO>}
      */
     async createSub(data) 
     {
@@ -33,7 +34,7 @@ class ISubscriptionRepo
 
     /**
      * @param {string} token
-     * @returns {Promise<{success: boolean, err: string}>}
+     * @returns {Promise<DTO>}
      */
     async confirmSub(token) 
     {
@@ -42,7 +43,7 @@ class ISubscriptionRepo
 
     /**
      * @param {string} token
-     * @returns {Promise<{success: boolean, err: string}>}
+     * @returns {Promise<DTO>}
      */
     async deleteSub(token) 
     {
@@ -50,7 +51,7 @@ class ISubscriptionRepo
     }
 
     /**
-     * @returns {Promise<{success: boolean, err: string}>}
+     * @returns {Promise<DTO>}
      */
     async clear() 
     {
