@@ -3,9 +3,12 @@ const SubscriptionError = require('../errors/SubscriptionError');
 
 class SubscriptionService
 {
-    constructor(emailService, subscriptionRepo, subscriptionValidator)
+    constructor(confirmationEmailUseCase, unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator)
     {
-        this.emailService = emailService;
+        // these two are from the domain layer
+        this.confirmationEmailUseCase = confirmationEmailUseCase;
+        this.unsubscribeEmailUseCase = unsubscribeEmailUseCase;
+        //
         this.subscriptionRepo = subscriptionRepo;
         this.validator = subscriptionValidator;
     }
@@ -16,7 +19,8 @@ class SubscriptionService
         if (!success) throw new SubscriptionError(err);
         const token = genToken();
         await this.subscriptionRepo.createSub({ email, city, frequency, confirmed: false, token });
-        await this.emailService.sendConfirmationEmail(email, token);
+        // rethrows email error is not successful
+        await this.confirmationEmailUseCase.sendConfirmationEmail(email, token);
         return token;
     }
 
@@ -36,7 +40,7 @@ class SubscriptionService
         const sub = await this.subscriptionRepo.findSub({ token });
         if (!sub) throw new SubscriptionError('TOKEN NOT FOUND');
         await this.subscriptionRepo.deleteSub(token);
-        await this.emailService.sendUnsubscribeEmail(sub.email, sub.city);
+        await this.unsubscribeEmailUseCase.sendUnsubscribeEmail(sub.email, sub.city);
         return sub;
     }
 

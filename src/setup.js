@@ -10,6 +10,10 @@ const SubscriptionService = require('./services/subscriptionService');
 const WeatherService = require('./services/weatherService');
 const EmailService = require('./services/emailService');
 
+const ConfirmationEmailUseCase = require('../src/domain/use-cases/confirmationEmailUseCase');
+const UnsubscribeEmailUseCase = require('../src/domain/use-cases/unsubscribeEmailUseCase');
+const WeatherUpdatesUseCase = require('./domain/use-cases/weatherUpdatesUseCase');
+
 const CityValidator = require('./validators/cityValidator');
 const SubscriptionValidator = require('./validators/subscriptionValidator');
 
@@ -34,12 +38,17 @@ const emailProviderManager = new EmailProviderManager(emailProviders);
 
 // 3
 const weatherService = new WeatherService(weatherProviderManager);
-const emailService = new EmailService(weatherService, subscriptionRepo, emailProviderManager);
+const emailService = new EmailService(emailProviderManager);
 
 const cityValidator = new CityValidator(weatherService);
 const subscriptionValidator = new SubscriptionValidator(subscriptionRepo, cityValidator);
 
-const subscriptionService = new SubscriptionService(emailService, subscriptionRepo, subscriptionValidator);
+const confirmationEmailUseCase = new ConfirmationEmailUseCase(emailService);
+const unsubscribeEmailUseCase = new UnsubscribeEmailUseCase(emailService);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionRepo);
+
+const subscriptionService = new SubscriptionService(confirmationEmailUseCase, unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
+// dependency injection will be replaced with communication (eg http)
 
 // 4
 const homepageController = new HomepageController();
@@ -48,7 +57,7 @@ const subscriptionApiController = new SubscriptionApiController(subscriptionServ
 const weatherApiController = new WeatherApiController(weatherService);
 
 // cron
-const emailJobHandler = new EmailJobHandler(emailService);
+const emailJobHandler = new EmailJobHandler(weatherUpdatesUseCase);
 const emailJobs = new EmailJobs(emailJobHandler);
 const cronMain = new CronMain(emailJobs);
 

@@ -1,8 +1,8 @@
 class EmailJobHandler
 {
-    constructor(emailService)
+    constructor(weatherUpdatesUseCase)
     {
-        this.emailService = emailService;
+        this.weatherUpdatesUseCase = weatherUpdatesUseCase;
     }
 
     async runDaily()
@@ -10,7 +10,7 @@ class EmailJobHandler
         console.log('Running daily email job…');
         try
         {
-            const { sent, failed, skipped } = await this.emailService.sendUpdates('daily');
+            const { sent, failed, skipped } = await this.weatherUpdatesUseCase.sendWeatherUpdates('daily');
             console.log(`Daily stats ➜ sent: ${sent}, skipped: ${skipped}, failed: ${failed}`);
         }
         catch (err)
@@ -24,7 +24,7 @@ class EmailJobHandler
         console.log('Running hourly email job…');
         try
         {
-            const { sent, failed, skipped } = await this.emailService.sendUpdates('hourly');
+            const { sent, failed, skipped } = await this.weatherUpdatesUseCase.sendWeatherUpdates('hourly');
             console.log(`Hourly stats ➜ sent: ${sent}, skipped: ${skipped}, failed: ${failed}`);
         }
         catch (err)
