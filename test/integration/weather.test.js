@@ -4,6 +4,7 @@ const express = require('express');
 
 const WeatherApiController = require('../../src/controllers/weatherApiController');
 const WeatherService = require('../../src/services/weatherService');
+const GetWeatherUseCase = require('../../src/domain/use-cases/weather/getWeatherUseCase');
 const MockWeatherProviderManager = require('../mocks/providers/weatherProviderManager.mock');
 
 const app = express();
@@ -11,7 +12,8 @@ app.use(express.json());
 
 const mockManager = new MockWeatherProviderManager();
 const weatherService = new WeatherService(mockManager);
-const weatherApiController = new WeatherApiController(weatherService);
+const getWeatherUseCase = new GetWeatherUseCase(weatherService);
+const weatherApiController = new WeatherApiController(getWeatherUseCase);
 
 app.get('/api/weather', weatherApiController.getWeather);
 

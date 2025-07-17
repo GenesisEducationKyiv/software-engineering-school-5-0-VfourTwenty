@@ -10,9 +10,16 @@ const SubscriptionService = require('./services/subscriptionService');
 const WeatherService = require('./services/weatherService');
 const EmailService = require('./services/emailService');
 
-const ConfirmationEmailUseCase = require('../src/domain/use-cases/confirmationEmailUseCase');
-const UnsubscribeEmailUseCase = require('../src/domain/use-cases/unsubscribeEmailUseCase');
-const WeatherUpdatesUseCase = require('./domain/use-cases/weatherUpdatesUseCase');
+const ConfirmationEmailUseCase = require('./domain/use-cases/emails/confirmationEmailUseCase');
+const UnsubscribeEmailUseCase = require('./domain/use-cases/emails/unsubscribeEmailUseCase');
+const WeatherUpdatesUseCase = require('./domain/use-cases/emails/weatherUpdatesUseCase');
+
+const SubscribeUserUseCase = require('./domain/use-cases/subscription/subscribeUserUseCase');
+const FindSubscriptionUseCase = require('./domain/use-cases/subscription/findSubscriptionUseCase');
+const ConfirmSubscriptionUseCase = require('./domain/use-cases/subscription/confirmSubscriptionUseCase');
+const UnsubscribeUserUseCase = require('./domain/use-cases/subscription/unsubscribeUserUseCase');
+
+const GetWeatherUseCase = require('./domain/use-cases/weather/getWeatherUseCase');
 
 const CityValidator = require('./validators/cityValidator');
 const SubscriptionValidator = require('./validators/subscriptionValidator');
@@ -48,13 +55,20 @@ const unsubscribeEmailUseCase = new UnsubscribeEmailUseCase(emailService);
 const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionRepo);
 
 const subscriptionService = new SubscriptionService(confirmationEmailUseCase, unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
-// dependency injection will be replaced with communication (eg http)
+// dependency injection will be replaced with communication (e.g. http)
 
-// 4
+const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionService);
+const findSubscriptionUseCase = new FindSubscriptionUseCase(subscriptionService);
+const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
+const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
+
+const getWeatherUseCase = new GetWeatherUseCase(weatherService);
+
+// 5
 const homepageController = new HomepageController();
-const subscriptionPublicController = new SubscriptionPublicController(subscriptionService);
-const subscriptionApiController = new SubscriptionApiController(subscriptionService);
-const weatherApiController = new WeatherApiController(weatherService);
+const subscriptionPublicController = new SubscriptionPublicController(findSubscriptionUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
+const subscriptionApiController = new SubscriptionApiController(subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
+const weatherApiController = new WeatherApiController(getWeatherUseCase);
 
 // cron
 const emailJobHandler = new EmailJobHandler(weatherUpdatesUseCase);

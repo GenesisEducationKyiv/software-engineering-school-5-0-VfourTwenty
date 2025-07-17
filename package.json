@@ -5,7 +5,6 @@
   "scripts": {
     "start": "mkdir -p logs && npm run migrate && node bin/www",
     "start:docker": "NODE_ENV=docker docker compose up --build backend",
-
     "migrate": "npx sequelize-cli db:migrate",
 
     "test:unit": "mocha test/unit --recursive",
@@ -46,6 +45,7 @@
     "@eslint/js": "^9.28.0",
     "@stylistic/eslint-plugin": "^4.4.1",
     "eslint": "^9.29.0",
+    "eslint-plugin-flowtype": "^8.0.3",
     "globals": "^16.2.0",
     "sequelize-cli": "^6.6.3",
     "sinon": "^20.0.0"

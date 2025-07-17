@@ -1,8 +1,9 @@
-const { buildUnsubscribeEmail } = require('../../utils/emailTemplates');
-const EmailError = require('../errors/EmailError');
+const { buildUnsubscribeEmail } = require('../../../utils/emailTemplates');
+const EmailError = require('../../errors/EmailError');
 
 class UnsubscribeEmailUseCase
 {
+    // depends on a service interface
     constructor(emailService)
     {
         this.emailService = emailService;

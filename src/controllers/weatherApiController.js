@@ -1,10 +1,8 @@
-const WeatherDTO = require('../domain/types/weather');
-
 class WeatherApiController
 {
-    constructor(weatherService)
+    constructor(getWeatherUseCase)
     {
-        this.weatherService = weatherService;
+        this.getWeatherUseCase = getWeatherUseCase;
     }
 
     getWeather = async (req, res) => 
@@ -17,7 +15,7 @@ class WeatherApiController
 
         try 
         {
-            const weather = await this.weatherService.fetchWeather(city);
+            const weather = await this.getWeatherUseCase.getWeather(city);
             console.log(weather);
 
             if (

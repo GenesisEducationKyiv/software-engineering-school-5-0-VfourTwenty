@@ -1,9 +1,9 @@
-const { buildWeatherUpdateEmail } = require('../../utils/emailTemplates');
-const EmailError = require('../errors/EmailError');
+const { buildWeatherUpdateEmail } = require('../../../utils/emailTemplates');
+const EmailError = require('../../errors/EmailError');
 
 class WeatherUpdatesUseCase
 {
-
+    // depends on a service interface
     constructor(emailService, weatherService, subscriptionRepo)
     {
         this.emailService = emailService;

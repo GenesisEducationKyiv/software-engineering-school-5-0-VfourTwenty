@@ -2,9 +2,15 @@ const { handleError } = require('../utils/errors');
 
 class SubscriptionApiController
 {
-    constructor(subscriptionService)
+    constructor(
+        subscribeUserUseCase,
+        confirmSubscriptionUseCase,
+        unsubscribeUserUseCase
+    )
     {
-        this.subscriptionService = subscriptionService;
+        this.subscribeUserUseCase = subscribeUserUseCase;
+        this.confirmSubscriptionUseCase = confirmSubscriptionUseCase;
+        this.unsubscribeUserUseCase = unsubscribeUserUseCase;
     }
 
     subscribe = async (req, res) => 
@@ -12,8 +18,7 @@ class SubscriptionApiController
         const { email, city, frequency } = req.body;
         try 
         {
-            // await validateCity(city, this.weatherService);
-            await this.subscriptionService.subscribeUser(email, city, frequency);
+            await this.subscribeUserUseCase.subscribe(email, city, frequency);
             res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
         }
         catch (err) 
@@ -27,7 +32,7 @@ class SubscriptionApiController
         const { token } = req.params;
         try 
         {
-            await this.subscriptionService.confirmSubscription(token);
+            await this.confirmSubscriptionUseCase.confirm(token);
             res.status(200).json({ message: 'Subscription confirmed successfully' });
         }
         catch (err) 
@@ -41,7 +46,7 @@ class SubscriptionApiController
         const { token } = req.params;
         try 
         {
-            await this.subscriptionService.unsubscribeUser(token);
+            await this.unsubscribeUserUseCase.unsubscribe(token);
             res.status(200).json({ message: 'Unsubscribed successfully' });
         }
         catch (err) 

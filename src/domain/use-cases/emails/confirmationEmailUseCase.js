@@ -1,8 +1,9 @@
-const { buildConfirmEmail } = require('../../utils/emailTemplates');
-const EmailError = require('../errors/EmailError');
+const { buildConfirmEmail } = require('../../../utils/emailTemplates');
+const EmailError = require('../../errors/EmailError');
 
 class ConfirmationEmailUseCase
 {
+    // depends on a service interface
     constructor(emailService)
     {
         this.emailService = emailService;

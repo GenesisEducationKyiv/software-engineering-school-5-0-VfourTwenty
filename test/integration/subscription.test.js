@@ -7,8 +7,13 @@ const SubscriptionApiController = require('../../src/controllers/subscriptionApi
 const SubscriptionService = require('../../src/services/subscriptionService');
 const EmailService = require('../../src/services/emailService');
 const WeatherService = require('../../src/services/weatherService');
-const ConfirmationEmailUseCase = require('../../src/domain/use-cases/confirmationEmailUseCase');
-const UnsubscribeEmailUseCase = require('../../src/domain/use-cases/unsubscribeEmailUseCase');
+
+const ConfirmationEmailUseCase = require('../../src/domain/use-cases/emails/confirmationEmailUseCase');
+const UnsubscribeEmailUseCase = require('../../src/domain/use-cases/emails/unsubscribeEmailUseCase');
+const SubscribeUserUseCase = require('../../src/domain/use-cases/subscription/subscribeUserUseCase');
+const ConfirmSubscriptionUseCase = require('../../src/domain/use-cases/subscription/confirmSubscriptionUseCase');
+const UnsubscribeUserUseCase = require('../../src/domain/use-cases/subscription/unsubscribeUserUseCase');
+
 const SubscriptionValidator = require('../../src/validators/subscriptionValidator');
 const CityValidator = require('../../src/validators/cityValidator');
 const EmailProviderManagerMock = require('../mocks/providers/emailProviderManager.mock');
@@ -20,12 +25,20 @@ const weatherProviderManagerMock = new WeatherProviderManagerMock();
 
 const weatherService = new WeatherService(weatherProviderManagerMock);
 const emailService = new EmailService(emailProviderManagerMock);
+
 const confirmationEmailUseCase = new ConfirmationEmailUseCase(emailService);
 const unsubscribeEmailUseCase = new UnsubscribeEmailUseCase(emailService);
+
 const cityValidator = new CityValidator(weatherService);
 const subscriptionValidator = new SubscriptionValidator(subscriptionRepo, cityValidator);
+
 const subscriptionService = new SubscriptionService(confirmationEmailUseCase, unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
-const subscriptionApiController = new SubscriptionApiController(subscriptionService);
+
+const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionService);
+const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
+const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
+
+const subscriptionApiController = new SubscriptionApiController(subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
 
 const app = express();
 app.use(express.json());
