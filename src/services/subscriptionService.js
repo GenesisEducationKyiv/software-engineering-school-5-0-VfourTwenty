@@ -1,5 +1,5 @@
 const { genToken } = require('../utils/strings');
-const SubscriptionError = require('../errors/SubscriptionError');
+const SubscriptionError = require('../domain/errors/SubscriptionError');
 
 class SubscriptionService
 {

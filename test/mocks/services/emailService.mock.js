@@ -1,4 +1,4 @@
-const EmailError = require("../../../src/errors/EmailError");
+const EmailError = require("../../../src/domain/errors/EmailError");
 
 class EmailServiceMock
 {

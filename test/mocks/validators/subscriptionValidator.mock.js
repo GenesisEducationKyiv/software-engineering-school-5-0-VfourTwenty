@@ -1,4 +1,4 @@
-const DTO = require('../../../src/types/dto');
+const DTO = require('../../../src/domain/types/dto');
 const {emailRegex} = require("../../../src/utils/strings");
 
 const validSub = {

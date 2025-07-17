@@ -1,4 +1,4 @@
-const WeatherDTO = require('../types/weather');
+const WeatherDTO = require('../domain/types/weather');
 
 class WeatherApiController
 {

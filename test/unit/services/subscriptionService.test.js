@@ -5,8 +5,8 @@ const SubscriptionService = require('../../../src/services/subscriptionService')
 const EmailServiceMock = require('../../mocks/services/emailService.mock');
 const SubscriptionRepoMock = require('../../mocks/repositories/subscriptionRepo.mock');
 const SubscriptionValidatorMock = require('../../mocks/validators/subscriptionValidator.mock');
-const EmailError = require("../../../src/errors/EmailError");
-const SubscriptionError = require("../../../src/errors/SubscriptionError");
+const EmailError = require("../../../src/domain/errors/EmailError");
+const SubscriptionError = require("../../../src/domain/errors/SubscriptionError");
 
 const emailServiceMock = new EmailServiceMock();
 const subscriptionRepoMock = new SubscriptionRepoMock();

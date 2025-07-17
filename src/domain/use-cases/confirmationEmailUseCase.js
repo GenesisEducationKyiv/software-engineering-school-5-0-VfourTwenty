@@ -1,5 +1,5 @@
 const { buildConfirmEmail } = require('../../utils/emailTemplates');
-const EmailError = require('../../errors/EmailError');
+const EmailError = require('../errors/EmailError');
 
 class ConfirmationEmailUseCase
 {

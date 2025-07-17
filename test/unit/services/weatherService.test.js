@@ -1,6 +1,6 @@
 const {expect} = require("chai");
 const WeatherService = require('../../../src/services/weatherService');
-const WeatherError = require('../../../src/errors/WeatherError');
+const WeatherError = require('../../../src/domain/errors/WeatherError');
 const MockWeatherProviderManager = require('../../mocks/providers/weatherProviderManager.mock');
 
 const mockWeatherProviderManager = new MockWeatherProviderManager();

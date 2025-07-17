@@ -1,5 +1,5 @@
 const { emailRegex } = require('../utils/strings');
-const DTO = require('../../src/types/dto');
+const DTO = require('../domain/types/dto');
 
 class SubscriptionValidator 
 {

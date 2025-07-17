@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 const EmailService = require('../../../src/services/emailService');
-const EmailError = require('../../../src/errors/EmailError');
+const EmailError = require('../../../src/domain/errors/EmailError');
 
 const SubscriptionRepoMock = require('../../mocks/repositories/subscriptionRepo.mock');
 const WeatherServiceMock = require('../../mocks/services/weatherService.mock')

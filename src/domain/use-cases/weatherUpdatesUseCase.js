@@ -1,5 +1,5 @@
 const { buildWeatherUpdateEmail } = require('../../utils/emailTemplates');
-const EmailError = require('../../errors/EmailError');
+const EmailError = require('../errors/EmailError');
 
 class WeatherUpdatesUseCase
 {

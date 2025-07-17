@@ -1,6 +1,6 @@
 const {expect} = require("chai");
 const SubscriptionValidator = require('../../../src/validators/subscriptionValidator');
-const SubscriptionError = require('../../../src/errors/SubscriptionError');
+const SubscriptionError = require('../../../src/domain/errors/SubscriptionError');
 
 const SubscriptionRepoMock = require('../../mocks/repositories/subscriptionRepo.mock');
 const CityValidatorMock = require('../../mocks/validators/cityValidator.mock');

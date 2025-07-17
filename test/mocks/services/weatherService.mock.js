@@ -1,4 +1,4 @@
-const WeatherError = require("../../../src/errors/WeatherError");
+const WeatherError = require("../../../src/domain/errors/WeatherError");
 
 class WeatherServiceMock
 {

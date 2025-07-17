@@ -1,4 +1,4 @@
-const WeatherError = require('../errors/WeatherError');
+const WeatherError = require('../domain/errors/WeatherError');
 // const { logProviderResponse } = require('../utils/logger');
 
 class WeatherService 
