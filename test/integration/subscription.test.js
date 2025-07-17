@@ -7,20 +7,24 @@ const SubscriptionApiController = require('../../src/controllers/subscriptionApi
 const SubscriptionService = require('../../src/services/subscriptionService');
 const EmailService = require('../../src/services/emailService');
 const WeatherService = require('../../src/services/weatherService');
+const ConfirmationEmailUseCase = require('../../src/domain/use-cases/confirmationEmailUseCase');
+const UnsubscribeEmailUseCase = require('../../src/domain/use-cases/unsubscribeEmailUseCase');
 const SubscriptionValidator = require('../../src/validators/subscriptionValidator');
 const CityValidator = require('../../src/validators/cityValidator');
-const MockEmailProviderManager = require('../mocks/providers/emailProviderManager.mock');
-const MockWeatherProviderManager = require('../mocks/providers/weatherProviderManager.mock');
+const EmailProviderManagerMock = require('../mocks/providers/emailProviderManager.mock');
+const WeatherProviderManagerMock = require('../mocks/providers/weatherProviderManager.mock');
 
 const subscriptionRepo = new SubscriptionRepo();
-const mockEmailProviderManager = new MockEmailProviderManager();
-const mockWeatherProviderManager = new MockWeatherProviderManager();
+const emailProviderManagerMock = new EmailProviderManagerMock();
+const weatherProviderManagerMock = new WeatherProviderManagerMock();
 
-const weatherService = new WeatherService(mockWeatherProviderManager);
-const emailService = new EmailService(weatherService, subscriptionRepo, mockEmailProviderManager);
+const weatherService = new WeatherService(weatherProviderManagerMock);
+const emailService = new EmailService(emailProviderManagerMock);
+const confirmationEmailUseCase = new ConfirmationEmailUseCase(emailService);
+const unsubscribeEmailUseCase = new UnsubscribeEmailUseCase(emailService);
 const cityValidator = new CityValidator(weatherService);
 const subscriptionValidator = new SubscriptionValidator(subscriptionRepo, cityValidator);
-const subscriptionService = new SubscriptionService(emailService, subscriptionRepo, subscriptionValidator);
+const subscriptionService = new SubscriptionService(confirmationEmailUseCase, unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
 const subscriptionApiController = new SubscriptionApiController(subscriptionService);
 
 const app = express();

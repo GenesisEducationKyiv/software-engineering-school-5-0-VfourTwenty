@@ -15,7 +15,7 @@ class SubscriptionValidatorMock
         {
             return new DTO(false, 'MISSING REQUIRED FIELDS');
         }
-        else if (email === validSub.email && city === validSub.city && frequency === validSub.frequency)
+        else if ((email === validSub.email || email === 'emailshouldfail@mail.com') && city === validSub.city && frequency === validSub.frequency)
         {
             return new DTO(true, '');
         }

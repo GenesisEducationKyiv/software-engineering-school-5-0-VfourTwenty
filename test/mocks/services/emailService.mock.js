@@ -4,7 +4,7 @@ class EmailServiceMock
 {
     async sendConfirmationEmail(to, subject, body)
     {
-        if (to === 'shouldfail@mail.com')
+        if (to === 'emailshouldfail@mail.com')
         {
             throw new EmailError('CONFIRMATION EMAIL FAILED');
         }
