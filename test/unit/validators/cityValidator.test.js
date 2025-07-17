@@ -1,4 +1,4 @@
-const CityValidator = require('../../../src/validators/cityValidator');
+const CityValidator = require('../../../src/domain/validators/cityValidator');
 const WeatherServiceMock = require('../../mocks/services/weatherService.mock');
 const {expect} = require("chai");
 

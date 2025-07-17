@@ -14,8 +14,8 @@ const SubscribeUserUseCase = require('../../src/domain/use-cases/subscription/su
 const ConfirmSubscriptionUseCase = require('../../src/domain/use-cases/subscription/confirmSubscriptionUseCase');
 const UnsubscribeUserUseCase = require('../../src/domain/use-cases/subscription/unsubscribeUserUseCase');
 
-const SubscriptionValidator = require('../../src/validators/subscriptionValidator');
-const CityValidator = require('../../src/validators/cityValidator');
+const SubscriptionValidator = require('../../src/domain/validators/subscriptionValidator');
+const CityValidator = require('../../src/domain/validators/cityValidator');
 const EmailProviderManagerMock = require('../mocks/providers/emailProviderManager.mock');
 const WeatherProviderManagerMock = require('../mocks/providers/weatherProviderManager.mock');
 

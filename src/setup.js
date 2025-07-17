@@ -21,8 +21,8 @@ const UnsubscribeUserUseCase = require('./domain/use-cases/subscription/unsubscr
 
 const GetWeatherUseCase = require('./domain/use-cases/weather/getWeatherUseCase');
 
-const CityValidator = require('./validators/cityValidator');
-const SubscriptionValidator = require('./validators/subscriptionValidator');
+const CityValidator = require('./domain/validators/cityValidator');
+const SubscriptionValidator = require('./domain/validators/subscriptionValidator');
 
 const HomepageController = require('./controllers/homepageController');
 const SubscriptionPublicController = require('./controllers/subscriptionPublicController');
