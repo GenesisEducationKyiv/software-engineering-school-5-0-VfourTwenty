@@ -1,6 +1,4 @@
 const { buildWeatherUpdateEmail } = require('../../../utils/emailTemplates');
-const EmailError = require('../../errors/EmailError');
-const DTO = require('../../types/dto');
 
 class WeatherUpdatesUseCase
 {
@@ -37,7 +35,6 @@ class WeatherUpdatesUseCase
             try
             {
                 const response = await this.weatherService.fetchWeather(sub.city);
-                console.log('data in weather updates use case: ', response);
                 if (!response.success)
                 {
                     console.warn(`⚠️ No weather data available for ${sub.city}, skipping ${sub.email}, error: ${response.err}`);
