@@ -1,5 +1,4 @@
 const { genToken } = require('../utils/strings');
-const SubscriptionError = require('../domain/errors/SubscriptionError');
 const DTO = require('../domain/types/dto');
 const SubscriptionDTO = require('../domain/types/subscription');
 
