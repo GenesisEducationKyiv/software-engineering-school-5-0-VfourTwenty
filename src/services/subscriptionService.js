@@ -16,9 +16,11 @@ class SubscriptionService
 
     async subscribeUser(email, city, frequency) 
     {
-        const result = await this.validator.validateNewSubscription(email, city, frequency);
+        const validationResult = await this.validator.validateNewSubscription(email, city, frequency);
         // DTO with sub validation errors mapped
-        if (!result.success) return result;
+        if (!validationResult.success) return validationResult;
+        const duplicateCheckResult = await this.subscriptionRepo.findSub({ email: email, city: city, frequency: frequency });
+        if (duplicateCheckResult.success) return new DTO(false, 'DUPLICATE');
         const token = genToken();
         await this.subscriptionRepo.createSub({ email, city, frequency, confirmed: false, token });
 

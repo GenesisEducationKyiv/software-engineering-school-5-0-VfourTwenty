@@ -3,9 +3,8 @@ const DTO = require('../types/dto');
 
 class SubscriptionValidator 
 {
-    constructor(subscriptionRepo, cityValidator) 
+    constructor(cityValidator)
     {
-        this.subscriptionRepo = subscriptionRepo;
         this.cityValidator = cityValidator;
     }
 
@@ -25,11 +24,6 @@ class SubscriptionValidator
         }
         const cityIsValid = await this.cityValidator.validate(city);
         if (!cityIsValid) return new DTO(false, 'INVALID CITY');
-        const result = await this.subscriptionRepo.findSub({ email, city, frequency });
-        if (result.success)
-        {
-            return new DTO(false, 'DUPLICATE');
-        }
         return new DTO(true, '');
     }
 }

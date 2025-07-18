@@ -50,7 +50,7 @@ const emailService = new EmailService(emailProviderManager);
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
 
 const cityValidator = new CityValidator(getWeatherUseCase);
-const subscriptionValidator = new SubscriptionValidator(subscriptionRepo, cityValidator);
+const subscriptionValidator = new SubscriptionValidator(cityValidator);
 
 const confirmationEmailUseCase = new ConfirmationEmailUseCase(emailService);
 const unsubscribeEmailUseCase = new UnsubscribeEmailUseCase(emailService);

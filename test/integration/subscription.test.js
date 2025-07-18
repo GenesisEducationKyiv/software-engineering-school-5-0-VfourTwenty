@@ -11,6 +11,7 @@ const WeatherService = require('../../src/services/weatherService');
 const ConfirmationEmailUseCase = require('../../src/domain/use-cases/emails/confirmationEmailUseCase');
 const UnsubscribeEmailUseCase = require('../../src/domain/use-cases/emails/unsubscribeEmailUseCase');
 const SubscribeUserUseCase = require('../../src/domain/use-cases/subscription/subscribeUserUseCase');
+const FindSubscriptionUseCase = require('../../src/domain/use-cases/subscription/findSubscriptionUseCase');
 const ConfirmSubscriptionUseCase = require('../../src/domain/use-cases/subscription/confirmSubscriptionUseCase');
 const UnsubscribeUserUseCase = require('../../src/domain/use-cases/subscription/unsubscribeUserUseCase');
 const GetWeatherUseCase = require('../../src/domain/use-cases/weather/getWeatherUseCase');
@@ -33,11 +34,12 @@ const unsubscribeEmailUseCase = new UnsubscribeEmailUseCase(emailService);
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
 
 const cityValidator = new CityValidator(getWeatherUseCase);
-const subscriptionValidator = new SubscriptionValidator(subscriptionRepo, cityValidator);
+const subscriptionValidator = new SubscriptionValidator(cityValidator);
 
 const subscriptionService = new SubscriptionService(confirmationEmailUseCase, unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
 
 const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionService);
+const findSubscriptionUseCase = new FindSubscriptionUseCase(subscriptionService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
 
