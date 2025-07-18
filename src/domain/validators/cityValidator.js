@@ -1,24 +1,14 @@
 class CityValidator
 {
-    constructor(weatherService)
+    constructor(getWeatherUseCase)
     {
-        this.weatherService = weatherService;
+        this.getWeatherUseCase = getWeatherUseCase;
     }
 
     async validate(city)
     {
-        const result = await this.weatherService.fetchWeather(city);
+        const result = await this.getWeatherUseCase.getWeather(city);
         return result.success;
-        // try
-        // {
-        //     await this.weatherService.fetchWeather(city);
-        //     return true;
-        // }
-        // catch (err)
-        // {
-        //     console.log('City validation error: ', err.message);
-        //     return false;
-        // }
     }
 }
 

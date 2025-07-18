@@ -47,7 +47,9 @@ const emailProviderManager = new EmailProviderManager(emailProviders);
 const weatherService = new WeatherService(weatherProviderManager);
 const emailService = new EmailService(emailProviderManager);
 
-const cityValidator = new CityValidator(weatherService);
+const getWeatherUseCase = new GetWeatherUseCase(weatherService);
+
+const cityValidator = new CityValidator(getWeatherUseCase);
 const subscriptionValidator = new SubscriptionValidator(subscriptionRepo, cityValidator);
 
 const confirmationEmailUseCase = new ConfirmationEmailUseCase(emailService);
@@ -61,8 +63,6 @@ const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionService);
 const findSubscriptionUseCase = new FindSubscriptionUseCase(subscriptionService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
-
-const getWeatherUseCase = new GetWeatherUseCase(weatherService);
 
 // 5
 const homepageController = new HomepageController();

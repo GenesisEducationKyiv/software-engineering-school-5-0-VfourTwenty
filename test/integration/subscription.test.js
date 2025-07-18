@@ -13,6 +13,7 @@ const UnsubscribeEmailUseCase = require('../../src/domain/use-cases/emails/unsub
 const SubscribeUserUseCase = require('../../src/domain/use-cases/subscription/subscribeUserUseCase');
 const ConfirmSubscriptionUseCase = require('../../src/domain/use-cases/subscription/confirmSubscriptionUseCase');
 const UnsubscribeUserUseCase = require('../../src/domain/use-cases/subscription/unsubscribeUserUseCase');
+const GetWeatherUseCase = require('../../src/domain/use-cases/weather/getWeatherUseCase');
 
 const SubscriptionValidator = require('../../src/domain/validators/subscriptionValidator');
 const CityValidator = require('../../src/domain/validators/cityValidator');
@@ -29,7 +30,9 @@ const emailService = new EmailService(emailProviderManagerMock);
 const confirmationEmailUseCase = new ConfirmationEmailUseCase(emailService);
 const unsubscribeEmailUseCase = new UnsubscribeEmailUseCase(emailService);
 
-const cityValidator = new CityValidator(weatherService);
+const getWeatherUseCase = new GetWeatherUseCase(weatherService);
+
+const cityValidator = new CityValidator(getWeatherUseCase);
 const subscriptionValidator = new SubscriptionValidator(subscriptionRepo, cityValidator);
 
 const subscriptionService = new SubscriptionService(confirmationEmailUseCase, unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
