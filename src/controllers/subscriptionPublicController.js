@@ -18,31 +18,23 @@ class SubscriptionPublicController
     confirm = async (req, res) => 
     {
         const { token } = req.params;
-        const result = await this.confirmSubscriptionUseCase.confirm(token);
-        if (result.success)
+        const confirmResult = await this.confirmSubscriptionUseCase.confirm(token);
+        if (confirmResult.success)
         {
-            const sub = await this.findSubscriptionUseCase.find(token);
+            const findResult = await this.findSubscriptionUseCase.find(token);
+            if (!findResult.success)
+            {
+                let errorMsg = mapErrorToClientMessage(findResult.err);
+                const errorUrl = buildErrorUrl(errorMsg);
+                return res.redirect(errorUrl);
+            }
+            const sub = findResult.subscription;
             const url = buildConfirmedUrl(sub.city, sub.frequency, token);
             return res.redirect(url);
         }
-        let errorMsg = mapErrorToClientMessage(result.err) || 'Internal server error 1';
-        console.log('the error message is:', errorMsg);
+        let errorMsg = mapErrorToClientMessage(confirmResult.err) || 'Internal server error 1';
         const errorUrl = buildErrorUrl(errorMsg);
         return res.redirect(errorUrl);
-        // try
-        // {
-        //     await this.confirmSubscriptionUseCase.confirm(token);
-        //     const sub = await this.findSubscriptionUseCase.find(token);
-        //     const url = buildConfirmedUrl(sub.city, sub.frequency, token);
-        //     return res.redirect(url);
-        // }
-        // catch (err)
-        // {
-        //     let errorMsg = mapErrorToClientMessage(err) || 'Internal server error 1';
-        //     console.log('the error message is:', errorMsg);
-        //     const errorUrl = buildErrorUrl(errorMsg);
-        //     return res.redirect(errorUrl);
-        // }
     };
 
     unsubscribe = async (req, res) => 

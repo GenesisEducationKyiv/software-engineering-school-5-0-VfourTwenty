@@ -31,7 +31,8 @@ class SubscriptionService
     async confirmSubscription(token) 
     {
         if (!token || token.length < 10) return new DTO(false, 'INVALID TOKEN');
-        const sub = await this.subscriptionRepo.findSub({ token });
+        const result = await this.subscriptionRepo.findSub({ token });
+        const sub = result.subscription;
         if (!sub) return new DTO(false, 'TOKEN NOT FOUND');
         if (sub.confirmed) return new DTO(false, 'ALREADY CONFIRMED');
         await this.subscriptionRepo.confirmSub(token);
@@ -41,7 +42,8 @@ class SubscriptionService
     async unsubscribeUser(token) 
     {
         if (!token || token.length < 10) return new DTO(false, 'INVALID TOKEN');
-        const sub = await this.subscriptionRepo.findSub({ token });
+        const result = await this.subscriptionRepo.findSub({ token });
+        const sub = result.subscription;
         if (!sub) return new DTO(false, 'TOKEN NOT FOUND');
         await this.subscriptionRepo.deleteSub(token);
         const emailResult = await this.unsubscribeEmailUseCase.sendUnsubscribeEmail(sub.email, sub.city);

@@ -22,35 +22,18 @@ class SubscriptionApiController
             return res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
         }
         handleError(result.err, res);
-        // try
-        // {
-        //     await this.subscribeUserUseCase.subscribe(email, city, frequency);
-        //     res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
-        // }
-        // catch (err)
-        // {
-        //     handleError(err, res);
-        // }
     };
 
     confirm = async (req, res) => 
     {
         const { token } = req.params;
+        console.log('incoming token in sub api controller: ', token);
         const result = await this.confirmSubscriptionUseCase.confirm(token);
         if (result.success)
         {
             return res.status(200).json({ message: 'Subscription confirmed successfully' });
         }
         handleError(result.err, res);
-        // try
-        // {
-        //     await this.confirmSubscriptionUseCase.confirm(token);
-        //     res.status(200).json({ message: 'Subscription confirmed successfully' });
-        // }
-        // catch (err)
-        // {
-        //     handleError(err, res);
-        // }
     };
 
     unsubscribe = async (req, res) => 
@@ -62,15 +45,6 @@ class SubscriptionApiController
             return res.status(200).json({ message: 'Unsubscribed successfully' });
         }
         handleError(result.err, res);
-        // try
-        // {
-        //     await this.unsubscribeUserUseCase.unsubscribe(token);
-        //     res.status(200).json({ message: 'Unsubscribed successfully' });
-        // }
-        // catch (err)
-        // {
-        //     handleError(err, res);
-        // }
     };
 }
 

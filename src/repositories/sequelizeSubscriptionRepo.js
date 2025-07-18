@@ -1,5 +1,6 @@
 const ISubscriptionRepo = require('./subscriptionRepoInterface');
 const DTO = require('../domain/types/dto');
+const SubscriptionDTO = require('../domain/types/subscription');
 const { Subscription } = require('../db/models');
 
 class SequelizeSubscriptionRepo extends ISubscriptionRepo
@@ -20,7 +21,8 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
     async findSub(params)
     {
         const sub = await Subscription.findOne({ where: params });
-        return sub ? this.toPlainObject(sub) : null;
+        if (!sub) return new DTO(false, 'Subscription not found');
+        return new SubscriptionDTO(true, '', this.toPlainObject(sub));
     }
 
     async confirmSub(token)

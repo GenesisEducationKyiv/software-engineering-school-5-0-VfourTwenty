@@ -118,7 +118,8 @@ describe('POST /api/subscribe', () => {
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('Subscription successful. Confirmation email sent.');
 
-        const sub = await subscriptionRepo.findSub({ email: 'delivered@resend.dev', city: 'Kyiv', frequency: 'daily' })
+        const result = await subscriptionRepo.findSub({ email: 'delivered@resend.dev', city: 'Kyiv', frequency: 'daily' })
+        const sub = result.subscription;
         expect(sub).to.exist;
         expect(sub.confirmed).to.be.false;
         expect(sub.token).to.be.a('string');
@@ -153,7 +154,8 @@ describe('GET /api/confirm/:token', () => {
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('Subscription confirmed successfully');
 
-        const sub = await subscriptionRepo.findSub({token: token});
+        const result = await subscriptionRepo.findSub({token: token});
+        const sub = result.subscription;
         expect(sub.confirmed).to.be.true;
     });
 
@@ -195,7 +197,7 @@ describe('GET /api/unsubscribe/:token', () => {
         expect(res.body.message).to.equal('Unsubscribed successfully');
 
         const check = await subscriptionRepo.findSub({ token: token })
-        expect(check).to.be.null;
+        expect(check.success).to.be.false;
     });
 
     it('should return 404 if token not found', async () => {

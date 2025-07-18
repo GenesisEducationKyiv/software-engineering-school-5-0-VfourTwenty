@@ -25,8 +25,8 @@ class SubscriptionValidator
         }
         const cityIsValid = await this.cityValidator.validate(city);
         if (!cityIsValid) return new DTO(false, 'INVALID CITY');
-        const exists = await this.subscriptionRepo.findSub({ email, city, frequency });
-        if (exists) 
+        const result = await this.subscriptionRepo.findSub({ email, city, frequency });
+        if (result.success)
         {
             return new DTO(false, 'DUPLICATE');
         }
