@@ -1,4 +1,5 @@
 const WeatherError = require('../domain/errors/WeatherError');
+const DTO = require('../domain/types/dto');
 // const { logProviderResponse } = require('../utils/logger');
 
 class WeatherService 
@@ -15,13 +16,15 @@ class WeatherService
      */
     async fetchWeather(city) 
     {
-        const weather = await this.weatherProviderManager.fetchWeather(city);
+        const result = await this.weatherProviderManager.fetchWeather(city);
+        console.log('result in weather Service', result);
         // all providers have failed
-        if (!weather)
+        if (!result.success)
         {
-            throw new WeatherError('NO WEATHER DATA');
+            return new DTO(false, 'NO WEATHER DATA');
+            // throw new WeatherError('NO WEATHER DATA');
         }
-        return weather;
+        return result;
     }
 }
 

@@ -12,38 +12,61 @@ class WeatherApiController
         {
             return res.status(400).json({ error: 'City is required' });
         }
-
-        try 
+        const result = await this.getWeatherUseCase.getWeather(city);
+        console.log('result in weather api controller', result);
+        if (!result.success)
         {
-            const weather = await this.getWeatherUseCase.getWeather(city);
-            console.log(weather);
-
-            if (
-                typeof weather.temperature !== 'number' ||
-                typeof weather.humidity !== 'number' ||
-                typeof weather.description !== 'string'
-            )
+            if (result.err === 'NO WEATHER DATA')
             {
-                return res.status(404).json({ error: 'Invalid weather data format' });
+                return res.status(404).json({ error: 'No data available for this location' });
             }
-
-            res.json({
-                temperature: weather.temperature,
-                humidity: weather.humidity,
-                description: weather.description
-            });
+            return res.status(500).json({ error: result.err });
         }
-        catch (err) 
+        const weather = result.weather;
+        if (
+            typeof weather.temperature !== 'number' ||
+            typeof weather.humidity !== 'number' ||
+            typeof weather.description !== 'string'
+        )
         {
-            if (err.message === 'NO WEATHER DATA') 
-            {
-                res.status(404).json({ error: 'No data available for this location' });
-            }
-            else 
-            {
-                res.status(500).json({ error: err.message });
-            }
+            return res.status(404).json({ error: 'Invalid weather data format' });
         }
+        return res.json({
+            temperature: weather.temperature,
+            humidity: weather.humidity,
+            description: weather.description
+        });
+        // try
+        // {
+        //     const weather = await this.getWeatherUseCase.getWeather(city);
+        //     console.log(weather);
+        //
+        //     if (
+        //         typeof weather.temperature !== 'number' ||
+        //         typeof weather.humidity !== 'number' ||
+        //         typeof weather.description !== 'string'
+        //     )
+        //     {
+        //         return res.status(404).json({ error: 'Invalid weather data format' });
+        //     }
+        //
+        //     res.json({
+        //         temperature: weather.temperature,
+        //         humidity: weather.humidity,
+        //         description: weather.description
+        //     });
+        // }
+        // catch (err)
+        // {
+        //     if (err.message === 'NO WEATHER DATA')
+        //     {
+        //         res.status(404).json({ error: 'No data available for this location' });
+        //     }
+        //     else
+        //     {
+        //         res.status(500).json({ error: err.message });
+        //     }
+        // }
     };
 }
 

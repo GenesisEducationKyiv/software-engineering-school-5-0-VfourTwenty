@@ -37,13 +37,13 @@ class WeatherUpdatesUseCase
             {
                 const response = await this.weatherService.fetchWeather(sub.city);
                 console.log('data in weather updates use case: ', response);
-                if (!response)
+                if (!response.success)
                 {
-                    console.warn(`⚠️ No weather data available for ${sub.city}, skipping ${sub.email}`);
+                    console.warn(`⚠️ No weather data available for ${sub.city}, skipping ${sub.email}, error: ${response.err}`);
                     skipped++;
                     continue;
                 }
-                const ok = await this.sendWeatherUpdate(sub.email, sub.city, response, sub.token);
+                const ok = await this.sendWeatherUpdate(sub.email, sub.city, response.weather, sub.token);
                 if (ok)
                 {
                     sent++;
