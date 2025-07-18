@@ -1,4 +1,3 @@
-const WeatherError = require('../domain/errors/WeatherError');
 const DTO = require('../domain/types/dto');
 // const { logProviderResponse } = require('../utils/logger');
 
@@ -21,7 +20,6 @@ class WeatherService
         if (!result.success)
         {
             return new DTO(false, 'NO WEATHER DATA');
-            // throw new WeatherError('NO WEATHER DATA');
         }
         return result;
     }
