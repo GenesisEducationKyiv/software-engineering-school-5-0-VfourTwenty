@@ -13,7 +13,6 @@ class WeatherApiController
             return res.status(400).json({ error: 'City is required' });
         }
         const result = await this.getWeatherUseCase.getWeather(city);
-        console.log('result in weather api controller', result);
         if (!result.success)
         {
             if (result.err === 'NO WEATHER DATA')

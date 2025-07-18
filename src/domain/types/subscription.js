@@ -14,12 +14,12 @@ class SubscriptionDTO extends DTO
     /**
      * @param {boolean} success
      * @param {string} err
-     * @param {Weather|null} data
+     * @param {Partial<Subscription>|null} subscription
      */
-    constructor(success, err, data)
+    constructor(success, err, subscription)
     {
         super(success, err);
-        this.data = data;
+        this.subscription = subscription;
     }
 }
 

@@ -13,7 +13,7 @@ const errorMap = {
 
 function handleError(err, res, map = errorMap)
 {
-    const mapped = map[err.message];
+    const mapped = map[err];
     if (mapped) 
     {
         res.status(mapped.status).json({ error: mapped.message });
@@ -26,7 +26,7 @@ function handleError(err, res, map = errorMap)
 
 function mapErrorToClientMessage(err, map = errorMap)
 {
-    return map[err.message].message || null;
+    return map[err].message || null;
 }
 
 module.exports = { handleError, mapErrorToClientMessage };

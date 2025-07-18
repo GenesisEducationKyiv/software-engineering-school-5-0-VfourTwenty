@@ -20,7 +20,6 @@ class WeatherProviderManager extends IWeatherProvider
             {
                 // Receives WeatherDTO
                 const result = await provider.fetchWeather(city);
-                console.log('result in provider manager', result);
                 // logProviderResponse(this.logPath, provider.name, { city, ...result });
                 if (result?.success) return result;
                 else return new DTO(false, result.err);

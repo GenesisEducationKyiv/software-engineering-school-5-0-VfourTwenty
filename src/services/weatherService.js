@@ -17,7 +17,6 @@ class WeatherService
     async fetchWeather(city) 
     {
         const result = await this.weatherProviderManager.fetchWeather(city);
-        console.log('result in weather Service', result);
         // all providers have failed
         if (!result.success)
         {

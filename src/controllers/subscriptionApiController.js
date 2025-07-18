@@ -16,43 +16,61 @@ class SubscriptionApiController
     subscribe = async (req, res) => 
     {
         const { email, city, frequency } = req.body;
-        try 
+        const result = await this.subscribeUserUseCase.subscribe(email, city, frequency);
+        if (result.success)
         {
-            await this.subscribeUserUseCase.subscribe(email, city, frequency);
-            res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
+            return res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
         }
-        catch (err) 
-        {
-            handleError(err, res);
-        }
+        handleError(result.err, res);
+        // try
+        // {
+        //     await this.subscribeUserUseCase.subscribe(email, city, frequency);
+        //     res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
+        // }
+        // catch (err)
+        // {
+        //     handleError(err, res);
+        // }
     };
 
     confirm = async (req, res) => 
     {
         const { token } = req.params;
-        try 
+        const result = await this.confirmSubscriptionUseCase.confirm(token);
+        if (result.success)
         {
-            await this.confirmSubscriptionUseCase.confirm(token);
-            res.status(200).json({ message: 'Subscription confirmed successfully' });
+            return res.status(200).json({ message: 'Subscription confirmed successfully' });
         }
-        catch (err) 
-        {
-            handleError(err, res);
-        }
+        handleError(result.err, res);
+        // try
+        // {
+        //     await this.confirmSubscriptionUseCase.confirm(token);
+        //     res.status(200).json({ message: 'Subscription confirmed successfully' });
+        // }
+        // catch (err)
+        // {
+        //     handleError(err, res);
+        // }
     };
 
     unsubscribe = async (req, res) => 
     {
         const { token } = req.params;
-        try 
+        const result = await this.unsubscribeUserUseCase.unsubscribe(token);
+        if (result.success)
         {
-            await this.unsubscribeUserUseCase.unsubscribe(token);
-            res.status(200).json({ message: 'Unsubscribed successfully' });
+            return res.status(200).json({ message: 'Unsubscribed successfully' });
         }
-        catch (err) 
-        {
-            handleError(err, res);
-        }
+        handleError(result.err, res);
+        // try
+        // {
+        //     await this.unsubscribeUserUseCase.unsubscribe(token);
+        //     res.status(200).json({ message: 'Unsubscribed successfully' });
+        // }
+        // catch (err)
+        // {
+        //     handleError(err, res);
+        // }
     };
 }
 

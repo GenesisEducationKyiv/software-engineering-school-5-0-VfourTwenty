@@ -231,7 +231,8 @@ describe('SkyFetch E2E Tests', () => {
 
     it('should confirm a new subscription with a valid token', async () => {
         await subscriptionRepo.clear();
-        const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
+        const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
+        const token = result.subscription.token;
         const url = confirmUrl(token);
         console.log('Navigating to confirm URL:', url);
         let redirectDetected = false;
@@ -253,7 +254,8 @@ describe('SkyFetch E2E Tests', () => {
     it('should unsubscribe a user with a valid token', async () => {
 
         await subscriptionRepo.clear();
-        const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
+        const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
+        const token = result.subscription.token;
         await subscriptionService.confirmSubscription(token);
         const url = `${baseURL}/unsubscribe/${token}`;
         console.log('Navigating to unsubscribe URL:', url);
@@ -275,7 +277,8 @@ describe('SkyFetch E2E Tests', () => {
     // Error page ------------------------------------ \
     it('should not not allow duplicate confirmation and navigate to error page', async () => {
         await subscriptionRepo.clear();
-        const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
+        const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
+        const token = result.subscription.token;
         await subscriptionService.confirmSubscription(token);
         console.log('Navigating to confirm URL for duplicate check:', confirmUrl(token));
         try {
@@ -318,7 +321,8 @@ describe('SkyFetch E2E Tests', () => {
 
     it('should not allow to reuse a token that was deleted and should navigate to error page', async () => {
         await subscriptionRepo.clear();
-        const token = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
+        const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
+        const token = result.subscription.token;
         await subscriptionService.unsubscribeUser(token);
         console.log('Navigating to confirm URL with deleted token:', confirmUrl(token));
         try {
