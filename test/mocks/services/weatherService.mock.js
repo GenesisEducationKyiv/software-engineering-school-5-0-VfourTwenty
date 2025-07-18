@@ -1,11 +1,12 @@
 const WeatherError = require("../../../src/domain/errors/WeatherError");
 const DTO = require('../../../src/domain/types/dto');
+const WeatherDTO = require('../../../src/domain/types/weather');
 
 class WeatherServiceMock
 {
     async fetchWeather(city) {
         if (["Kyiv", "Lviv", "Odesa", "Dnipro"].includes(city)) {
-            return new DTO(true, '', {
+            return new WeatherDTO(true, '', {
                 temperature: 22,
                 humidity: 60,
                 description: "Clear sky"
