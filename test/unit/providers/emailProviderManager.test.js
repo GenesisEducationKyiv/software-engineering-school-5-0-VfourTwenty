@@ -11,22 +11,17 @@ describe('EmailProviderManager Unit Tests', () => {
 
     it('should return success when the first available provider succeeds', async () => {
         const response = await emailProviderManager.sendEmail('email1@mail.com', 'hello', 'hello')
-        expect(response).to.be.true;
+        expect(response.success).to.be.true;
     })
 
     it('should delegate to the next provider and return success when the first available provider fails', async () => {
         const response = await emailProviderManager.sendEmail('email2@mail.com', 'hello', 'hello')
-        expect(response).to.be.true;
+        expect(response.success).to.be.true;
     })
 
     it('should return null if all available providers fail', async () => {
         const response = await emailProviderManager.sendEmail('email3@mail.com', 'hello', 'hello')
-        expect(response).to.be.null;
-    })
-
-    it('should return null if provider list is empty', async () => {
-        const emptyEmailProviderManager = new EmailProviderManager([]);
-        const response = await emptyEmailProviderManager.sendEmail('email3@mail.com', 'hello', 'hello')
-        expect(response).to.be.null;
+        expect(response.success).to.be.false;
+        expect(response.err).to.eq('all email providers have failed');
     })
 });

@@ -21,17 +21,15 @@ class EmailProviderManager extends IEmailProvider
                 const result = await provider.sendEmail(to, subject, body);
                 //    logProviderResponse(this.logPath, provider.name, { to, subject, ...result });
                 if (result.success) return new DTO(true, '');
-                else return new DTO(false, result.err);
                 // log result.err
             }
             catch (err)
             {
                 console.log(err);
-                return new DTO(false, err.message);
                 //   logProviderResponse(this.logPath, provider.name, { to, subject, error: err }, true);
             }
         }
-        return null;
+        return new DTO(false, 'all email providers have failed');
     }
 }
 

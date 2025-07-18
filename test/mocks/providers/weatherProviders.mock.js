@@ -1,5 +1,6 @@
 const IWeatherProvider = require('../../../src/providers/weather-providers/weatherProviderInterface');
 const WeatherDTO = require('../../../src/domain/types/weather');
+const DTO = require('../../../src/domain/types/dto');
 
 class WeatherProviderMock1 extends  IWeatherProvider
 {
@@ -14,7 +15,7 @@ class WeatherProviderMock1 extends  IWeatherProvider
         }
         else
         {
-            return null;
+            return new DTO(false, '');
         }
     }
 }
@@ -32,7 +33,7 @@ class WeatherProviderMock2 extends  IWeatherProvider
         }
         else
         {
-            return null;
+            return new DTO(false, '');
         }
     }
 }

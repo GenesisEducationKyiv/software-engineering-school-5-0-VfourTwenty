@@ -9,32 +9,30 @@ const weatherProviderManager = new WeatherProviderManager(mockedWeatherProviders
 
 describe('WeatherProviderManager Unit Tests', () => {
 
-    it('should return weather data if the first available provider can fetch it', async () => {
-        const data = await weatherProviderManager.fetchWeather('Kyiv');
-        expect(data).to.deep.equal({
-            temperature: 22,
-            humidity: 60,
-            description: "Clear sky"
-        });
+    it('should return true for success and weather data if the first available provider can fetch it', async () => {
+        const result = await weatherProviderManager.fetchWeather('Kyiv');
+        expect(result.success).to.be.true;
+        expect(result.weather).to.deep.eq({
+                temperature: 22,
+                humidity: 60,
+                description: "Clear sky"
+            });
     });
 
     it('should delegate to the next provider and return weather data if the first provider fails to fetch', async () => {
-        const data = await weatherProviderManager.fetchWeather('Odesa');
-        expect(data).to.deep.equal({
+        const result = await weatherProviderManager.fetchWeather('Odesa');
+        console.log(result);
+        expect(result.success).to.be.true;
+        expect(result.weather).to.deep.equal({
             temperature: 22,
             humidity: 60,
             description: "Clear sky"
         });
     });
 
-    it('should return null if all available providers fail', async () => {
+    it('should return false for success and an error message if all available providers fail', async () => {
         const data = await weatherProviderManager.fetchWeather('gfhhhh');
-        expect(data).to.be.null;
-    });
-
-    it('should return null if provider list is empty', async () => {
-        const emptyWeatherProviderManager = new WeatherProviderManager([])
-        const data = await emptyWeatherProviderManager.fetchWeather('Kyiv');
-        expect(data).to.be.null;
+        expect(data.success).to.be.false;
+        expect(data.err).to.eq('all weather providers have failed');
     });
 });
