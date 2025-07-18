@@ -1,5 +1,6 @@
 const { buildUnsubscribeEmail } = require('../../../utils/emailTemplates');
-const EmailError = require('../../errors/EmailError');
+// const EmailError = require('../../errors/EmailError');
+const DTO = require('../../types/dto');
 
 class UnsubscribeEmailUseCase
 {
@@ -13,12 +14,14 @@ class UnsubscribeEmailUseCase
     {
         const subject = 'You\'ve been unsubscribed';
         const body = buildUnsubscribeEmail(city);
-        const success = await this.emailService.sendEmail(to, subject, body);
-        if (!success)
+        const result = await this.emailService.sendEmail(to, subject, body);
+        if (!result.success)
         {
-            throw new EmailError('UNSUBSCRIBE EMAIL FAILED');
+            return new DTO(false, 'UNSUBSCRIBED EMAIL FAILED');
+            // throw new EmailError('UNSUBSCRIBE EMAIL FAILED');
         }
-        return true;
+        return result;
+        // return true;
     }
 }
 

@@ -1,5 +1,6 @@
 const { buildConfirmEmail } = require('../../../utils/emailTemplates');
-const EmailError = require('../../errors/EmailError');
+// const EmailError = require('../../errors/EmailError');
+const DTO = require('../../types/dto');
 
 class ConfirmationEmailUseCase
 {
@@ -13,12 +14,12 @@ class ConfirmationEmailUseCase
     {
         const subject = 'Confirm your weather subscription';
         const body = buildConfirmEmail(token);
-        const success = await this.emailService.sendEmail(to, subject, body);
-        if (!success)
+        const result = await this.emailService.sendEmail(to, subject, body);
+        if (!result.success)
         {
-            throw new EmailError('CONFIRMATION EMAIL FAILED');
+            return new DTO(false, 'CONFIRMATION EMAIL FAILED');
         }
-        return true;
+        return result;
     }
 }
 

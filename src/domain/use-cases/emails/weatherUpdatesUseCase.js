@@ -1,5 +1,6 @@
 const { buildWeatherUpdateEmail } = require('../../../utils/emailTemplates');
 const EmailError = require('../../errors/EmailError');
+const DTO = require('../../types/dto');
 
 class WeatherUpdatesUseCase
 {
@@ -16,10 +17,10 @@ class WeatherUpdatesUseCase
     {
         const subject = `SkyFetch Weather Update for ${city}`;
         const html = buildWeatherUpdateEmail(city, weather, token);
-        const success = await this.emailService.sendEmail(email, subject, html);
-        if (!success)
+        const result = await this.emailService.sendEmail(email, subject, html);
+        if (!result.success)
         {
-            throw new EmailError('WEATHER UPDATE EMAIL FAILED');
+            return false;
         }
         console.log(`📧 Weather update sent to ${email}`);
         return true;

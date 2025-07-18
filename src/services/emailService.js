@@ -1,4 +1,5 @@
-const EmailError = require('../domain/errors/EmailError');
+//const EmailError = require('../domain/errors/EmailError');
+const DTO = require('../domain/types/dto');
 
 class EmailService 
 {
@@ -10,9 +11,10 @@ class EmailService
     async sendEmail(to, subject, body) 
     {
         const result = await this.emailProviderManager.sendEmail(to, subject, body);
-        if (!result)
+        if (!result.success)
         {
-            throw new EmailError('EMAIL FAILED');
+            return new DTO(false, 'EMAIL FAILED');
+            // throw new EmailError('EMAIL FAILED');
         }
         return result;
     }

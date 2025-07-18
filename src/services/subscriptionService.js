@@ -1,5 +1,6 @@
 const { genToken } = require('../utils/strings');
 const SubscriptionError = require('../domain/errors/SubscriptionError');
+const DTO = require('../domain/types/dto');
 
 class SubscriptionService
 {
@@ -19,8 +20,9 @@ class SubscriptionService
         if (!success) throw new SubscriptionError(err);
         const token = genToken();
         await this.subscriptionRepo.createSub({ email, city, frequency, confirmed: false, token });
-        // rethrows email error is not successful
-        await this.confirmationEmailUseCase.sendConfirmationEmail(email, token);
+
+        const emailResult = await this.confirmationEmailUseCase.sendConfirmationEmail(email, token);
+        if (!emailResult.success) return new DTO(false, 'SUBSCRIBED BUT CONFIRM EMAIL FAILED');
         return token;
     }
 
@@ -40,7 +42,8 @@ class SubscriptionService
         const sub = await this.subscriptionRepo.findSub({ token });
         if (!sub) throw new SubscriptionError('TOKEN NOT FOUND');
         await this.subscriptionRepo.deleteSub(token);
-        await this.unsubscribeEmailUseCase.sendUnsubscribeEmail(sub.email, sub.city);
+        const emailResult = await this.unsubscribeEmailUseCase.sendUnsubscribeEmail(sub.email, sub.city);
+        if (!emailResult.success) return new DTO(false, 'UNSUBSCRIBED BUT EMAIL FAILED');
         return sub;
     }
 
