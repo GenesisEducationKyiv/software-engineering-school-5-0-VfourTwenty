@@ -1,13 +1,9 @@
 const {expect} = require("chai");
 const SubscriptionValidator = require('../../../src/domain/validators/subscriptionValidator');
-const SubscriptionError = require('../../../src/domain/errors/SubscriptionError');
-
-const SubscriptionRepoMock = require('../../mocks/repositories/subscriptionRepo.mock');
 const CityValidatorMock = require('../../mocks/validators/cityValidator.mock');
 
-const subscriptionRepoMock = new SubscriptionRepoMock();
 const cityValidatorMock = new CityValidatorMock();
-const subscriptionValidator = new SubscriptionValidator(subscriptionRepoMock, cityValidatorMock);
+const subscriptionValidator = new SubscriptionValidator(cityValidatorMock);
 
 const validSub = {
     email: 'valid@mail.com',
@@ -50,11 +46,5 @@ describe('SubscriptionValidator Unit Tests', () => {
     it('should return false for success and an error message for invalid city', async () => {
         const result = await subscriptionValidator.validateNewSubscription(validSub.email, 'nfgfgh', validSub.frequency);
         expect(result).to.deep.eq({ success: false, err: 'INVALID CITY' });
-    });
-
-    it('should return false for success and an error message for duplicate subscription', async () => {
-        await subscriptionRepoMock.createSub(validSub);
-        const result = await subscriptionValidator.validateNewSubscription(validSub.email, validSub.city, validSub.frequency);
-        expect(result).to.deep.eq({ success: false, err: 'DUPLICATE' });
     });
 });
