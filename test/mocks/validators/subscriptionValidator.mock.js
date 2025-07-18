@@ -15,7 +15,8 @@ class SubscriptionValidatorMock
         {
             return new DTO(false, 'MISSING REQUIRED FIELDS');
         }
-        else if ((email === validSub.email || email === 'emailshouldfail@mail.com') && city === validSub.city && frequency === validSub.frequency)
+        // should fail in confirmation email use case
+        else if ((email === validSub.email || email === 'shouldfail@mail.com') && city === validSub.city && frequency === validSub.frequency)
         {
             return new DTO(true, '');
         }
@@ -30,10 +31,6 @@ class SubscriptionValidatorMock
         else if (city !== validSub.city)
         {
             return new DTO(false, 'INVALID CITY');
-        }
-        else if (email === 'duplicate@mail.com')
-        {
-            return new DTO(false, 'DUPLICATE');
         }
     }
 }
