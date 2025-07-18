@@ -1,6 +1,6 @@
-const ConfirmationEmailUseCase = require('../../../src/domain/use-cases/emails/confirmationEmailUseCase');
-const EmailServiceMock = require('../../mocks/services/emailService.mock');
 const {expect} = require("chai");
+const ConfirmationEmailUseCase = require('../../../../src/domain/use-cases/emails/confirmationEmailUseCase');
+const EmailServiceMock = require('../../../mocks/services/emailService.mock');
 
 const emailServiceMock = new EmailServiceMock();
 const confirmationEmailUseCase = new ConfirmationEmailUseCase(emailServiceMock);
