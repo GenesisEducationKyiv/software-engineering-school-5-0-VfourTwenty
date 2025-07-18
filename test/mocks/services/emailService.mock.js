@@ -1,23 +1,15 @@
 const EmailError = require("../../../src/domain/errors/EmailError");
+const DTO = require("../../../src/domain/types/dto");
 
 class EmailServiceMock
 {
-    async sendConfirmationEmail(to, subject, body)
-    {
-        if (to === 'emailshouldfail@mail.com')
-        {
-            throw new EmailError('CONFIRMATION EMAIL FAILED');
-        }
-        return true;
-    }
-
-    async sendUnsubscribeEmail(to, subject, body)
+    async sendEmail(to, subject, body)
     {
         if (to === 'shouldfail@mail.com')
         {
-            throw new EmailError('UNSUBSCRIBE EMAIL FAILED');
+            return new DTO(false, 'EMAIL FAILED');
         }
-        return true;
+        return new DTO(true, '');
     }
 }
 

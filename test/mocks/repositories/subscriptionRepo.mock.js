@@ -1,4 +1,6 @@
 const ISubscriptionRepo = require('../../../src/repositories/subscriptionRepoInterface');
+const DTO = require('../../../src/domain/types/dto');
+const SubscriptionDTO = require('../../../src/domain/types/subscription');
 
 class SubscriptionRepoMock extends ISubscriptionRepo
 {
@@ -9,13 +11,15 @@ class SubscriptionRepoMock extends ISubscriptionRepo
 
     async createSub(data) {
         this.subs.push({ ...data });
-        return { success: true, err: '' };
+        return new DTO(true, '');
     }
 
     async findSub(params) {
-        return this.subs.find(sub =>
+        const sub = this.subs.find(sub =>
             Object.entries(params).every(([k, v]) => sub[k] === v)
-        ) || null;
+        );
+        if (sub) return new SubscriptionDTO(true, '', sub);
+        return new DTO(false, 'Subscription not found');
     }
 
     async findAllSubs(params) {
@@ -29,23 +33,23 @@ class SubscriptionRepoMock extends ISubscriptionRepo
         const sub = this.subs.find(sub => sub.token === token);
         if (sub) {
             sub.confirmed = true;
-            return { success: true, err: '' };
+            return new DTO(true, '');
         }
-        return { success: false, err: 'Subscription not found' };
+        return new DTO(false, 'Subscription not found');
     }
 
     async deleteSub(token) {
         const idx = this.subs.findIndex(sub => sub.token === token);
         if (idx !== -1) {
             this.subs.splice(idx, 1);
-            return { success: true, err: '' };
+            return new DTO(true, '');
         }
-        return { success: false, err: 'Subscription not found' };
+        return new DTO(false, 'Subscription not found');
     }
 
     async clear() {
         this.subs = [];
-        return { success: true, err: '' };
+        return new DTO(true, '');
     }
 }
 
