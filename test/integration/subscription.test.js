@@ -102,6 +102,16 @@ describe('POST /api/subscribe', () => {
         expect(res.body.error).to.equal('Invalid email format.');
     });
 
+    it('should return 400 for invalid city', async () => {
+        const res = await request(app)
+            .post('/api/subscribe')
+            .type('json')
+            .send({ email: 'test@gmail.com', city: 'UnknownCity', frequency: 'daily' });
+
+        expect(res.status).to.equal(400);
+        expect(res.body.error).to.equal('Invalid city.');
+    });
+
     // frequency != daily or hourly
     it('should return 400 for invalid frequency string', async () => {
         const res = await request(app)
@@ -215,5 +225,13 @@ describe('GET /api/unsubscribe/:token', () => {
         const res = await request(app).get(`/api/unsubscribe/123`);
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Invalid token');
+    });
+
+    it('should return 400 when trying to reuse the token for unsubscribe', async () => {
+        await subscriptionService.unsubscribeUser(token);
+        const res = await request(app).get(`/api/unsubscribe/${token}`);
+        expect(res.status).to.equal(404);
+        // token had been deleted
+        expect(res.body.error).to.equal('Token not found');
     });
 });
