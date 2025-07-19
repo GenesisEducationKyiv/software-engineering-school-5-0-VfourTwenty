@@ -1,4 +1,3 @@
-//const EmailError = require('../domain/errors/EmailError');
 const DTO = require('../domain/types/dto');
 
 class EmailService 
@@ -14,7 +13,6 @@ class EmailService
         if (!result.success)
         {
             return new DTO(false, 'EMAIL FAILED');
-            // throw new EmailError('EMAIL FAILED');
         }
         return result;
     }

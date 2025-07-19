@@ -1,4 +1,3 @@
-const WeatherError = require("../../../src/domain/errors/WeatherError");
 const DTO = require('../../../src/domain/types/dto');
 const WeatherDTO = require('../../../src/domain/types/weather');
 

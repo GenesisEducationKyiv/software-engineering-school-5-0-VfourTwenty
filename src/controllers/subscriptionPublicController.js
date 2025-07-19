@@ -49,18 +49,6 @@ class SubscriptionPublicController
         let errorMsg = mapErrorToClientMessage(result.err) || 'Internal server error';
         const errorUrl = buildErrorUrl(errorMsg);
         return res.redirect(errorUrl);
-        // try
-        // {
-        //     await this.unsusbcribeUserUseCase.unsubscribe(token);
-        //     const url = buildUnsubscribedUrl();
-        //     return res.redirect(url);
-        // }
-        // catch (err)
-        // {
-        //     let errorMsg = mapErrorToClientMessage(err) || 'Internal server error';
-        //     const errorUrl = buildErrorUrl(errorMsg);
-        //     return res.redirect(errorUrl);
-        // }
     };
 }
 

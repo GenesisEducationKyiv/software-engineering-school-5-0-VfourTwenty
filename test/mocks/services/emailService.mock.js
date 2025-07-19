@@ -1,4 +1,3 @@
-const EmailError = require("../../../src/domain/errors/EmailError");
 const DTO = require("../../../src/domain/types/dto");
 
 class EmailServiceMock

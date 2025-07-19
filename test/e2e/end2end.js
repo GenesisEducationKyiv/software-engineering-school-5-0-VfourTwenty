@@ -202,33 +202,7 @@ describe('SkyFetch E2E Tests', () => {
         await expect(await page.textContent('#message')).to.equal('');
     });
 
-    // HELP NEEDED!!! \
-    // All 11 tests in the file pass locally, and in docker
-    // While the above 6 run fine on the homepage (/ route)
-    // other 5 keep failing (on /confirm and /unsubscribe routes):
-    /**
-     * 1) SkyFetch E2E Tests
-     * test-e2e-1  |        should confirm a new subscription with a valid token:
-     * test-e2e-1  |      page.goto: net::ERR_CONNECTION_REFUSED at http://backend-test:3000/confirm/3809eed3e9ebe369f414fb0833b7b2d5fee37fa1
-     * test-e2e-1  | Call log:
-     * test-e2e-1  |   - navigating to "http://backend-test:3000/confirm/3809eed3e9ebe369f414fb0833b7b2d5fee37fa1", waiting until "load"
-     * test-e2e-1  |
-     * test-e2e-1  |       at Context.<anonymous> (test/e2e/end2end.js:228:20)
-     * test-e2e-1  |
-     * test-e2e-1  |   2) SkyFetch E2E Tests
-     * test-e2e-1  |        should unsubscribe a user with a valid token:
-     * test-e2e-1  |      page.goto: net::ERR_CONNECTION_REFUSED at http://backend-test:3000/unsubscribe/bb8a6e640a0da8f44567c856b70ca54be1beb5dc
-     * test-e2e-1  | Call log:
-     * test-e2e-1  |   - navigating to "http://backend-test:3000/unsubscribe/bb8a6e640a0da8f44567c856b70ca54be1beb5dc", waiting until "load"
-     * test-e2e-1  |
-     * test-e2e-1  |       at Context.<anonymous> (test/e2e/end2end.js:242:20)
-     */
-
-    // Apparently, this has to do with docker networking(most likely) or/and playwright
-    // I would appreciate your thoughts on this issue!
-
     // Confirmation page ------------------------------------ \
-
     it('should confirm a new subscription with a valid token', async () => {
         await subscriptionRepo.clear();
         const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);

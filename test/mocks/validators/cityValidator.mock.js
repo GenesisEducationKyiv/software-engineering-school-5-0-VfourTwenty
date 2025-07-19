@@ -1,5 +1,3 @@
-const WeatherError = require("../../../src/domain/errors/WeatherError");
-
 class CityValidatorMock
 {
     async validate(city)
