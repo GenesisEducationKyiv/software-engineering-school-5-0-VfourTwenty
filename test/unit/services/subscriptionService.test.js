@@ -115,7 +115,7 @@ describe('SubscriptionService Unit Tests', () => {
     });
 
     it('should return false for success and an error message if subscription doesnt exist in unsubscribe', async () => {
-        const result = await subscriptionService.confirmSubscription('confirmation-token');
+        const result = await subscriptionService.unsubscribeUser('confirmation-token');
         expect(result.success).to.be.false;
         expect(result.err).to.eq('TOKEN NOT FOUND');
     });
