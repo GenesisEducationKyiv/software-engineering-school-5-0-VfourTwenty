@@ -6,13 +6,18 @@
     "start": "mkdir -p logs && npm run migrate && node bin/www",
     "start:docker": "NODE_ENV=docker docker compose up --build backend",
     "migrate": "npx sequelize-cli db:migrate",
+
     "test:unit": "mocha test/unit --recursive",
+
     "test:integration": "NODE_ENV=test.intgr mocha test/integration --timeout 5000 --exit",
     "test:integration:docker": "docker compose -f docker-compose.test.yml up --build test-integration --abort-on-container-exit",
+
     "test:e2e": "NODE_ENV=test.e2e mocha test/e2e --timeout 7000 --exit",
     "test:e2e:docker": "docker compose -f docker-compose.test.yml up --build backend-test test-e2e --abort-on-container-exit",
+
     "test-docker:integration": "if [ \\\"$NODE_ENV\\\" != \\\"docker_test\\\" ]; then echo '❌ This script is Docker-only'; exit 1; fi && mocha test/integration --timeout 5000 --exit",
     "test-docker:e2e": "if [ \"$NODE_ENV\" != \"docker_test\" ]; then echo '❌ This script is Docker-only'; exit 1; fi && mocha test/e2e --timeout 7000 --exit",
+
     "debug": "node scripts/debug.js",
     "seed": "node scripts/seeder.js",
     "lint": "npx eslint .",
