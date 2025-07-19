@@ -32,7 +32,7 @@ class SubscriptionPublicController
             const url = buildConfirmedUrl(sub.city, sub.frequency, token);
             return res.redirect(url);
         }
-        let errorMsg = mapErrorToClientMessage(confirmResult.err) || 'Internal server error 1';
+        let errorMsg = mapErrorToClientMessage(confirmResult.err) || 'Internal server error';
         const errorUrl = buildErrorUrl(errorMsg);
         return res.redirect(errorUrl);
     };

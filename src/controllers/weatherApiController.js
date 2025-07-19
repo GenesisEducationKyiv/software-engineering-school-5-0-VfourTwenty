@@ -19,7 +19,7 @@ class WeatherApiController
             {
                 return res.status(404).json({ error: 'No data available for this location' });
             }
-            return res.status(500).json({ error: result.err });
+            return res.status(500).json({ error: 'Internal server error' });
         }
         const weather = result.weather;
         if (
