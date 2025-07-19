@@ -11,7 +11,6 @@ const WeatherService = require('../../src/services/weatherService');
 const ConfirmationEmailUseCase = require('../../src/domain/use-cases/emails/confirmationEmailUseCase');
 const UnsubscribeEmailUseCase = require('../../src/domain/use-cases/emails/unsubscribeEmailUseCase');
 const SubscribeUserUseCase = require('../../src/domain/use-cases/subscription/subscribeUserUseCase');
-const FindSubscriptionUseCase = require('../../src/domain/use-cases/subscription/findSubscriptionUseCase');
 const ConfirmSubscriptionUseCase = require('../../src/domain/use-cases/subscription/confirmSubscriptionUseCase');
 const UnsubscribeUserUseCase = require('../../src/domain/use-cases/subscription/unsubscribeUserUseCase');
 const GetWeatherUseCase = require('../../src/domain/use-cases/weather/getWeatherUseCase');
@@ -39,7 +38,6 @@ const subscriptionValidator = new SubscriptionValidator(cityValidator);
 const subscriptionService = new SubscriptionService(confirmationEmailUseCase, unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
 
 const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionService);
-const findSubscriptionUseCase = new FindSubscriptionUseCase(subscriptionService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
 
@@ -52,6 +50,11 @@ app.post('/api/subscribe', subscriptionApiController.subscribe);
 app.get('/api/confirm/:token', subscriptionApiController.confirm);
 app.get('/api/unsubscribe/:token', subscriptionApiController.unsubscribe);
 
+const validSub = {
+    email: 'valid@mail.com',
+    city: 'Kyiv',
+    frequency: 'hourly'
+}
 
 describe('POST /api/subscribe', () => {
     beforeEach(async () => {
@@ -63,7 +66,7 @@ describe('POST /api/subscribe', () => {
         const res = await request(app)
             .post('/api/subscribe')
             .type('json')
-            .send({ city: 'Kyiv', frequency: 'daily' });
+            .send({ city: validSub.city, frequency: validSub.frequency });
 
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Missing required fields.');
@@ -74,7 +77,7 @@ describe('POST /api/subscribe', () => {
         const res = await request(app)
             .post('/api/subscribe')
             .type('json')
-            .send({ email: 'test@gmail.com', frequency: 'daily' });
+            .send({ email: validSub.email, frequency: validSub.frequency });
 
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Missing required fields.');
@@ -85,7 +88,7 @@ describe('POST /api/subscribe', () => {
         const res = await request(app)
             .post('/api/subscribe')
             .type('json')
-            .send({ email: 'test@gmail.com', city: 'Kyiv'});
+            .send({ email: validSub.email, city: validSub.city });
 
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Missing required fields.');
@@ -96,7 +99,7 @@ describe('POST /api/subscribe', () => {
         const res = await request(app)
             .post('/api/subscribe')
             .type('json')
-            .send({ email: 'invalid_email', city: 'Kyiv', frequency: 'daily' });
+            .send({ email: 'invalid_email', city: validSub.city, frequency: validSub.frequency });
 
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Invalid email format.');
@@ -106,7 +109,7 @@ describe('POST /api/subscribe', () => {
         const res = await request(app)
             .post('/api/subscribe')
             .type('json')
-            .send({ email: 'test@gmail.com', city: 'UnknownCity', frequency: 'daily' });
+            .send({ email: validSub.email, city: 'UnknownCity', frequency: validSub.frequency });
 
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Invalid city.');
@@ -117,7 +120,7 @@ describe('POST /api/subscribe', () => {
         const res = await request(app)
             .post('/api/subscribe')
             .type('json')
-            .send({ email: 'test@gmail.com', city: 'Kyiv', frequency: 'hgkdfhgsh' });
+            .send({ email: validSub.email, city: validSub.city, frequency: 'hgkdfhgsh' });
 
         expect(res.status).to.equal(400);
         expect(res.body.error).to.equal('Invalid frequency.');
@@ -128,12 +131,12 @@ describe('POST /api/subscribe', () => {
         const res = await request(app)
             .post('/api/subscribe')
             .type('json')
-            .send({ email: 'delivered@resend.dev', city: 'Kyiv', frequency: 'daily' });
+            .send(validSub);
 
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('Subscription successful. Confirmation email sent.');
 
-        const result = await subscriptionRepo.findSub({ email: 'delivered@resend.dev', city: 'Kyiv', frequency: 'daily' })
+        const result = await subscriptionRepo.findSub(validSub);
         const sub = result.subscription;
         expect(sub).to.exist;
         expect(sub.confirmed).to.be.false;
@@ -142,12 +145,12 @@ describe('POST /api/subscribe', () => {
 
     // duplicate subscription
     it('should return 409 for duplicate subscription', async () => {
-        await subscriptionRepo.createSub({ email: 'test@example.com', city: 'Kyiv', frequency: 'daily', confirmed: false, token: 'token123' });
+        await subscriptionRepo.createSub(validSub);
 
         const res = await request(app)
             .post('/api/subscribe')
             .type('json')
-            .send({ email: 'test@example.com', city: 'Kyiv', frequency: 'daily' });
+            .send(validSub);
 
         expect(res.status).to.equal(409);
         expect(res.body.error).to.equal('Subscription already exists for this city and frequency.');
@@ -160,7 +163,7 @@ describe('GET /api/confirm/:token', () => {
     beforeEach(async () => {
         await subscriptionRepo.clear();
         token = 'token_confirm';
-        await subscriptionRepo.createSub({ email: 'confirm@test.com', city: 'Kyiv', frequency: 'daily', confirmed: false, token });
+        await subscriptionRepo.createSub({...validSub, confirmed: false, token: token});
     });
 
     // confirmation successful
@@ -203,7 +206,7 @@ describe('GET /api/unsubscribe/:token', () => {
     beforeEach(async () => {
         await subscriptionRepo.clear();
         token = 'token_unsub';
-        await subscriptionRepo.createSub({ email: 'test@example.com', city: 'Odesa', frequency: 'daily', confirmed: true, token });
+        await subscriptionRepo.createSub({...validSub, confirmed: true, token: token });
     });
 
     it('should return 200 and delete the subscription', async () => {
