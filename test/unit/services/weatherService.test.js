@@ -22,4 +22,10 @@ describe('WeatherService Unit Tests', () => {
         expect(data.success).to.be.false;
         expect(data.err).to.eq('NO WEATHER DATA');
     })
+
+    it('should return false for success and and error message if city is missing', async() => {
+        const data = await weatherService.fetchWeather();
+        expect(data.success).to.be.false;
+        expect(data.err).to.eq('NO WEATHER DATA');
+    })
 });
