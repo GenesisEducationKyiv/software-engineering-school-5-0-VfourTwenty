@@ -21,7 +21,6 @@ describe('WeatherProviderManager Unit Tests', () => {
 
     it('should delegate to the next provider and return weather data if the first provider fails to fetch', async () => {
         const result = await weatherProviderManager.fetchWeather('Odesa');
-        console.log(result);
         expect(result.success).to.be.true;
         expect(result.weather).to.deep.equal({
             temperature: 22,
