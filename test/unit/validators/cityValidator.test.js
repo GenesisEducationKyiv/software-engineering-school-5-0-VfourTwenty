@@ -16,5 +16,10 @@ describe('CityValidator Unit Tests', () => {
         const result = await cityValidator.validate('hfgshdf');
         expect(result).to.be.false;
     });
+
+    it('should return false if city is missing', async () => {
+        const result = await cityValidator.validate();
+        expect(result).to.be.false;
+    });
 });
 
