@@ -12,7 +12,7 @@ describe('UnsubscribeEmailUseCase Unit Tests', () => {
         expect(result.success).to.be.true;
     });
 
-    it('should return false for success and an error message if email service succeeds', async () => {
+    it('should return false for success and an error message if email service fails', async () => {
         const result = await unsubscribeEmailUseCase.sendUnsubscribeEmail('shouldfail@mail.com', 'token');
         expect(result.success).to.be.false;
         expect(result.err).to.eq('UNSUBSCRIBED EMAIL FAILED');
