@@ -35,37 +35,6 @@ class WeatherApiController
             humidity: weather.humidity,
             description: weather.description
         });
-        // try
-        // {
-        //     const weather = await this.getWeatherUseCase.getWeather(city);
-        //     console.log(weather);
-        //
-        //     if (
-        //         typeof weather.temperature !== 'number' ||
-        //         typeof weather.humidity !== 'number' ||
-        //         typeof weather.description !== 'string'
-        //     )
-        //     {
-        //         return res.status(404).json({ error: 'Invalid weather data format' });
-        //     }
-        //
-        //     res.json({
-        //         temperature: weather.temperature,
-        //         humidity: weather.humidity,
-        //         description: weather.description
-        //     });
-        // }
-        // catch (err)
-        // {
-        //     if (err.message === 'NO WEATHER DATA')
-        //     {
-        //         res.status(404).json({ error: 'No data available for this location' });
-        //     }
-        //     else
-        //     {
-        //         res.status(500).json({ error: err.message });
-        //     }
-        // }
     };
 }
 
