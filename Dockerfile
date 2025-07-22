@@ -13,6 +13,3 @@ COPY . .
 
 # Expose the port your app uses
 EXPOSE 3000
-
-# Default start command
-CMD ["npm", "start"]
