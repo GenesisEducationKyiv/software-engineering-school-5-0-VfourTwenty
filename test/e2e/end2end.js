@@ -142,7 +142,7 @@ describe('SkyFetch E2E Tests', () => {
         // Wait for success message (up to 3 seconds to account for API delay)
         await delay(6000);
 
-        await expect(await page.textContent('#message')).to.equal('❌ Invalid city: No data available for this location');
+        await expect(await page.textContent('#message')).to.equal('❌ Invalid city: No weather data available for this location');
     });
 
     it('should reject duplicate subscription and show a message', async () => {
