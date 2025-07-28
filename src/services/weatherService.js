@@ -21,6 +21,15 @@ class WeatherService
         {
             return new DTO(false, 'NO WEATHER DATA');
         }
+        const weather = result.weather;
+        if (
+            typeof weather.temperature !== 'number' ||
+            typeof weather.humidity !== 'number' ||
+            typeof weather.description !== 'string'
+        )
+        {
+            return new DTO(false, 'INVALID WEATHER DATA FORMAT');
+        }
         return result;
     }
 }

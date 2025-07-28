@@ -1,3 +1,5 @@
+const DTO = require('../../types/dto');
+
 class GetWeatherUseCase
 {
     // depends on a service interface
@@ -8,6 +10,7 @@ class GetWeatherUseCase
 
     async getWeather(city)
     {
+        if (!city) return new DTO(false, 'NO CITY PROVIDED');
         return this.weatherService.fetchWeather(city);
     }
 }
