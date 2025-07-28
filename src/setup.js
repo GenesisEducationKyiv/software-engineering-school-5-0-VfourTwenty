@@ -10,7 +10,6 @@ const SubscriptionService = require('./services/subscriptionService');
 const WeatherService = require('./services/weatherService');
 const EmailService = require('./services/emailService');
 
-const ConfirmationEmailUseCase = require('./domain/use-cases/emails/confirmationEmailUseCase');
 const UnsubscribeEmailUseCase = require('./domain/use-cases/emails/unsubscribeEmailUseCase');
 const WeatherUpdatesUseCase = require('./domain/use-cases/emails/weatherUpdatesUseCase');
 
@@ -52,14 +51,13 @@ const getWeatherUseCase = new GetWeatherUseCase(weatherService);
 const cityValidator = new CityValidator(getWeatherUseCase);
 const subscriptionValidator = new SubscriptionValidator(cityValidator);
 
-const confirmationEmailUseCase = new ConfirmationEmailUseCase(emailService);
 const unsubscribeEmailUseCase = new UnsubscribeEmailUseCase(emailService);
 const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionRepo);
 
-const subscriptionService = new SubscriptionService(confirmationEmailUseCase, unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
+const subscriptionService = new SubscriptionService(unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
 // dependency injection will be replaced with communication (e.g. http)
 
-const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionService);
+const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionService, emailService);
 const findSubscriptionUseCase = new FindSubscriptionUseCase(subscriptionService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);

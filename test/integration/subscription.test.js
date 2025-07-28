@@ -8,7 +8,6 @@ const SubscriptionService = require('../../src/services/subscriptionService');
 const EmailService = require('../../src/services/emailService');
 const WeatherService = require('../../src/services/weatherService');
 
-const ConfirmationEmailUseCase = require('../../src/domain/use-cases/emails/confirmationEmailUseCase');
 const UnsubscribeEmailUseCase = require('../../src/domain/use-cases/emails/unsubscribeEmailUseCase');
 const SubscribeUserUseCase = require('../../src/domain/use-cases/subscription/subscribeUserUseCase');
 const ConfirmSubscriptionUseCase = require('../../src/domain/use-cases/subscription/confirmSubscriptionUseCase');
@@ -27,7 +26,6 @@ const weatherProviderManagerMock = new WeatherProviderManagerMock();
 const weatherService = new WeatherService(weatherProviderManagerMock);
 const emailService = new EmailService(emailProviderManagerMock);
 
-const confirmationEmailUseCase = new ConfirmationEmailUseCase(emailService);
 const unsubscribeEmailUseCase = new UnsubscribeEmailUseCase(emailService);
 
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
@@ -35,9 +33,9 @@ const getWeatherUseCase = new GetWeatherUseCase(weatherService);
 const cityValidator = new CityValidator(getWeatherUseCase);
 const subscriptionValidator = new SubscriptionValidator(cityValidator);
 
-const subscriptionService = new SubscriptionService(confirmationEmailUseCase, unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
+const subscriptionService = new SubscriptionService(unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
 
-const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionService);
+const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionService, emailService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
 
@@ -133,6 +131,7 @@ describe('POST /api/subscribe', () => {
             .type('json')
             .send(validSub);
 
+        console.log(res.err);
         expect(res.status).to.equal(200);
         expect(res.body.message).to.equal('Subscription successful. Confirmation email sent.');
 

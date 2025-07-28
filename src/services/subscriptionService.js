@@ -4,10 +4,9 @@ const SubscriptionDTO = require('../domain/types/subscription');
 
 class SubscriptionService
 {
-    constructor(confirmationEmailUseCase, unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator)
+    constructor(unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator)
     {
         // these two are from the domain layer
-        this.confirmationEmailUseCase = confirmationEmailUseCase;
         this.unsubscribeEmailUseCase = unsubscribeEmailUseCase;
         //
         this.subscriptionRepo = subscriptionRepo;
@@ -24,8 +23,6 @@ class SubscriptionService
         const token = genToken();
         await this.subscriptionRepo.createSub({ email, city, frequency, confirmed: false, token });
 
-        const emailResult = await this.confirmationEmailUseCase.sendConfirmationEmail(email, token);
-        if (!emailResult.success) return new DTO(false, 'SUBSCRIBED BUT CONFIRM EMAIL FAILED');
         return new SubscriptionDTO(true, '', { token: token });
     }
 
