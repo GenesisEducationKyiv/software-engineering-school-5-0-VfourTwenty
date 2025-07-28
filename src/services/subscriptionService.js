@@ -4,10 +4,8 @@ const SubscriptionDTO = require('../domain/types/subscription');
 
 class SubscriptionService
 {
-    constructor(unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator)
+    constructor(subscriptionRepo, subscriptionValidator)
     {
-        // these two are from the domain layer
-        this.unsubscribeEmailUseCase = unsubscribeEmailUseCase;
         //
         this.subscriptionRepo = subscriptionRepo;
         this.validator = subscriptionValidator;
@@ -44,9 +42,7 @@ class SubscriptionService
         const sub = result.subscription;
         if (!sub) return new DTO(false, 'TOKEN NOT FOUND');
         await this.subscriptionRepo.deleteSub(token);
-        const emailResult = await this.unsubscribeEmailUseCase.sendUnsubscribeEmail(sub.email, sub.city);
-        if (!emailResult.success) return new DTO(false, 'UNSUBSCRIBED BUT EMAIL FAILED');
-        return new DTO(true, '');
+        return new SubscriptionDTO(true, '', { email: sub.email, city: sub.city });
     }
 
     async findSub(params) 

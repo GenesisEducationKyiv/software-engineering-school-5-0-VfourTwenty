@@ -26,18 +26,16 @@ const weatherProviderManagerMock = new WeatherProviderManagerMock();
 const weatherService = new WeatherService(weatherProviderManagerMock);
 const emailService = new EmailService(emailProviderManagerMock);
 
-const unsubscribeEmailUseCase = new UnsubscribeEmailUseCase(emailService);
-
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
 
 const cityValidator = new CityValidator(getWeatherUseCase);
 const subscriptionValidator = new SubscriptionValidator(cityValidator);
 
-const subscriptionService = new SubscriptionService(unsubscribeEmailUseCase, subscriptionRepo, subscriptionValidator);
+const subscriptionService = new SubscriptionService(subscriptionRepo, subscriptionValidator);
 
 const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionService, emailService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
-const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
+const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService, emailService);
 
 const subscriptionApiController = new SubscriptionApiController(subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
 
