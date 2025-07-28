@@ -1,13 +1,13 @@
 class CityValidator
 {
-    constructor(getWeatherUseCase)
+    constructor(weatherService)
     {
-        this.getWeatherUseCase = getWeatherUseCase;
+        this.weatherService = weatherService;
     }
 
     async validate(city)
     {
-        const result = await this.getWeatherUseCase.getWeather(city);
+        const result = await this.weatherService.fetchWeather(city);
         return result.success;
     }
 }

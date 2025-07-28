@@ -4,18 +4,13 @@ const SubscriptionDTO = require('../domain/types/subscription');
 
 class SubscriptionService
 {
-    constructor(subscriptionRepo, subscriptionValidator)
+    constructor(subscriptionRepo)
     {
-        //
         this.subscriptionRepo = subscriptionRepo;
-        this.validator = subscriptionValidator;
     }
 
     async subscribeUser(email, city, frequency) 
     {
-        const validationResult = await this.validator.validateNewSubscription(email, city, frequency);
-        // DTO with sub validation errors mapped
-        if (!validationResult.success) return validationResult;
         const duplicateCheckResult = await this.subscriptionRepo.findSub({ email: email, city: city, frequency: frequency });
         if (duplicateCheckResult.success) return new DTO(false, 'DUPLICATE');
         const token = genToken();

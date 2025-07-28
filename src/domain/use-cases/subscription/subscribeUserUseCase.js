@@ -4,8 +4,9 @@ const DTO = require('../../types/dto');
 class SubscribeUserUseCase
 {
     // depends on a service interface
-    constructor(subscriptionService, emailService)
+    constructor(subscriptionValidator, subscriptionService, emailService)
     {
+        this.validator = subscriptionValidator;
         this.subscriptionService = subscriptionService;
         this.emailService = emailService;
     }
@@ -20,6 +21,8 @@ class SubscribeUserUseCase
 
     async subscribe(email, city, frequency)
     {
+        const validationResult = await this.validator.validateNewSubscription(email, city, frequency);
+        if (!validationResult.success) return validationResult;
         const subscriptionResult = await this.subscriptionService.subscribeUser(email, city, frequency);
         if (!subscriptionResult.success)
         {

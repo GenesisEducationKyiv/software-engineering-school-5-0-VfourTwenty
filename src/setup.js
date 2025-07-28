@@ -44,21 +44,19 @@ const emailProviderManager = new EmailProviderManager(emailProviders);
 // 3
 const weatherService = new WeatherService(weatherProviderManager);
 const emailService = new EmailService(emailProviderManager);
+const subscriptionService = new SubscriptionService(subscriptionRepo);
 
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
-
-const cityValidator = new CityValidator(getWeatherUseCase);
-const subscriptionValidator = new SubscriptionValidator(cityValidator);
-
 const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionRepo);
-
-const subscriptionService = new SubscriptionService(subscriptionRepo, subscriptionValidator);
 // dependency injection will be replaced with communication (e.g. http)
 
-const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionService, emailService);
+const cityValidator = new CityValidator(weatherService);
+const subscriptionValidator = new SubscriptionValidator(cityValidator);
+
+const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionValidator, subscriptionService, emailService);
 const findSubscriptionUseCase = new FindSubscriptionUseCase(subscriptionService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
-const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
+const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService, emailService);
 
 // 5
 const homepageController = new HomepageController();
