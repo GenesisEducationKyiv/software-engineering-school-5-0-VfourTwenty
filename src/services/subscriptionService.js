@@ -27,7 +27,7 @@ class SubscriptionService
         if (!sub) return new DTO(false, 'TOKEN NOT FOUND');
         if (sub.confirmed) return new DTO(false, 'ALREADY CONFIRMED');
         await this.subscriptionRepo.confirmSub(token);
-        return new DTO(true, '');
+        return new SubscriptionDTO(true, '', { city: sub.city, frequency: sub.frequency });
     }
 
     async unsubscribeUser(token) 

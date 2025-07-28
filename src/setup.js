@@ -13,7 +13,6 @@ const EmailService = require('./services/emailService');
 const WeatherUpdatesUseCase = require('./domain/use-cases/emails/weatherUpdatesUseCase');
 
 const SubscribeUserUseCase = require('./domain/use-cases/subscription/subscribeUserUseCase');
-const FindSubscriptionUseCase = require('./domain/use-cases/subscription/findSubscriptionUseCase');
 const ConfirmSubscriptionUseCase = require('./domain/use-cases/subscription/confirmSubscriptionUseCase');
 const UnsubscribeUserUseCase = require('./domain/use-cases/subscription/unsubscribeUserUseCase');
 
@@ -54,13 +53,12 @@ const cityValidator = new CityValidator(weatherService);
 const subscriptionValidator = new SubscriptionValidator(cityValidator);
 
 const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionValidator, subscriptionService, emailService);
-const findSubscriptionUseCase = new FindSubscriptionUseCase(subscriptionService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService, emailService);
 
 // 5
 const homepageController = new HomepageController();
-const subscriptionPublicController = new SubscriptionPublicController(findSubscriptionUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
+const subscriptionPublicController = new SubscriptionPublicController(confirmSubscriptionUseCase, unsubscribeUserUseCase);
 const subscriptionApiController = new SubscriptionApiController(subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
 const weatherApiController = new WeatherApiController(getWeatherUseCase);
 

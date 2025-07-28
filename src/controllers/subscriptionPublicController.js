@@ -5,12 +5,10 @@ const { mapErrorToClientMessage } = require('../utils/errors');
 class SubscriptionPublicController
 {
     constructor(
-        findSubscriptionUseCase,
         confirmSubscriptionUseCase,
         unsubscribeUserUseCase
     )
     {
-        this.findSubscriptionUseCase = findSubscriptionUseCase;
         this.confirmSubscriptionUseCase = confirmSubscriptionUseCase;
         this.unsusbcribeUserUseCase = unsubscribeUserUseCase;
     }
@@ -21,14 +19,7 @@ class SubscriptionPublicController
         const confirmResult = await this.confirmSubscriptionUseCase.confirm(token);
         if (confirmResult.success)
         {
-            const findResult = await this.findSubscriptionUseCase.find(token);
-            if (!findResult.success)
-            {
-                let errorMsg = mapErrorToClientMessage(findResult.err);
-                const errorUrl = buildErrorUrl(errorMsg);
-                return res.redirect(errorUrl);
-            }
-            const sub = findResult.subscription;
+            const sub = confirmResult.subscription;
             const url = buildConfirmedUrl(sub.city, sub.frequency, token);
             return res.redirect(url);
         }
