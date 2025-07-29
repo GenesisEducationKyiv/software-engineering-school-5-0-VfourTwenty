@@ -30,6 +30,8 @@ const EmailJobHandler = require('./cron/handlers/emailJobHandler');
 const EmailJobs = require('./cron/emailJobs');
 const CronMain = require('./cron/main');
 
+// dependency injection will be replaced with communication (e.g. http)
+
 // 1
 const subscriptionRepo = new SequelizeSubscriptionRepo();
 
@@ -45,24 +47,25 @@ const weatherService = new WeatherService(weatherProviderManager);
 const emailService = new EmailService(emailProviderManager);
 const subscriptionService = new SubscriptionService(subscriptionRepo);
 
-const getWeatherUseCase = new GetWeatherUseCase(weatherService);
-const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionRepo);
-// dependency injection will be replaced with communication (e.g. http)
-
+// 4
 const cityValidator = new CityValidator(weatherService);
 const subscriptionValidator = new SubscriptionValidator(cityValidator);
+
+// 5
+const getWeatherUseCase = new GetWeatherUseCase(weatherService);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionRepo);
 
 const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionValidator, subscriptionService, emailService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService, emailService);
 
-// 5
+// 6
 const homepageController = new HomepageController();
 const subscriptionPublicController = new SubscriptionPublicController(confirmSubscriptionUseCase, unsubscribeUserUseCase);
 const subscriptionApiController = new SubscriptionApiController(subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
 const weatherApiController = new WeatherApiController(getWeatherUseCase);
 
-// cron
+// 7 cron
 const emailJobHandler = new EmailJobHandler(weatherUpdatesUseCase);
 const emailJobs = new EmailJobs(emailJobHandler);
 const cronMain = new CronMain(emailJobs);
