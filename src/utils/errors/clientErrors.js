@@ -41,4 +41,6 @@ function mapErrorToClientMessage(err, map = errorMap)
     return map[err].message || 'Internal server error';
 }
 
+
+
 module.exports = { handleError, mapErrorToClientMessage };
