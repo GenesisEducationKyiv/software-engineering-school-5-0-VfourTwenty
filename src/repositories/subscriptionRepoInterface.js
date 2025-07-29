@@ -1,5 +1,5 @@
 /**
- * @typedef {import('../domain/types/dto').DTO} DTO
+ * @typedef {import('../domain/types/result').Result} Result
  * @typedef {import('../domain/types/subscription').Subscription} Subscription
  */
 
@@ -7,7 +7,7 @@ class ISubscriptionRepo
 {
     /**
      * @param {Subscription} data
-     * @returns {Promise<DTO>}
+     * @returns {Promise<Result>}
      */
     async createSub(data) 
     {
@@ -16,7 +16,7 @@ class ISubscriptionRepo
 
     /**
      * @param {Partial<Subscription>} params
-     * @returns {Promise<Subscription|null>}
+     * @returns {Promise<Result|null>}
      */
     async findSub(params) 
     {
@@ -25,7 +25,7 @@ class ISubscriptionRepo
 
     /**
      * @param {Partial<Subscription>} params
-     * @returns {Promise<Subscription[]>}
+     * @returns {Promise<Result>}
      */
     async findAllSubs(params) 
     {
@@ -34,7 +34,7 @@ class ISubscriptionRepo
 
     /**
      * @param {string} token
-     * @returns {Promise<DTO>}
+     * @returns {Promise<Result>}
      */
     async confirmSub(token) 
     {
@@ -43,7 +43,7 @@ class ISubscriptionRepo
 
     /**
      * @param {string} token
-     * @returns {Promise<DTO>}
+     * @returns {Promise<Result>}
      */
     async deleteSub(token) 
     {
@@ -51,7 +51,7 @@ class ISubscriptionRepo
     }
 
     /**
-     * @returns {Promise<DTO>}
+     * @returns {Promise<Result>}
      */
     async clear() 
     {

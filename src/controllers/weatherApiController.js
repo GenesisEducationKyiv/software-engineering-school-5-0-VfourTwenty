@@ -15,7 +15,7 @@ class WeatherApiController
         {
             return handleError(result.err, res);
         }
-        const weather = result.weather;
+        const weather = result.data;
 
         return res.json({
             temperature: weather.temperature,

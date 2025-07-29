@@ -1,4 +1,4 @@
-const DTO = require('../../domain/types/dto');
+const Result = require('../../domain/types/result');
 
 class GetWeatherUseCase
 {
@@ -10,7 +10,7 @@ class GetWeatherUseCase
 
     async getWeather(city)
     {
-        if (!city) return new DTO(false, 'NO CITY PROVIDED');
+        if (!city) return new Result(false, 'NO CITY PROVIDED');
         return this.weatherService.fetchWeather(city);
     }
 }

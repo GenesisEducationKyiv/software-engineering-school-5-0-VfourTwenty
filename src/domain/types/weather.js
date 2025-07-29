@@ -1,4 +1,4 @@
-const DTO = require('./dto');
+//const DTO = require('./dto');
 
 /**
  * @typedef {Object} Weather
@@ -7,18 +7,18 @@ const DTO = require('./dto');
  * @property {string} description
  */
 
-class WeatherDTO extends DTO
-{
-    /**
-     * @param {boolean} success
-     * @param {string} err
-     * @param {Weather|null} weather
-     */
-    constructor(success, err, weather)
-    {
-        super(success, err);
-        this.weather = weather;
-    }
-}
-
-module.exports = WeatherDTO;
+// class WeatherDTO extends DTO
+// {
+//     /**
+//      * @param {boolean} success
+//      * @param {string} err
+//      * @param {Weather|null} weather
+//      */
+//     constructor(success, err, weather)
+//     {
+//         super(success, err);
+//         this.weather = weather;
+//     }
+// }
+//
+// module.exports = WeatherDTO;

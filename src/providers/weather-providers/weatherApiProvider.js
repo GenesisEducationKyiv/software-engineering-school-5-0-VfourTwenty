@@ -2,7 +2,7 @@ const IWeatherProvider = require('./weatherProviderInterface');
 const config = require('../../config/index');
 const WEATHER_API_KEY = config.weatherApiKey;
 
-const WeatherDTO = require('../../domain/types/weather');
+const Result = require('../../domain/types/result');
 
 class WeatherApiProvider extends IWeatherProvider
 {
@@ -21,10 +21,10 @@ class WeatherApiProvider extends IWeatherProvider
         if (data.error)
         {
             console.error('Weather API error:', data.error.message);
-            return new WeatherDTO(false, data.error.message, null);
+            return new Result(false, data.error.message, null);
         }
 
-        return new WeatherDTO(true, '', {
+        return new Result(true, null, {
             temperature: data.current.temp_c,
             humidity: data.current.humidity,
             description: data.current.condition.text

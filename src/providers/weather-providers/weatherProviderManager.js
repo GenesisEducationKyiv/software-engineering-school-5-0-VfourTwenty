@@ -1,5 +1,5 @@
 const IWeatherProvider = require('./weatherProviderInterface');
-const DTO = require('../../domain/types/dto');
+const Result = require('../../domain/types/result');
 // const { logProviderResponse } = require('../../utils/logger');
 // const path = require('path');
 
@@ -22,6 +22,7 @@ class WeatherProviderManager extends IWeatherProvider
                 const result = await provider.fetchWeather(city);
                 // logProviderResponse(this.logPath, provider.name, { city, ...result });
                 if (result?.success) return result;
+                console.log(`Weather provider ${provider.name} has failed: ${result.err}`);
                 // log result.err
             }
             catch (err) 
@@ -32,7 +33,7 @@ class WeatherProviderManager extends IWeatherProvider
                 // logProviderResponse(this.logPath, provider.name, { city, error: err }, true);
             }
         }
-        return new DTO(false, 'all weather providers have failed'); // No data from any provider
+        return new Result(false, 'all weather providers have failed'); // No data from any provider
     }
 }
 

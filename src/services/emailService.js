@@ -1,4 +1,4 @@
-const DTO = require('../domain/types/dto');
+const Result = require('../domain/types/result');
 
 class EmailService 
 {
@@ -12,7 +12,7 @@ class EmailService
         const result = await this.emailProviderManager.sendEmail(to, subject, body);
         if (!result.success)
         {
-            return new DTO(false, 'EMAIL FAILED');
+            return new Result(false, 'EMAIL FAILED');
         }
         return result;
     }

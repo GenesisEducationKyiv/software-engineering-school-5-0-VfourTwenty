@@ -1,6 +1,5 @@
 const { genToken } = require('../utils/strings');
-const DTO = require('../domain/types/dto');
-const SubscriptionDTO = require('../domain/types/subscription');
+const Result = require('../domain/types/result');
 
 class SubscriptionService
 {
@@ -12,32 +11,34 @@ class SubscriptionService
     async subscribeUser(email, city, frequency) 
     {
         const duplicateCheckResult = await this.subscriptionRepo.findSub({ email: email, city: city, frequency: frequency });
-        if (duplicateCheckResult.success) return new DTO(false, 'DUPLICATE');
+        if (duplicateCheckResult.success) return new Result(false, 'DUPLICATE');
         const token = genToken();
         await this.subscriptionRepo.createSub({ email, city, frequency, confirmed: false, token });
 
-        return new SubscriptionDTO(true, '', { token: token });
+        return new Result(true, null, { token: token });
     }
 
     async confirmSubscription(token) 
     {
-        if (!token || token.length < 10) return new DTO(false, 'INVALID TOKEN');
+        if (!token || token.length < 10) return new Result(false, 'INVALID TOKEN');
         const result = await this.subscriptionRepo.findSub({ token });
-        const sub = result.subscription;
-        if (!sub) return new DTO(false, 'TOKEN NOT FOUND');
-        if (sub.confirmed) return new DTO(false, 'ALREADY CONFIRMED');
-        await this.subscriptionRepo.confirmSub(token);
-        return new SubscriptionDTO(true, '', { city: sub.city, frequency: sub.frequency });
+        const sub = result.data;
+        if (!sub) return new Result(false, 'TOKEN NOT FOUND');
+        if (sub.confirmed) return new Result(false, 'ALREADY CONFIRMED');
+        const confirmResult = await this.subscriptionRepo.confirmSub(token);
+        if (!confirmResult.success) return new Result(false, 'confirmation failed');
+        return new Result(true, null, { city: sub.city, frequency: sub.frequency });
     }
 
     async unsubscribeUser(token) 
     {
-        if (!token || token.length < 10) return new DTO(false, 'INVALID TOKEN');
+        if (!token || token.length < 10) return new Result(false, 'INVALID TOKEN');
         const result = await this.subscriptionRepo.findSub({ token });
-        const sub = result.subscription;
-        if (!sub) return new DTO(false, 'TOKEN NOT FOUND');
-        await this.subscriptionRepo.deleteSub(token);
-        return new SubscriptionDTO(true, '', { email: sub.email, city: sub.city });
+        const sub = result.data;
+        if (!sub) return new Result(false, 'TOKEN NOT FOUND');
+        const deleteResult = await this.subscriptionRepo.deleteSub(token);
+        if (!deleteResult.success) return new Result(false, 'failed to delete subscription');
+        return new Result(true, null, { email: sub.email, city: sub.city });
     }
 
     async findSub(params) 

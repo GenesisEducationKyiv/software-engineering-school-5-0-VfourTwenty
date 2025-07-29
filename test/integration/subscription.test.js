@@ -130,7 +130,7 @@ describe('POST /api/subscribe', () => {
         expect(res.body.message).to.equal('Subscription successful. Confirmation email sent.');
 
         const result = await subscriptionRepo.findSub(validSub);
-        const sub = result.subscription;
+        const sub = result.data;
         expect(sub).to.exist;
         expect(sub.confirmed).to.be.false;
         expect(sub.token).to.be.a('string');
@@ -166,7 +166,7 @@ describe('GET /api/confirm/:token', () => {
         expect(res.body.message).to.equal('Subscription confirmed successfully');
 
         const result = await subscriptionRepo.findSub({token: token});
-        const sub = result.subscription;
+        const sub = result.data;
         expect(sub.confirmed).to.be.true;
     });
 

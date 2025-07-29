@@ -19,7 +19,7 @@ class SubscriptionPublicController
         const confirmResult = await this.confirmSubscriptionUseCase.confirm(token);
         if (confirmResult.success)
         {
-            const sub = confirmResult.subscription;
+            const sub = confirmResult.data;
             const url = buildConfirmedUrl(sub.city, sub.frequency, token);
             return res.redirect(url);
         }

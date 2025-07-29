@@ -26,11 +26,17 @@ class WeatherUpdatesUseCase
 
     async sendWeatherUpdates(frequency)
     {
-        const subs = await this.subscriptionService.findAllSubs({ confirmed: true, frequency });
         let sent = 0;
         let failed = 0;
         let skipped = 0;
+        const finAllResult = await this.subscriptionService.findAllSubs({ confirmed: true, frequency });
+        if (!finAllResult)
+        {
+            console.error('Failed to find subscriptions');
+            return { sent, failed, skipped };
+        }
 
+        const subs = finAllResult.data;
         for (const sub of subs)
         {
             try

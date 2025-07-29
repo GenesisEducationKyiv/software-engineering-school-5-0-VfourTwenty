@@ -1,5 +1,5 @@
 const { buildUnsubscribedEmail } = require('../../utils/emailTemplates');
-const DTO = require('../../domain/types/dto');
+const Result = require('../../domain/types/result');
 
 class UnsubscribeUserUseCase
 {
@@ -25,9 +25,9 @@ class UnsubscribeUserUseCase
         {
             return unsubscribeResult;
         }
-        const { email, city } = unsubscribeResult.subscription;
+        const { email, city } = unsubscribeResult.data;
         const emailSuccess = await this._sendUnsubscribedEmail(email, city);
-        if (!emailSuccess) return new DTO(false, 'UNSUBSCRIBED BUT EMAIL FAILED');
+        if (!emailSuccess) return new Result(false, 'UNSUBSCRIBED BUT EMAIL FAILED');
         return unsubscribeResult;
     }
 }

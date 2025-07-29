@@ -1,4 +1,4 @@
-const DTO = require('./dto');
+// const DTO = require('./dto');
 
 /**
  * @typedef {Object} Subscription
@@ -9,18 +9,18 @@ const DTO = require('./dto');
  * @property {string} token
  */
 
-class SubscriptionDTO extends DTO
-{
-    /**
-     * @param {boolean} success
-     * @param {string} err
-     * @param {Partial<Subscription>|null} subscription
-     */
-    constructor(success, err, subscription)
-    {
-        super(success, err);
-        this.subscription = subscription;
-    }
-}
-
-module.exports = SubscriptionDTO;
+// class SubscriptionDTO extends DTO
+// {
+//     /**
+//      * @param {boolean} success
+//      * @param {string} err
+//      * @param {Partial<Subscription>|null} subscription
+//      */
+//     constructor(success, err, subscription)
+//     {
+//         super(success, err);
+//         this.subscription = subscription;
+//     }
+// }
+//
+// module.exports = SubscriptionDTO;

@@ -1,5 +1,5 @@
 const { buildConfirmEmail } = require('../../utils/emailTemplates');
-const DTO = require('../../domain/types/dto');
+const Result = require('../../domain/types/result');
 
 class SubscribeUserUseCase
 {
@@ -28,9 +28,9 @@ class SubscribeUserUseCase
         {
             return subscriptionResult; // or new DTO(false, 'FAILED TO SUBSCRIBE)
         }
-        const token = subscriptionResult.subscription.token;
+        const token = subscriptionResult.data.token;
         const emailSuccess = await this._sendConfirmationEmail(email, token);
-        if (!emailSuccess) return new DTO(false, 'SUBSCRIBED BUT CONFIRM EMAIL FAILED');
+        if (!emailSuccess) return new Result(false, 'SUBSCRIBED BUT CONFIRM EMAIL FAILED');
         return subscriptionResult;
     }
 }

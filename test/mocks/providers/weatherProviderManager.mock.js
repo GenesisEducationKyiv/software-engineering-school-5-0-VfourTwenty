@@ -1,16 +1,15 @@
-const DTO = require('../../../src/domain/types/dto');
-const WeatherDTO = require('../../../src/domain/types/weather');
+const Result = require('../../../src/domain/types/result');
 
 class WeatherProviderManagerMock {
     async fetchWeather(city) {
         if (["Kyiv", "Lviv", "Odesa", "Dnipro"].includes(city)) {
-            return new WeatherDTO(true, '', {
+            return new Result(true, null, {
                 temperature: 22,
                 humidity: 60,
                 description: "Clear sky"
             });
         } else {
-            return new DTO(false, 'weather provider manager error');
+            return new Result(false, 'weather provider manager error');
         }
     }
 }

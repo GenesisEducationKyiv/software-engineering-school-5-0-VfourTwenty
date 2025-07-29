@@ -1,4 +1,4 @@
-const DTO = require('../domain/types/dto');
+const Result = require('../domain/types/result');
 // const { logProviderResponse } = require('../utils/logger');
 
 class WeatherService 
@@ -19,16 +19,16 @@ class WeatherService
         // all providers have failed
         if (!result.success)
         {
-            return new DTO(false, 'NO WEATHER DATA');
+            return new Result(false, 'NO WEATHER DATA');
         }
-        const weather = result.weather;
+        const weather = result.data;
         if (
             typeof weather.temperature !== 'number' ||
             typeof weather.humidity !== 'number' ||
             typeof weather.description !== 'string'
         )
         {
-            return new DTO(false, 'INVALID WEATHER DATA FORMAT');
+            return new Result(false, 'INVALID WEATHER DATA FORMAT');
         }
         return result;
     }
