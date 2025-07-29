@@ -1,4 +1,4 @@
-const DTO = require('../../../src/domain/types/dto');
+const Result = require('../../../src/domain/types/result');
 const {emailRegex} = require("../../../src/utils/strings");
 
 const validSub = {
@@ -13,24 +13,24 @@ class SubscriptionValidatorMock
     {
         if (!email || !city || !frequency)
         {
-            return new DTO(false, 'MISSING REQUIRED FIELDS');
+            return new Result(false, 'MISSING REQUIRED FIELDS');
         }
         // should fail in confirmation email use case
         else if ((email === validSub.email || email === 'shouldfail@mail.com') && city === validSub.city && frequency === validSub.frequency)
         {
-            return new DTO(true, '');
+            return new Result(true);
         }
         else if (!emailRegex.test(email))
         {
-            return new DTO(false, 'INVALID EMAIL FORMAT');
+            return new Result(false, 'INVALID EMAIL FORMAT');
         }
         else if (!['hourly', 'daily'].includes(frequency))
         {
-            return new DTO(false, 'INVALID FREQUENCY');
+            return new Result(false, 'INVALID FREQUENCY');
         }
         else if (city !== validSub.city)
         {
-            return new DTO(false, 'INVALID CITY');
+            return new Result(false, 'INVALID CITY');
         }
     }
 }

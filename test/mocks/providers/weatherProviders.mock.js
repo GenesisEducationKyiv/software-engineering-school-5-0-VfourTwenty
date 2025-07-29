@@ -1,13 +1,12 @@
 const IWeatherProvider = require('../../../src/providers/weather-providers/weatherProviderInterface');
-const WeatherDTO = require('../../../src/domain/types/weather');
-const DTO = require('../../../src/domain/types/dto');
+const Result = require('../../../src/domain/types/result');
 
 class WeatherProviderMock1 extends  IWeatherProvider
 {
     async fetchWeather(city)
     {
         if (["Kyiv", "Lviv"].includes(city)) {
-            return new WeatherDTO(true, '', {
+            return new Result(true, null, {
                 temperature: 22,
                 humidity: 60,
                 description: "Clear sky"
@@ -15,7 +14,7 @@ class WeatherProviderMock1 extends  IWeatherProvider
         }
         else
         {
-            return new DTO(false, '');
+            return new Result(false);
         }
     }
 }
@@ -25,7 +24,7 @@ class WeatherProviderMock2 extends  IWeatherProvider
     async fetchWeather(city)
     {
         if (["Odesa", "Dnipro"].includes(city)) {
-            return new WeatherDTO(true, '', {
+            return new Result(true, null, {
                 temperature: 22,
                 humidity: 60,
                 description: "Clear sky"
@@ -33,7 +32,7 @@ class WeatherProviderMock2 extends  IWeatherProvider
         }
         else
         {
-            return new DTO(false, '');
+            return new Result(false);
         }
     }
 }

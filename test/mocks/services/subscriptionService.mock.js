@@ -20,6 +20,10 @@ class SubscriptionServiceMock
     {
         return this.returnValue;
     }
+    async findAllSubs(params)
+    {
+        return this.returnValue;
+    }
 }
 
 module.exports = SubscriptionServiceMock;

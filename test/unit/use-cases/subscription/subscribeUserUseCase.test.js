@@ -1,11 +1,15 @@
 const {expect} = require("chai");
 const SubscribeUserUseCase = require('../../../../src/use-cases/subscription/subscribeUserUseCase');
+const SubscriptionValidatorMock = require('../../../mocks/validators/subscriptionValidator.mock');
 const SubscriptionServiceMock = require('../../../mocks/services/subscriptionService.mock');
+const EmailServiceMock = require('../../../mocks/services/emailService.mock');
 
-const DTO = require('../../../../src/domain/types/dto');
+const Result = require('../../../../src/domain/types/result');
 
+const subscriptionValidatorMock = new SubscriptionValidatorMock();
 const subscriptionServiceMock = new SubscriptionServiceMock();
-const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionServiceMock);
+const emailServiceMock = new EmailServiceMock();
+const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionValidatorMock, subscriptionServiceMock, emailServiceMock);
 
 const validSub = {
     email: 'valid@mail.com',
@@ -15,15 +19,22 @@ const validSub = {
 
 describe('subscribeSubscriptionUseCase Unit Tests', () => {
     it('should return a successful response from subscription service', async () => {
-        subscriptionServiceMock.stub(new DTO(true, ''));
+        subscriptionServiceMock.stub(new Result(true, null, 'some-valid-token'));
         const result = await subscribeUserUseCase.subscribe(validSub.email, validSub.city, validSub.frequency);
         expect(result.success).to.be.true;
     });
 
-    it('should return a failing response from subscription service', async () => {
-        subscriptionServiceMock.stub(new DTO(false, 'DUPLICATE'));
+    it('should return a failing response from subscription service if sub already exists', async () => {
+        subscriptionServiceMock.stub(new Result(false, 'DUPLICATE'));
         const result = await subscribeUserUseCase.subscribe(validSub.email, validSub.city, validSub.frequency);
         expect(result.success).to.be.false;
         expect(result.err).to.eq('DUPLICATE');
+    });
+
+    it('should return a failing response from subscription service if confirmation email fails', async () => {
+        subscriptionServiceMock.stub(new Result(false, 'SUBSCRIBED BUT CONFIRM EMAIL FAILED'));
+        const result = await subscribeUserUseCase.subscribe(validSub.email, validSub.city, validSub.frequency);
+        expect(result.success).to.be.false;
+        expect(result.err).to.eq('SUBSCRIBED BUT CONFIRM EMAIL FAILED');
     });
 });

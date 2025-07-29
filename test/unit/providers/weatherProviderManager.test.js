@@ -12,7 +12,7 @@ describe('WeatherProviderManager Unit Tests', () => {
     it('should return true for success and weather data if the first available provider can fetch it', async () => {
         const result = await weatherProviderManager.fetchWeather('Kyiv');
         expect(result.success).to.be.true;
-        expect(result.weather).to.deep.eq({
+        expect(result.data).to.deep.eq({
                 temperature: 22,
                 humidity: 60,
                 description: "Clear sky"
@@ -22,7 +22,7 @@ describe('WeatherProviderManager Unit Tests', () => {
     it('should delegate to the next provider and return weather data if the first provider fails to fetch', async () => {
         const result = await weatherProviderManager.fetchWeather('Odesa');
         expect(result.success).to.be.true;
-        expect(result.weather).to.deep.equal({
+        expect(result.data).to.deep.equal({
             temperature: 22,
             humidity: 60,
             description: "Clear sky"

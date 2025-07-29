@@ -10,7 +10,7 @@ describe('WeatherService Unit Tests', () => {
     it('should return true for success and weather data for a valid city', async () => {
         const data = await weatherService.fetchWeather('Kyiv');
         expect(data.success).to.be.true;
-        expect(data.weather).to.deep.equal({
+        expect(data.data).to.deep.equal({
             temperature: 22,
             humidity: 60,
             description: "Clear sky"

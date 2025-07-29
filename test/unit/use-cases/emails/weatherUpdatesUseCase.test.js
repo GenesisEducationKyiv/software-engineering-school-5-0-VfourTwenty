@@ -4,13 +4,15 @@ const sinon = require('sinon');
 const WeatherUpdatesUseCase = require('../../../../src/use-cases/emails/weatherUpdatesUseCase');
 const EmailServiceMock = require('../../../mocks/services/emailService.mock');
 const WeatherServiceMock = require('../../../mocks/services/weatherService.mock');
-const SubscriptionRepoMock = require('../../../mocks/repositories/subscriptionRepo.mock');
+const SubscriptionServiceMock = require('../../../mocks/services/subscriptionService.mock');
 
 const emailServiceMock = new EmailServiceMock();
 const weatherServiceMock = new WeatherServiceMock();
-const subscriptionRepoMock = new SubscriptionRepoMock();
+const subscriptionServiceMock = new SubscriptionServiceMock();
 
-const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailServiceMock, weatherServiceMock, subscriptionRepoMock);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailServiceMock, weatherServiceMock, subscriptionServiceMock);
+
+const Result = require('../../../../src/domain/types/result');
 
 const sub1 =
     {   email: 'valid@mail.com',
@@ -36,7 +38,6 @@ const sub3 =
 describe('WeatherUpdatesUseCase Unit Tests', () => {
     let logSpy, warnSpy, errorSpy;
     beforeEach(async () => {
-        await subscriptionRepoMock.clear();
         logSpy = sinon.spy(console, 'log');
         warnSpy = sinon.spy(console, 'warn');
         errorSpy = sinon.spy(console, 'error');
@@ -49,9 +50,7 @@ describe('WeatherUpdatesUseCase Unit Tests', () => {
     });
 
     it('should send weather updates to all valid subscribers', async () => {
-        await subscriptionRepoMock.createSub(sub1);
-        await subscriptionRepoMock.createSub(sub2);
-        await subscriptionRepoMock.createSub(sub3);
+        subscriptionServiceMock.stub(new Result(true, null, [sub1, sub2, sub3]));
 
         const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
 
@@ -72,9 +71,11 @@ describe('WeatherUpdatesUseCase Unit Tests', () => {
     });
 
     it('should not send weather updates if there is no weather data for chosen city', async () => {
-        await subscriptionRepoMock.createSub({...sub1, city: 'NotRealCity'});
-        await subscriptionRepoMock.createSub({...sub2, city: 'ThisCityDoesntExist'});
-        await subscriptionRepoMock.createSub({...sub2, city: 'NotACityName'});
+        subscriptionServiceMock.stub(new Result(true, null, [
+            {...sub1, city: 'NotRealCity'},
+            {...sub2, city: 'ThisCityDoesntExist'},
+            {...sub2, city: 'NotACityName'}
+        ]))
 
         const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
 
@@ -92,9 +93,11 @@ describe('WeatherUpdatesUseCase Unit Tests', () => {
     });
 
     it('should not send weather updates to subscribers with invalid email addresses', async () => {
-        await subscriptionRepoMock.createSub({...sub1, email:'shouldfail@mail.com'});
-        await subscriptionRepoMock.createSub({...sub2, email:'shouldfail@mail.com'});
-        await subscriptionRepoMock.createSub({...sub3, email:'shouldfail@mail.com'});
+        subscriptionServiceMock.stub(new Result(true, null, [
+            {...sub1, email:'shouldfail@mail.com'},
+            {...sub2, email:'shouldfail@mail.com'},
+            {...sub3, email:'shouldfail@mail.com'}
+        ]))
 
         const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
 
@@ -113,14 +116,15 @@ describe('WeatherUpdatesUseCase Unit Tests', () => {
     });
 
     it('should handle all cases properly and return correct counters for sent, failed, and skipped', async () => {
-        await subscriptionRepoMock.createSub({...sub1, email:'shouldfail@mail.com'});
-        await subscriptionRepoMock.createSub(sub3);
-        await subscriptionRepoMock.createSub({...sub2, city: 'ThisCityDoesntExist'});
-        await subscriptionRepoMock.createSub({...sub2, email:'shouldfail@mail.com'});
-        await subscriptionRepoMock.createSub(sub1);
-        await subscriptionRepoMock.createSub({...sub2, city: 'NotACityName'});
-        await subscriptionRepoMock.createSub(sub2);
-
+        subscriptionServiceMock.stub(new Result(true, null, [
+            {...sub1, email:'shouldfail@mail.com'},
+            sub3,
+            {...sub2, city: 'ThisCityDoesntExist'},
+            {...sub2, email:'shouldfail@mail.com'},
+            sub1,
+            {...sub2, city: 'NotACityName'},
+            sub2
+        ]))
 
         const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
 

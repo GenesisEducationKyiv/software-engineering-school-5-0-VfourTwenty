@@ -1,5 +1,5 @@
 const IEmailProvider = require('../../../src/providers/email-providers/emailProviderInterface');
-const DTO = require('../../../src/domain/types/dto');
+const Result = require('../../../src/domain/types/result');
 
 class EmailProviderMock1 extends IEmailProvider
 {
@@ -7,11 +7,11 @@ class EmailProviderMock1 extends IEmailProvider
     {
         if (to === 'email1@mail.com')
         {
-            return new DTO(true, '');
+            return new Result(true);
         }
         else
         {
-            return new DTO(false, 'Email provider 1 has failed')
+            return new Result(false, 'Email provider 1 has failed')
         }
     }
 }
@@ -22,11 +22,11 @@ class EmailProviderMock2 extends IEmailProvider
     {
         if (to === 'email2@mail.com')
         {
-            return new DTO(true, '');
+            return new Result(true);
         }
         else
         {
-            return new DTO(false, 'Email provider 2 has failed');
+            return new Result(false, 'Email provider 2 has failed');
         }
     }
 }

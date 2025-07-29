@@ -1,9 +1,9 @@
 const CityValidator = require('../../../src/domain/validators/cityValidator');
-const GetWeatherUseCaseMock = require('../../mocks/use-cases/getWeatherUseCase.mock');
+const WeatherServiceMock = require('../../mocks/services/weatherService.mock');
 const {expect} = require("chai");
 
-const getWeatherUseCaseMock = new GetWeatherUseCaseMock();
-const cityValidator = new CityValidator(getWeatherUseCaseMock);
+const weatherServiceMock = new WeatherServiceMock();
+const cityValidator = new CityValidator(weatherServiceMock);
 
 describe('CityValidator Unit Tests', () => {
 

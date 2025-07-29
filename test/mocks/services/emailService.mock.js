@@ -1,4 +1,4 @@
-const DTO = require("../../../src/domain/types/dto");
+const Result = require("../../../src/domain/types/result");
 
 class EmailServiceMock
 {
@@ -6,9 +6,9 @@ class EmailServiceMock
     {
         if (to === 'shouldfail@mail.com')
         {
-            return new DTO(false, 'EMAIL FAILED');
+            return new Result(false, 'EMAIL FAILED');
         }
-        return new DTO(true, '');
+        return new Result(true);
     }
 }
 
