@@ -1,13 +1,13 @@
-const DTO = require('../../../src/domain/types/dto');
+const Result = require('../../../src/domain/types/result');
 
 class EmailProviderManagerMock {
     async sendEmail(to, subject, html)
     {
         if (to === 'shouldfail@mail.com')
         {
-            return new DTO(false, 'email failed');
+            return new Result(false, 'email failed');
         }
-        return new DTO(true, '');
+        return new Result(true);
     }
 }
 
