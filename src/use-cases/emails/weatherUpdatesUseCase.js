@@ -50,7 +50,7 @@ class WeatherUpdatesUseCase
                     continue;
                 }
 
-                const ok = await this._sendWeatherUpdate(sub.email, sub.city, response.weather, sub.token);
+                const ok = await this._sendWeatherUpdate(sub.email, sub.city, response.data, sub.token);
                 if (ok)
                 {
                     sent++;
