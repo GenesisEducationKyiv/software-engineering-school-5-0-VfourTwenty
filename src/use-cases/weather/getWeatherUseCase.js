@@ -1,4 +1,4 @@
-const DTO = require('../../types/dto');
+const DTO = require('../../domain/types/dto');
 
 class GetWeatherUseCase
 {

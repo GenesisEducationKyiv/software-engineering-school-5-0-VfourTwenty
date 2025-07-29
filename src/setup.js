@@ -10,13 +10,13 @@ const SubscriptionService = require('./services/subscriptionService');
 const WeatherService = require('./services/weatherService');
 const EmailService = require('./services/emailService');
 
-const WeatherUpdatesUseCase = require('./domain/use-cases/emails/weatherUpdatesUseCase');
+const WeatherUpdatesUseCase = require('./use-cases/emails/weatherUpdatesUseCase');
 
-const SubscribeUserUseCase = require('./domain/use-cases/subscription/subscribeUserUseCase');
-const ConfirmSubscriptionUseCase = require('./domain/use-cases/subscription/confirmSubscriptionUseCase');
-const UnsubscribeUserUseCase = require('./domain/use-cases/subscription/unsubscribeUserUseCase');
+const SubscribeUserUseCase = require('./use-cases/subscription/subscribeUserUseCase');
+const ConfirmSubscriptionUseCase = require('./use-cases/subscription/confirmSubscriptionUseCase');
+const UnsubscribeUserUseCase = require('./use-cases/subscription/unsubscribeUserUseCase');
 
-const GetWeatherUseCase = require('./domain/use-cases/weather/getWeatherUseCase');
+const GetWeatherUseCase = require('./use-cases/weather/getWeatherUseCase');
 
 const CityValidator = require('./domain/validators/cityValidator');
 const SubscriptionValidator = require('./domain/validators/subscriptionValidator');

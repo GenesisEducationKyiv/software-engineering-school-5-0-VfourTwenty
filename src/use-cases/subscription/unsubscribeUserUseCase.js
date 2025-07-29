@@ -1,5 +1,5 @@
-const { buildUnsubscribedEmail } = require('../../../utils/emailTemplates');
-const DTO = require('../../types/dto');
+const { buildUnsubscribedEmail } = require('../../utils/emailTemplates');
+const DTO = require('../../domain/types/dto');
 
 class UnsubscribeUserUseCase
 {

@@ -1,5 +1,5 @@
-const { buildConfirmEmail } = require('../../../utils/emailTemplates');
-const DTO = require('../../types/dto');
+const { buildConfirmEmail } = require('../../utils/emailTemplates');
+const DTO = require('../../domain/types/dto');
 
 class SubscribeUserUseCase
 {

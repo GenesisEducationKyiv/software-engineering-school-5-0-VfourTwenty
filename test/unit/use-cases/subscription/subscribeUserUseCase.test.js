@@ -1,5 +1,5 @@
 const {expect} = require("chai");
-const SubscribeUserUseCase = require('../../../../src/domain/use-cases/subscription/subscribeUserUseCase');
+const SubscribeUserUseCase = require('../../../../src/use-cases/subscription/subscribeUserUseCase');
 const SubscriptionServiceMock = require('../../../mocks/services/subscriptionService.mock');
 
 const DTO = require('../../../../src/domain/types/dto');

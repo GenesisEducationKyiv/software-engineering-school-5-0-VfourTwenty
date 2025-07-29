@@ -1,5 +1,5 @@
 const {expect} = require("chai");
-const UnsubscribeEmailUseCase = require('../../../../src/domain/use-cases/emails/unsubscribeEmailUseCase');
+const UnsubscribeEmailUseCase = require('../../../../src/use-cases/emails/unsubscribeEmailUseCase');
 const EmailServiceMock = require('../../../mocks/services/emailService.mock');
 
 const emailServiceMock = new EmailServiceMock();

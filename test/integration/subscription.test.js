@@ -8,9 +8,9 @@ const SubscriptionService = require('../../src/services/subscriptionService');
 const EmailService = require('../../src/services/emailService');
 const WeatherService = require('../../src/services/weatherService');
 
-const SubscribeUserUseCase = require('../../src/domain/use-cases/subscription/subscribeUserUseCase');
-const ConfirmSubscriptionUseCase = require('../../src/domain/use-cases/subscription/confirmSubscriptionUseCase');
-const UnsubscribeUserUseCase = require('../../src/domain/use-cases/subscription/unsubscribeUserUseCase');
+const SubscribeUserUseCase = require('../../src/use-cases/subscription/subscribeUserUseCase');
+const ConfirmSubscriptionUseCase = require('../../src/use-cases/subscription/confirmSubscriptionUseCase');
+const UnsubscribeUserUseCase = require('../../src/use-cases/subscription/unsubscribeUserUseCase');
 
 const SubscriptionValidator = require('../../src/domain/validators/subscriptionValidator');
 const CityValidator = require('../../src/domain/validators/cityValidator');

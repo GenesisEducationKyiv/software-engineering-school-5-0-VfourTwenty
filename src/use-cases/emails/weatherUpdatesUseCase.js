@@ -1,4 +1,4 @@
-const { buildWeatherUpdateEmail } = require('../../../utils/emailTemplates');
+const { buildWeatherUpdateEmail } = require('../../utils/emailTemplates');
 
 class WeatherUpdatesUseCase
 {
