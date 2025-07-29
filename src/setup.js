@@ -53,7 +53,7 @@ const subscriptionValidator = new SubscriptionValidator(cityValidator);
 
 // 5
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
-const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionRepo);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionService);
 
 const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionValidator, subscriptionService, emailService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);

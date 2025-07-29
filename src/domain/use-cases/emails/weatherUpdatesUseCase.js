@@ -3,11 +3,11 @@ const { buildWeatherUpdateEmail } = require('../../../utils/emailTemplates');
 class WeatherUpdatesUseCase
 {
     // depends on a service interface
-    constructor(emailService, weatherService, subscriptionRepo)
+    constructor(emailService, weatherService, subscriptionService)
     {
         this.emailService = emailService;
         this.weatherService = weatherService;
-        this.subscriptionRepo = subscriptionRepo;
+        this.subscriptionService = subscriptionService;
     }
 
     // internal helper
@@ -26,7 +26,7 @@ class WeatherUpdatesUseCase
 
     async sendWeatherUpdates(frequency)
     {
-        const subs = await this.subscriptionRepo.findAllSubs({ confirmed: true, frequency });
+        const subs = await this.subscriptionService.findAllSubs({ confirmed: true, frequency });
         let sent = 0;
         let failed = 0;
         let skipped = 0;

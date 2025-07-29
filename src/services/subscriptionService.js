@@ -44,6 +44,11 @@ class SubscriptionService
     {
         return await this.subscriptionRepo.findSub(params);
     }
+
+    async findAllSubs(params)
+    {
+        return await this.subscriptionRepo.findAllSubs(params);
+    }
 }
 
 module.exports = SubscriptionService;
