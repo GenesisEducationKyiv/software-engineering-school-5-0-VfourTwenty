@@ -3,6 +3,8 @@ const errorMap = {
     'INVALID EMAIL FORMAT': { status: 400, message: 'Invalid email format.' },
     'INVALID FREQUENCY': { status: 400, message: 'Invalid frequency.' },
     'ALREADY CONFIRMED': { status: 400, message: 'Subscription already confirmed' },
+    'CONFIRMATION FAILED': { status: 400, message: 'Confirmation failed' },
+    'FAILED TO DELETE SUBSCRIPTION': { status: 400, message: 'Failed to delete subscription' },
     'TOKEN NOT FOUND': { status: 404, message: 'Token not found' },
     'INVALID TOKEN': { status: 400, message: 'Invalid token' },
     'DUPLICATE': { status: 409, message: 'Subscription already exists for this city and frequency.' },
