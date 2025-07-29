@@ -58,6 +58,7 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
     async findAllSubs(params)
     {
         const subs = await Subscription.findAll({ where: params });
+        // may happen in cron handler
         if (!subs) return new Result(false, 'failed to find subscriptions by given params');
         const subObjects = subs.map(sub => this.toPlainObject(sub));
         return new Result(true, null, subObjects);
