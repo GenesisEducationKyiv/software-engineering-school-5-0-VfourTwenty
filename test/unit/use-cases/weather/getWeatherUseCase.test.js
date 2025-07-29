@@ -7,7 +7,7 @@ const getWeatherUseCase = new GetWeatherUseCase(weatherServiceMock);
 
 describe('GetWeatherUseCase Unit Tests', () => {
 
-    it('should return true for success and weather data if weather service succeeds', async () => {
+    it('should return true for success and weather data for a valid city', async () => {
         const result = await getWeatherUseCase.getWeather('Kyiv');
         expect(result.success).to.be.true;
         expect(result.data).to.deep.eq({
@@ -17,7 +17,7 @@ describe('GetWeatherUseCase Unit Tests', () => {
         });
     });
 
-    it('should return false for success and an error message if weather service fails', async () => {
+    it('should return false for success and an error message for an invalid city', async () => {
         const result = await getWeatherUseCase.getWeather('NotRealCity');
         expect(result.success).to.be.false;
         expect(result.err).to.eq('NO WEATHER DATA');
