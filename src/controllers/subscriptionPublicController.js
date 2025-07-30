@@ -1,6 +1,6 @@
 // redirection can be a separate frontend service
 const { buildConfirmedUrl, buildUnsubscribedUrl, buildErrorUrl } = require('../utils/redirectUtils');
-const { mapErrorToClientMessage } = require('../utils/errors');
+const { mapErrorToClientMessage } = require('../utils/errors/clientErrors');
 
 class SubscriptionPublicController
 {

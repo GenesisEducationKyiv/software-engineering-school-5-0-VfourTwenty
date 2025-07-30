@@ -2,15 +2,45 @@ require('dotenv').config({
     path: `.env.${process.env.NODE_ENV || 'development'}`
 });
 
+// logger
+const logLevel = process.env.LOG_LEVEL;
+const logLevelStrict = process.env.LOG_LEVEL_STRICT === 'true';
+const logFilePath = logLevel === 'null' ? '' : process.env.LOG_FILE_PATH;
+const logToConsole = process.env.LOG_TO_CONSOLE === 'true';
+const logSamplingRate = process.env.LOG_SAMPLING_RATE;
+// domain
+const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
+//db config
+const use_env_variable = 'DATABASE_URL';
+const username = process.env.DB_USER;
+const password = process.env.DB_PASS;
+const database = process.env.DB_NAME;
+const host = process.env.DB_HOST;
+const dialect = process.env.DB_DIALECT;
+// weather providers
+const weatherApiKey = process.env.WEATHER_API_KEY;
+const tomorrowIoApiKey = process.env.TOMORROW_IO_API_KEY;
+const visualCrossingApiKey = process.env.VISUAL_CROSSING_API_KEY;
+// email config
+const resendApiKey = process.env.RESEND_API_KEY;
+const fromEmail = process.env.FROM_EMAIL;
+
 module.exports = {
-    baseUrl: process.env.BASE_URL || 'http://localhost:3001',
-    use_env_variable: 'DATABASE_URL',
-    username: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
-    host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT,
-    weatherApiKey: process.env.WEATHER_API_KEY,
-    resendApiKey: process.env.RESEND_API_KEY,
-    fromEmail: process.env.FROM_EMAIL
+    logLevel,
+    logLevelStrict,
+    logFilePath,
+    logToConsole,
+    logSamplingRate,
+    baseUrl,
+    use_env_variable,
+    username,
+    password,
+    database,
+    host,
+    dialect,
+    weatherApiKey,
+    tomorrowIoApiKey,
+    visualCrossingApiKey,
+    resendApiKey,
+    fromEmail
 };

@@ -1,6 +1,11 @@
+const Logger = require('./utils/logger');
+
 const SequelizeSubscriptionRepo = require('./repositories/sequelizeSubscriptionRepo');
 
 const WeatherApiProvider = require('./providers/weather-providers/weatherApiProvider');
+const VisualCrossingWeatherProvider = require('./providers/weather-providers/visualCrossingWeatherProvider');
+const TomorrowWeatherProvider = require('./providers/weather-providers/tomorrowWeatherProvider');
+
 const ResendEmailProvider = require('./providers/email-providers/resendEmailProvider');
 
 const WeatherProviderManger = require('./providers/weather-providers/weatherProviderManager');
@@ -32,14 +37,25 @@ const CronMain = require('./cron/main');
 
 // dependency injection will be replaced with communication (e.g. http)
 
+const config = require('./config/index');
+const logger = new Logger(
+    {
+        level: config.logLevel,
+        levelStrict: config.logLevelStrict,
+        logFilePath: config.logFilePath,
+        writeToConsole: config.logToConsole,
+        samplingRate: config.logSamplingRate,
+        // sampling rate can be added, defaults to 1
+    });
+
 // 1
 const subscriptionRepo = new SequelizeSubscriptionRepo();
 
 // 2
-const weatherProviders = [new WeatherApiProvider()];
+const weatherProviders = [new VisualCrossingWeatherProvider(), new TomorrowWeatherProvider(), new WeatherApiProvider()];
 const emailProviders = [new ResendEmailProvider()];
 
-const weatherProviderManager = new WeatherProviderManger(weatherProviders);
+const weatherProviderManager = new WeatherProviderManger(weatherProviders, logger);
 const emailProviderManager = new EmailProviderManager(emailProviders);
 
 // 3
