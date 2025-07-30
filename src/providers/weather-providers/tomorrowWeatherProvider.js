@@ -40,7 +40,7 @@ class TomorrowWeatherProvider extends IWeatherProvider
     async fetchWeather(city)
     {
         console.log('tomorrow io fetch weather called');
-        const url = `https://api.tomorrow.io/v4/weather/forecast?location=${city}}&apikey=${TOMORROW_IO_API_KEY}`;
+        const url = `https://api.tomorrow.io/v4/weather/forecast?location=${city}&apikey=${TOMORROW_IO_API_KEY}`;
         try
         {
             const res = await fetch(url);
