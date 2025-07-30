@@ -54,7 +54,7 @@ class TomorrowWeatherProvider extends IWeatherProvider
 
             const currentData = data.timelines.hourly[0].values;
             const description = WeatherCodes[currentData.weatherCode];
-            if (description === undefined)
+            if (!description)
             {
                 console.log('unknown weather code in tomorrow provider');
                 return new Result(false, 'unknown weather code', null);
