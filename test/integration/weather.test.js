@@ -35,7 +35,6 @@ describe('GET /api/weather', () => {
 
     it('should return 404 for invalid city', async () => {
         const res = await request(app).get('/api/weather?city=INVALIDCITYNAME123');
-        console.log(res.body.error);
         expect(res.status).to.equal(404);
         expect(res.body.error).to.equal('No weather data available for this location');
     });
