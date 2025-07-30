@@ -65,7 +65,8 @@ class TomorrowWeatherProvider extends IWeatherProvider
                 description: description
             });
         }
-            // eslint-disable-next-line no-unused-vars
+
+        // eslint-disable-next-line no-unused-vars
         catch (err)
         {
             return new Result(false, 'no data', null);
