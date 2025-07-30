@@ -86,6 +86,6 @@ describe('SubscriptionService Unit Tests', () => {
     it('should return false for success and an error message when an non-existing sub is queried', async () => {
         const result = await subscriptionService.findSub(validSub);
         expect(result.success).to.be.false;
-        expect(result.err).to.eq('Subscription not found');
+        expect(result.err).to.eq('SUBSCRIPTION NOT FOUND');
     });
 });

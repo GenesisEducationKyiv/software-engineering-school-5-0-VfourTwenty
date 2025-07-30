@@ -20,7 +20,7 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
     async findSub(params)
     {
         const sub = await Subscription.findOne({ where: params });
-        if (!sub) return new Result(false, 'Subscription not found');
+        if (!sub) return new Result(false, 'SUBSCRIPTION NOT FOUND');
         return new Result(true, null, this.toPlainObject(sub));
     }
 
@@ -29,7 +29,7 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
         try
         {
             const sub = await Subscription.findOne({ where: { token } });
-            if (!sub) return new Result(false, 'Subscription not found');
+            if (!sub) return new Result(false, 'SUBSCRIPTION NOT FOUND');
             sub.confirmed = true;
             await sub.save();
             return new Result(true);
@@ -45,7 +45,7 @@ class SequelizeSubscriptionRepo extends ISubscriptionRepo
         try 
         {
             const sub = await Subscription.findOne({ where: { token } });
-            if (!sub) return new Result(false, 'Subscription not found');
+            if (!sub) return new Result(false, 'SUBSCRIPTION NOT FOUND');
             await sub.destroy();
             return new Result(true);
         }

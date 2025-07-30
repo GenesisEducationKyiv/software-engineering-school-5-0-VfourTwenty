@@ -18,7 +18,7 @@ class SubscriptionRepoMock extends ISubscriptionRepo
             Object.entries(params).every(([k, v]) => sub[k] === v)
         );
         if (sub) return new Result(true, null, sub);
-        return new Result(false, 'Subscription not found');
+        return new Result(false, 'SUBSCRIPTION NOT FOUND');
     }
 
     async findAllSubs(params) {
@@ -35,7 +35,7 @@ class SubscriptionRepoMock extends ISubscriptionRepo
             sub.confirmed = true;
             return new Result(true);
         }
-        return new Result(false, 'Subscription not found');
+        return new Result(false, 'SUBSCRIPTION NOT FOUND');
     }
 
     async deleteSub(token) {
@@ -44,7 +44,7 @@ class SubscriptionRepoMock extends ISubscriptionRepo
             this.subs.splice(idx, 1);
             return new Result(true);
         }
-        return new Result(false, 'Subscription not found');
+        return new Result(false, 'SUBSCRIPTION NOT FOUND');
     }
 
     async clear() {
