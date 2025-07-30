@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    env_file:
+      - .env.docker
+    environment:
+      NODE_ENV: docker
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"  # Host 5433 → Container 5432
+
+
+  backend:
+    build: .
+    restart: always
+    depends_on:
+      - db
+    env_file:
+      - .env.docker
+    environment:
+      NODE_ENV: docker
+    ports:
+      - "3000:3000"
+    command: npm start
+
+  seed:
+    build: .
+    command: node scripts/seeder.js
+    depends_on:
+      - db
+    env_file:
+      - .env.docker
+    environment:
+      NODE_ENV: docker
+
+  debug:
+    build: .
+    command: node scripts/debug.js
+    depends_on:
+      - db
+    env_file:
+      - .env.docker
+    environment:
+      NODE_ENV: docker
+
+
+volumes:
+  pgdata:

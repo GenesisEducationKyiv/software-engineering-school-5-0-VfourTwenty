@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subscribe to Weather Updates</title>
+</head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(to top, #cceeff, #e6f7ff);
+    }
+
+    .container {
+        background: white;
+        padding: 2rem 3rem;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        color: #3399ff;
+        margin-bottom: 1.5rem;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    input, select, button {
+        padding: 0.6rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+    button {
+        background-color: #3399ff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    button:hover {
+        background-color: #1a8cff;
+    }
+
+    #message {
+        margin-top: 1rem;
+        font-weight: bold;
+    }
+</style>
+<body>
+<div class="container">
+    <h1>SkyFetch</h1>
+    <h3>subscribe to weather updates in your city!</h3>
+    <br>
+    <form id="subscribe-form">
+        <input type="email" name="email" placeholder="Your email" required />
+        <input type="text" name="city" placeholder="City" required />
+        <select name="frequency" required>
+            <option value="">Frequency</option>
+            <option value="hourly">Hourly</option>
+            <option value="daily">Daily</option>
+        </select>
+        <button type="submit">Subscribe</button>
+    </form>
+    <div id="message"></div>
+</div>
+
+<script>
+    document.getElementById('subscribe-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = new FormData(e.target);
+        const email = form.get('email');
+        const city = form.get('city');
+        const frequency = form.get('frequency');
+        const msg = document.getElementById('message');
+        msg.innerText = 'Validating city...';
+
+        const weatherRes = await fetch(`/api/weather?city=${encodeURIComponent(city)}`);
+        if (!weatherRes.ok) {
+            const err = await weatherRes.json();
+            msg.innerText = `❌ Invalid city: ${err.error || 'Please check spelling'}`;
+            return;
+        }
+
+        msg.innerText = 'Subscribing...';
+
+        const data = new URLSearchParams({ email, city, frequency });
+        const res = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: data
+        });
+
+        const json = await res.json();
+        msg.innerText = json.message || json.error;
+    });
+</script>
+
+</body>
+</html>
