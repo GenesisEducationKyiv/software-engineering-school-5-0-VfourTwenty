@@ -2,6 +2,7 @@ const errorMap = {
     'MISSING REQUIRED FIELDS': { status: 400, message: 'Missing required fields.' },
     'INVALID EMAIL FORMAT': { status: 400, message: 'Invalid email format.' },
     'INVALID FREQUENCY': { status: 400, message: 'Invalid frequency.' },
+    'FAILED TO CREATE SUBSCRIPTION': { status: 400, message: 'Failed to create subscription' },
     'ALREADY CONFIRMED': { status: 400, message: 'Subscription already confirmed' },
     'CONFIRMATION FAILED': { status: 400, message: 'Confirmation failed' },
     'FAILED TO DELETE SUBSCRIPTION': { status: 400, message: 'Failed to delete subscription' },

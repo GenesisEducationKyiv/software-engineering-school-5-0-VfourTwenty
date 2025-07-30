@@ -15,8 +15,13 @@ class SubscriptionService
         {
             return new Result(false, 'DUPLICATE');
         }
+
         const token = genToken();
-        await this.subscriptionRepo.createSub({ email, city, frequency, confirmed: false, token });
+        const createResult = await this.subscriptionRepo.createSub({ email, city, frequency, confirmed: false, token });
+        if (!createResult.success)
+        {
+            return new Result(false, 'FAILED TO CREATE SUBSCRIPTION');
+        }
 
         return new Result(true, null, { token: token });
     }
