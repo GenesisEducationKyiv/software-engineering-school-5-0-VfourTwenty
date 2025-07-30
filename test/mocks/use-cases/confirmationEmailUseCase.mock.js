@@ -1,4 +1,4 @@
-const Result = require("../../../src/domain/types/result");
+const Result = require('../../../src/domain/types/result');
 
 class ConfirmationEmailUseCaseMock
 {

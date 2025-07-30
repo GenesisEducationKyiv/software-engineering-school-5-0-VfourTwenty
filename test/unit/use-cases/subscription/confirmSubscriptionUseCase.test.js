@@ -1,4 +1,4 @@
-const {expect} = require("chai");
+const { expect } = require('chai');
 const ConfirmSubscriptionUseCase = require('../../../../src/use-cases/subscription/confirmSubscriptionUseCase');
 const SubscriptionServiceMock = require('../../../mocks/services/subscriptionService.mock');
 
@@ -7,8 +7,10 @@ const Result = require('../../../../src/domain/types/result');
 const subscriptionServiceMock = new SubscriptionServiceMock();
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionServiceMock);
 
-describe('ConfirmSubscriptionUseCase Unit Tests', () => {
-    it('should return a successful response from subscription service', async () => {
+describe('ConfirmSubscriptionUseCase Unit Tests', () => 
+{
+    it('should return a successful response from subscription service', async () => 
+    {
         // Arrange
         subscriptionServiceMock.stub(new Result(true));
 
@@ -19,7 +21,8 @@ describe('ConfirmSubscriptionUseCase Unit Tests', () => {
         expect(result.success).to.be.true;
     });
 
-    it('should return a failing response from subscription service', async () => {
+    it('should return a failing response from subscription service', async () => 
+    {
         // Arrange
         subscriptionServiceMock.stub(new Result(false, 'ALREADY CONFIRMED'));
 

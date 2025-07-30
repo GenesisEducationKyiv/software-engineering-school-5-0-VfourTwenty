@@ -5,30 +5,33 @@ const { EmailProviderMock1, EmailProviderMock2 } = require('../../mocks/provider
 const mockedEmailProviders = [new EmailProviderMock1(), new EmailProviderMock2()];
 const emailProviderManager = new EmailProviderManager(mockedEmailProviders);
 
-describe('EmailProviderManager Unit Tests', () => {
-
-    it('should return success when the first available provider succeeds', async () => {
+describe('EmailProviderManager Unit Tests', () => 
+{
+    it('should return success when the first available provider succeeds', async () => 
+    {
         // Act
-        const response = await emailProviderManager.sendEmail('email1@mail.com', 'hello', 'hello')
+        const response = await emailProviderManager.sendEmail('email1@mail.com', 'hello', 'hello');
 
         // Assert
         expect(response.success).to.be.true;
-    })
+    });
 
-    it('should delegate to the next provider and return success when the first available provider fails', async () => {
+    it('should delegate to the next provider and return success when the first available provider fails', async () => 
+    {
         // Act
-        const response = await emailProviderManager.sendEmail('email2@mail.com', 'hello', 'hello')
+        const response = await emailProviderManager.sendEmail('email2@mail.com', 'hello', 'hello');
 
         // Assert
         expect(response.success).to.be.true;
-    })
+    });
 
-    it('should return null if all available providers fail', async () => {
+    it('should return null if all available providers fail', async () => 
+    {
         // Act
-        const response = await emailProviderManager.sendEmail('email3@mail.com', 'hello', 'hello')
+        const response = await emailProviderManager.sendEmail('email3@mail.com', 'hello', 'hello');
 
         // Assert
         expect(response.success).to.be.false;
         expect(response.err).to.eq('all email providers have failed');
-    })
+    });
 });

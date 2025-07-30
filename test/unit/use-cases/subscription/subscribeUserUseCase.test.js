@@ -1,4 +1,4 @@
-const {expect} = require("chai");
+const { expect } = require('chai');
 const SubscribeUserUseCase = require('../../../../src/use-cases/subscription/subscribeUserUseCase');
 const SubscriptionValidatorMock = require('../../../mocks/validators/subscriptionValidator.mock');
 const SubscriptionServiceMock = require('../../../mocks/services/subscriptionService.mock');
@@ -15,10 +15,12 @@ const validSub = {
     email: 'valid@mail.com',
     city: 'Kyiv',
     frequency: 'hourly'
-}
+};
 
-describe('subscribeSubscriptionUseCase Unit Tests', () => {
-    it('should return a successful response from subscription service', async () => {
+describe('subscribeSubscriptionUseCase Unit Tests', () => 
+{
+    it('should return a successful response from subscription service', async () => 
+    {
         // Arrange
         subscriptionValidatorMock.stub(new Result(true));
         subscriptionServiceMock.stub(new Result(true, null, 'some-valid-token'));
@@ -30,7 +32,8 @@ describe('subscribeSubscriptionUseCase Unit Tests', () => {
         expect(result.success).to.be.true;
     });
 
-    it('should return a failing response from subscription service if sub already exists', async () => {
+    it('should return a failing response from subscription service if sub already exists', async () => 
+    {
         // Arrange
         subscriptionValidatorMock.stub(new Result(true));
         subscriptionServiceMock.stub(new Result(false, 'DUPLICATE'));
@@ -43,7 +46,8 @@ describe('subscribeSubscriptionUseCase Unit Tests', () => {
         expect(result.err).to.eq('DUPLICATE');
     });
 
-    it('should return a failing response from subscription service if confirmation email fails', async () => {
+    it('should return a failing response from subscription service if confirmation email fails', async () => 
+    {
         // Arrange
         subscriptionValidatorMock.stub(new Result(true));
         subscriptionServiceMock.stub(new Result(false, 'SUBSCRIBED BUT CONFIRM EMAIL FAILED'));

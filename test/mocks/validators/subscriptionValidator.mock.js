@@ -4,6 +4,7 @@ class SubscriptionValidatorMock
     {
         this.returnValue = value;
     }
+
     async validateNewSubscription(email, city, frequency)
     {
         return this.returnValue;

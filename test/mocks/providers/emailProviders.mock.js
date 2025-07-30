@@ -11,7 +11,7 @@ class EmailProviderMock1 extends IEmailProvider
         }
         else
         {
-            return new Result(false, 'Email provider 1 has failed')
+            return new Result(false, 'Email provider 1 has failed');
         }
     }
 }
@@ -31,4 +31,4 @@ class EmailProviderMock2 extends IEmailProvider
     }
 }
 
-module.exports = { EmailProviderMock1, EmailProviderMock2 }
+module.exports = { EmailProviderMock1, EmailProviderMock2 };

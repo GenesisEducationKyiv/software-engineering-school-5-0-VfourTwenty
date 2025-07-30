@@ -2,18 +2,17 @@ const { chromium } = require('playwright');
 const { expect } = require('chai');
 const { spawn, exec } = require('child_process');
 
-// Import the real app and service/repo for E2E
-const app = require('../../src/app');
 const { subscriptionService, subscriptionRepo } = require('../../src/setup');
 
 // port 3000 for docker, 3001 for local runs
 const PORT = process.env.NODE_ENV === 'docker_test' ? '3000' : '3001';
 const host = process.env.NODE_ENV === 'docker_test' ? 'backend-test' : 'localhost';
 const baseURL = `http://${host}:${PORT}`;
-const confirmUrl = (token) => `${baseURL}/confirm/${token}`
-const unsubscribeUrl = (token) => `${baseURL}/unsubscribe/${token}`
+const confirmUrl = (token) => `${baseURL}/confirm/${token}`;
+const unsubscribeUrl = (token) => `${baseURL}/unsubscribe/${token}`;
 
-function delay(ms) {
+function delay(ms) 
+{
     return new Promise((res) => setTimeout(res, ms));
 }
 
@@ -24,13 +23,14 @@ const sub = {
     city: 'Brighton',
     frequency: 'daily',
     confirmed: false
-}
+};
 
 // needed without docker
 // ( I know it's not perfect... (￣ ￣) )
 if (process.env.NODE_ENV !== 'docker_test')
 {
-    before(function (done) {
+    before(function (done) 
+    {
         this.timeout(10000);
 
         serverProcess = spawn('npm', ['start'], {
@@ -41,19 +41,27 @@ if (process.env.NODE_ENV !== 'docker_test')
         setTimeout(done, 3000);
     });
 
-    after((done) => {
+    after((done) => 
+    {
         // npm process
-        if (serverProcess) {
-            console.log("Killing server", serverProcess.pid);
+        if (serverProcess) 
+        {
+            console.log('Killing server', serverProcess.pid);
             serverProcess.kill('SIGKILL');
         }
         // node server
-        exec(`lsof -ti :${PORT} | xargs kill`, (err, stdout, stderr) => {
-            if (err && err.code !== 1) { // Ignore exit code 1 (no process found)
+        exec(`lsof -ti :${PORT} | xargs kill`, (err, stdout, stderr) => 
+        {
+            if (err && err.code !== 1) 
+            { // Ignore exit code 1 (no process found)
                 console.error(`Error killing process on port ${PORT}: ${err}`);
-            } else if (stderr) {
+            }
+            else if (stderr) 
+            {
                 console.error(`Error output: ${stderr}`);
-            } else {
+            }
+            else 
+            {
                 console.log(`Successfully killed process on port ${PORT}`);
             }
             done();
@@ -61,24 +69,27 @@ if (process.env.NODE_ENV !== 'docker_test')
     });
 }
 
-
-describe('SkyFetch E2E Tests', () => {
+describe('SkyFetch E2E Tests', () => 
+{
     let browser;
     let page;
 
     // Set up browser and page before tests
-    before(async () => {
+    before(async () => 
+    {
         browser = await chromium.launch({ headless: true });
         page = await browser.newPage();
     });
 
     // Clean up after tests
-    after(async () => {
+    after(async () => 
+    {
         await browser.close();
     });
 
     // Subscription page ------------------------------------ \
-    it('should display all input fields and submit button on homepage', async () => {
+    it('should display all input fields and submit button on homepage', async () => 
+    {
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
 
@@ -99,7 +110,8 @@ describe('SkyFetch E2E Tests', () => {
         await expect(await page.textContent('button[type="submit"]')).to.equal('Subscribe');
     });
 
-    it('should handle subscription form submission and show success message', async () => {
+    it('should handle subscription form submission and show success message', async () => 
+    {
         await subscriptionRepo.clear();
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
@@ -122,7 +134,8 @@ describe('SkyFetch E2E Tests', () => {
         await expect(await page.textContent('#message')).to.equal('Subscription successful. Confirmation email sent.');
     });
 
-    it('should reject subscription for invalid city and show a message', async () => {
+    it('should reject subscription for invalid city and show a message', async () => 
+    {
         await subscriptionRepo.clear();
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
@@ -145,7 +158,8 @@ describe('SkyFetch E2E Tests', () => {
         await expect(await page.textContent('#message')).to.equal('❌ Invalid city: No weather data available for this location');
     });
 
-    it('should reject duplicate subscription and show a message', async () => {
+    it('should reject duplicate subscription and show a message', async () => 
+    {
         await subscriptionRepo.clear();
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
@@ -169,7 +183,8 @@ describe('SkyFetch E2E Tests', () => {
         await expect(await page.textContent('#message')).to.equal('Subscription already exists for this city and frequency.');
     });
 
-    it('should not allow submission if not all fields are filled', async () => {
+    it('should not allow submission if not all fields are filled', async () => 
+    {
         await subscriptionRepo.clear();
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
@@ -188,7 +203,8 @@ describe('SkyFetch E2E Tests', () => {
         await expect(await page.textContent('#message')).to.equal('');
     });
 
-    it('should not allow submission if email format is invalid', async () => {
+    it('should not allow submission if email format is invalid', async () => 
+    {
         await subscriptionRepo.clear();
         await page.goto(baseURL);
         await expect(page.url()).to.equal(baseURL + '/');
@@ -203,15 +219,18 @@ describe('SkyFetch E2E Tests', () => {
     });
 
     // Confirmation page ------------------------------------ \
-    it('should confirm a new subscription with a valid token', async () => {
+    it('should confirm a new subscription with a valid token', async () => 
+    {
         await subscriptionRepo.clear();
         const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
         const token = result.data.token;
         const url = confirmUrl(token);
         console.log('Navigating to confirm URL:', url);
         let redirectDetected = false;
-        page.on('response', response => {
-            if (response.url().includes('/confirm/') && response.status() === 302) {
+        page.on('response', response => 
+        {
+            if (response.url().includes('/confirm/') && response.status() === 302) 
+            {
                 console.log('Redirect detected with status 302 for confirm URL');
                 redirectDetected = true;
             }
@@ -225,8 +244,8 @@ describe('SkyFetch E2E Tests', () => {
     });
 
     // Unsubscribed page ------------------------------------ \
-    it('should unsubscribe a user with a valid token', async () => {
-
+    it('should unsubscribe a user with a valid token', async () => 
+    {
         await subscriptionRepo.clear();
         const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
         const token = result.data.token;
@@ -234,8 +253,10 @@ describe('SkyFetch E2E Tests', () => {
         const url = `${baseURL}/unsubscribe/${token}`;
         console.log('Navigating to unsubscribe URL:', url);
         let redirectDetected = false;
-        page.on('response', response => {
-            if (response.url().includes('/unsubscribe/') && response.status() === 302) {
+        page.on('response', response => 
+        {
+            if (response.url().includes('/unsubscribe/') && response.status() === 302) 
+            {
                 console.log('Redirect detected with status 302 for unsubscribe URL');
                 redirectDetected = true;
             }
@@ -249,31 +270,38 @@ describe('SkyFetch E2E Tests', () => {
     });
 
     // Error page ------------------------------------ \
-    it('should not not allow duplicate confirmation and navigate to error page', async () => {
+    it('should not not allow duplicate confirmation and navigate to error page', async () => 
+    {
         await subscriptionRepo.clear();
         const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
         const token = result.data.token;
         await subscriptionService.confirmSubscription(token);
         console.log('Navigating to confirm URL for duplicate check:', confirmUrl(token));
-        try {
+        try 
+        {
             await page.goto(confirmUrl(token), { timeout: 10000 });
-        } catch (error) {
+        }
+        catch (error) 
+        {
             console.error('Error navigating to confirm URL for duplicate check:', error.message);
             console.log('Retrying navigation...');
             await page.goto(confirmUrl(token), { timeout: 10000 });
         }
-        await expect(page.url()).to.equal(baseURL + `/error.html?error=Subscription+already+confirmed`);
+        await expect(page.url()).to.equal(baseURL + '/error.html?error=Subscription+already+confirmed');
         await expect(await page.textContent('#error-message')).to.equal('Subscription already confirmed');
     });
 
-    it('should require a valid token and navigate to error page if one is missing', async () => {
-
+    it('should require a valid token and navigate to error page if one is missing', async () => 
+    {
         const invalidToken = 'fgdfgdsf';
 
         console.log('Navigating to confirm URL with invalid token:', confirmUrl(invalidToken));
-        try {
+        try 
+        {
             await page.goto(confirmUrl(invalidToken), { timeout: 10000 });
-        } catch (error) {
+        }
+        catch (error) 
+        {
             console.error('Error navigating to confirm URL with invalid token:', error.message);
             console.log('Retrying navigation...');
             await page.goto(confirmUrl(invalidToken), { timeout: 10000 });
@@ -282,9 +310,12 @@ describe('SkyFetch E2E Tests', () => {
         await expect(await page.textContent('#error-message')).to.equal('Invalid token');
 
         console.log('Navigating to unsubscribe URL with invalid token:', unsubscribeUrl(invalidToken));
-        try {
+        try 
+        {
             await page.goto(unsubscribeUrl(invalidToken), { timeout: 10000 });
-        } catch (error) {
+        }
+        catch (error) 
+        {
             console.error('Error navigating to unsubscribe URL with invalid token:', error.message);
             console.log('Retrying navigation...');
             await page.goto(unsubscribeUrl(invalidToken), { timeout: 10000 });
@@ -293,15 +324,19 @@ describe('SkyFetch E2E Tests', () => {
         await expect(await page.textContent('#error-message')).to.equal('Invalid token');
     });
 
-    it('should not allow to reuse a token that was deleted and should navigate to error page', async () => {
+    it('should not allow to reuse a token that was deleted and should navigate to error page', async () => 
+    {
         await subscriptionRepo.clear();
         const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
         const token = result.data.token;
         await subscriptionService.unsubscribeUser(token);
         console.log('Navigating to confirm URL with deleted token:', confirmUrl(token));
-        try {
+        try 
+        {
             await page.goto(confirmUrl(token), { timeout: 10000 });
-        } catch (error) {
+        }
+        catch (error) 
+        {
             console.error('Error navigating to confirm URL with deleted token:', error.message);
             console.log('Retrying navigation...');
             await page.goto(confirmUrl(token), { timeout: 10000 });
@@ -309,9 +344,12 @@ describe('SkyFetch E2E Tests', () => {
         await expect(page.url()).to.equal(baseURL + '/error.html?error=Token+not+found');
         await expect(await page.textContent('#error-message')).to.equal('Token not found');
         console.log('Navigating to unsubscribe URL with deleted token:', unsubscribeUrl(token));
-        try {
+        try 
+        {
             await page.goto(unsubscribeUrl(token), { timeout: 10000 });
-        } catch (error) {
+        }
+        catch (error) 
+        {
             console.error('Error navigating to unsubscribe URL with deleted token:', error.message);
             console.log('Retrying navigation...');
             await page.goto(unsubscribeUrl(token), { timeout: 10000 });
@@ -319,5 +357,4 @@ describe('SkyFetch E2E Tests', () => {
         await expect(page.url()).to.equal(baseURL + '/error.html?error=Token+not+found');
         await expect(await page.textContent('#error-message')).to.equal('Token not found');
     });
-
 });

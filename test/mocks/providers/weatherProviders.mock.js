@@ -5,11 +5,12 @@ class WeatherProviderMock1 extends  IWeatherProvider
 {
     async fetchWeather(city)
     {
-        if (["Kyiv", "Lviv"].includes(city)) {
+        if (['Kyiv', 'Lviv'].includes(city)) 
+        {
             return new Result(true, null, {
                 temperature: 22,
                 humidity: 60,
-                description: "Clear sky"
+                description: 'Clear sky'
             });
         }
         else
@@ -23,11 +24,12 @@ class WeatherProviderMock2 extends  IWeatherProvider
 {
     async fetchWeather(city)
     {
-        if (["Odesa", "Dnipro"].includes(city)) {
+        if (['Odesa', 'Dnipro'].includes(city)) 
+        {
             return new Result(true, null, {
                 temperature: 22,
                 humidity: 60,
-                description: "Clear sky"
+                description: 'Clear sky'
             });
         }
         else
@@ -37,4 +39,4 @@ class WeatherProviderMock2 extends  IWeatherProvider
     }
 }
 
-module.exports = { WeatherProviderMock1, WeatherProviderMock2 }
+module.exports = { WeatherProviderMock1, WeatherProviderMock2 };

@@ -1,6 +1,7 @@
 const Result = require('../../../src/domain/types/result');
 
-class EmailProviderManagerMock {
+class EmailProviderManagerMock 
+{
     async sendEmail(to, subject, html)
     {
         if (to === 'shouldfail@mail.com')

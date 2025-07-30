@@ -3,17 +3,20 @@ const Result = require('../../../src/domain/types/result');
 
 class SubscriptionRepoMock extends ISubscriptionRepo
 {
-    constructor() {
+    constructor() 
+    {
         super();
         this.subs = [];
     }
 
-    async createSub(data) {
+    async createSub(data) 
+    {
         this.subs.push({ ...data });
         return new Result(true);
     }
 
-    async findSub(params) {
+    async findSub(params) 
+    {
         const sub = this.subs.find(sub =>
             Object.entries(params).every(([k, v]) => sub[k] === v)
         );
@@ -21,7 +24,8 @@ class SubscriptionRepoMock extends ISubscriptionRepo
         return new Result(false, 'SUBSCRIPTION NOT FOUND');
     }
 
-    async findAllSubs(params) {
+    async findAllSubs(params) 
+    {
         if (!params) return this.subs;
         const subs = this.subs.filter(sub =>
             Object.entries(params).every(([k, v]) => sub[k] === v)
@@ -29,25 +33,30 @@ class SubscriptionRepoMock extends ISubscriptionRepo
         return new Result(true, null, subs);
     }
 
-    async confirmSub(token) {
+    async confirmSub(token) 
+    {
         const sub = this.subs.find(sub => sub.token === token);
-        if (sub) {
+        if (sub) 
+        {
             sub.confirmed = true;
             return new Result(true);
         }
         return new Result(false, 'SUBSCRIPTION NOT FOUND');
     }
 
-    async deleteSub(token) {
+    async deleteSub(token) 
+    {
         const idx = this.subs.findIndex(sub => sub.token === token);
-        if (idx !== -1) {
+        if (idx !== -1) 
+        {
             this.subs.splice(idx, 1);
             return new Result(true);
         }
         return new Result(false, 'SUBSCRIPTION NOT FOUND');
     }
 
-    async clear() {
+    async clear() 
+    {
         this.subs = [];
         return new Result(true);
     }
