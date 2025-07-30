@@ -20,6 +20,10 @@ class VisualCrossingWeatherProvider extends IWeatherProvider
         {
             const res = await fetch(url);
             const data = await res.json();
+            if (!data?.currentConditions)
+            {
+                return new Result(false, 'no data', null);
+            }
             const currentData = data.currentConditions;
 
             return new Result(true, null, {
