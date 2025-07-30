@@ -7,12 +7,12 @@ const emailService = new EmailService(emailProviderManagerMock);
 
 describe('EmailService Unit Tests', () => {
 
-    it('should send an email to a valid address and return true for success', async () => {
+    it('should return true for success if sending an email succeeds', async () => {
         const result = await emailService.sendEmail('valid@mail.com', 'hello', 'hello');
         expect(result.success).to.be.true;
     });
 
-    it('should return false for success and an error message if email fails', async () => {
+    it('should return false for success and an error message if sending an email fails', async () => {
         const result = await emailService.sendEmail('shouldfail@mail.com', 'hello', 'hello');
         expect(result.success).to.be.false;
         expect(result.err).to.eq('EMAIL FAILED');
