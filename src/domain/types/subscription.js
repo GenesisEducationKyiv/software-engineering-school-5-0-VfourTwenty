@@ -5,4 +5,5 @@
  * @property {'hourly'|'daily'} frequency
  * @property {boolean} confirmed
  * @property {string} token
- */ 
+ */
+

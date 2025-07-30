@@ -1,11 +1,12 @@
-const WeatherError = require('../errors/WeatherError');
+const Result = require('../domain/types/result');
 // const { logProviderResponse } = require('../utils/logger');
 
 class WeatherService 
 {
-    constructor(weatherProviderManager) 
+    // weatherProvider implements IWeatherProvider
+    constructor(weatherProvider)
     {
-        this.weatherProviderManager = weatherProviderManager;
+        this.weatherProvider = weatherProvider;
     }
 
     /**
@@ -13,15 +14,24 @@ class WeatherService
      * @param {string} city
      * @returns {Promise<any>}
      */
-    // possible to pass a specific provider, or rely on the chain of responsibility
     async fetchWeather(city) 
     {
-        const data = await this.weatherProviderManager.fetchWeather(city);
-        if (!data) 
+        const result = await this.weatherProvider.fetchWeather(city);
+        // all providers have failed
+        if (!result.success)
         {
-            throw new WeatherError('NO WEATHER DATA');
+            return new Result(false, 'NO WEATHER DATA');
         }
-        return data;
+        const weather = result.data;
+        if (
+            typeof weather.temperature !== 'number' ||
+            typeof weather.humidity !== 'number' ||
+            typeof weather.description !== 'string'
+        )
+        {
+            return new Result(false, 'INVALID WEATHER DATA FORMAT');
+        }
+        return result;
     }
 }
 

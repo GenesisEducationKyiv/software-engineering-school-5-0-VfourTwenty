@@ -47,5 +47,6 @@ services:
     environment:
       NODE_ENV: docker
 
+
 volumes:
   pgdata:

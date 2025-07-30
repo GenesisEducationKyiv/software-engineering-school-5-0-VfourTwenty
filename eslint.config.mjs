@@ -5,7 +5,7 @@ import stylistic from '@stylistic/eslint-plugin';
 
 export default defineConfig([
     {
-        ignores: ['scripts/**', 'test/**'],
+        ignores: ['scripts/**'],
     },
     {
         files: ['**/*.{js,mjs,cjs}'],
@@ -52,9 +52,9 @@ export default defineConfig([
             },
         },
     },
-    // Disable no-unused-vars for all interface files
+    // Disable no-unused-vars for all interface files and mocks
     {
-        files: ['src/**/*Interface.js'],
+        files: ['src/**/*Interface.js', 'test/**/*mock.js'],
         rules: {
             'no-unused-vars': 'off',
         },

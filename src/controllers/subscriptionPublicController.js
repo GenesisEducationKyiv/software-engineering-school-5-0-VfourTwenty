@@ -1,47 +1,45 @@
 // redirection can be a separate frontend service
 const { buildConfirmedUrl, buildUnsubscribedUrl, buildErrorUrl } = require('../utils/redirectUtils');
+const { mapErrorToClientMessage } = require('../utils/errors');
 
 class SubscriptionPublicController
 {
-    constructor(subscriptionService)
+    constructor(
+        confirmSubscriptionUseCase,
+        unsubscribeUserUseCase
+    )
     {
-        this.subscriptionService = subscriptionService;
+        this.confirmSubscriptionUseCase = confirmSubscriptionUseCase;
+        this.unsusbcribeUserUseCase = unsubscribeUserUseCase;
     }
 
     confirm = async (req, res) => 
     {
         const { token } = req.params;
-        try 
+        const confirmResult = await this.confirmSubscriptionUseCase.confirm(token);
+        if (confirmResult.success)
         {
-            const sub = await this.subscriptionService.confirmSubscription(token);
+            const sub = confirmResult.data;
             const url = buildConfirmedUrl(sub.city, sub.frequency, token);
             return res.redirect(url);
         }
-        catch (err) 
-        {
-            console.error('Confirmation frontend error:', err);
-            let errorMsg = err.message || 'Internal server error 1';
-            const errorUrl = buildErrorUrl(errorMsg);
-            return res.redirect(errorUrl);
-        }
+        let errorMsg = mapErrorToClientMessage(confirmResult.err) || 'Internal server error';
+        const errorUrl = buildErrorUrl(errorMsg);
+        return res.redirect(errorUrl);
     };
 
     unsubscribe = async (req, res) => 
     {
         const { token } = req.params;
-        try 
+        const result = await this.unsusbcribeUserUseCase.unsubscribe(token);
+        if (result.success)
         {
-            await this.subscriptionService.unsubscribeUser(token);
             const url = buildUnsubscribedUrl();
             return res.redirect(url);
         }
-        catch (err) 
-        {
-            console.error('Unsubscribe frontend error:', err);
-            let errorMsg = err.message || 'Internal server error';
-            const errorUrl = buildErrorUrl(errorMsg);
-            return res.redirect(errorUrl);
-        }
+        let errorMsg = mapErrorToClientMessage(result.err) || 'Internal server error';
+        const errorUrl = buildErrorUrl(errorMsg);
+        return res.redirect(errorUrl);
     };
 }
 

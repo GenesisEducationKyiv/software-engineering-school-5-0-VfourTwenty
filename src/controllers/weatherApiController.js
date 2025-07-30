@@ -1,49 +1,27 @@
+const { handleError } = require('../utils/errors');
+
 class WeatherApiController
 {
-    constructor(weatherService)
+    constructor(getWeatherUseCase)
     {
-        this.weatherService = weatherService;
+        this.getWeatherUseCase = getWeatherUseCase;
     }
 
     getWeather = async (req, res) => 
     {
         const city = req.query.city;
-        if (!city) 
+        const result = await this.getWeatherUseCase.getWeather(city);
+        if (!result.success)
         {
-            return res.status(400).json({ error: 'City is required' });
+            return handleError(result.err, res);
         }
+        const weather = result.data;
 
-        try 
-        {
-            const data = await this.weatherService.fetchWeather(city);
-            console.log(data);
-
-            if (
-                typeof data.temperature !== 'number' ||
-                typeof data.humidity !== 'number' ||
-                typeof data.description !== 'string'
-            ) 
-            {
-                return res.status(404).json({ error: 'Invalid weather data format' });
-            }
-
-            res.json({
-                temperature: data.temperature,
-                humidity: data.humidity,
-                description: data.description
-            });
-        }
-        catch (err) 
-        {
-            if (err.message === 'NO WEATHER DATA') 
-            {
-                res.status(404).json({ error: 'No data available for this location' });
-            }
-            else 
-            {
-                res.status(500).json({ error: err.message });
-            }
-        }
+        return res.json({
+            temperature: weather.temperature,
+            humidity: weather.humidity,
+            description: weather.description
+        });
     };
 }
 

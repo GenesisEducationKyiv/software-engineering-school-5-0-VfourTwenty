@@ -1,14 +1,14 @@
 const IEmailProvider = require('./emailProviderInterface');
-const ResendEmailProvider = require('./resendEmailProvider');
+const Result = require('../../domain/types/result');
 // const { logProviderResponse } = require('../../utils/logger');
 // const path = require('path');
 
 class EmailProviderManager extends IEmailProvider 
 {
-    constructor() 
+    constructor(providers)
     {
         super();
-        this.providers = [new ResendEmailProvider()];
+        this.providers = providers;
         // this.logPath = path.join(__dirname, '../../../logs/emailProvider.log');
     }
 
@@ -20,7 +20,9 @@ class EmailProviderManager extends IEmailProvider
             {
                 const result = await provider.sendEmail(to, subject, body);
                 //    logProviderResponse(this.logPath, provider.name, { to, subject, ...result });
-                if (result && result.success) return result;
+                if (result.success) return new Result(true);
+                console.log(`Email provider ${provider.name} has failed: ${result.err}`);
+                // log result.err
             }
             catch (err)
             {
@@ -28,7 +30,7 @@ class EmailProviderManager extends IEmailProvider
                 //   logProviderResponse(this.logPath, provider.name, { to, subject, error: err }, true);
             }
         }
-        return null;
+        return new Result(false, 'all email providers have failed');
     }
 }
 

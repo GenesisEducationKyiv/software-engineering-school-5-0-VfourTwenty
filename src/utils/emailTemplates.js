@@ -8,7 +8,7 @@ function buildConfirmEmail(token)
       `;
 }
 
-function buildUnsubscribeEmail (city)
+function buildUnsubscribedEmail (city)
 {
     return `
         <p>You have been unsubscribed from weather updates for <strong>${city}</strong>.</p>
@@ -30,4 +30,4 @@ function buildWeatherUpdateEmail(city, weather, token)
   `;
 }
 
-module.exports = { buildConfirmEmail, buildUnsubscribeEmail, buildWeatherUpdateEmail };
+module.exports = { buildConfirmEmail, buildUnsubscribedEmail, buildWeatherUpdateEmail };
