@@ -5,8 +5,6 @@ const { WeatherProviderMock1, WeatherProviderMock2 } = require('../../mocks/prov
 const mockedWeatherProviders = [new WeatherProviderMock1(), new WeatherProviderMock2()];
 const weatherProviderManager = new WeatherProviderManager(mockedWeatherProviders);
 
-// will add logging testing when logging has been implemented
-
 describe('WeatherProviderManager Unit Tests', () => {
 
     it('should return true for success and weather data if the first available provider can fetch it', async () => {

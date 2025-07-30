@@ -5,8 +5,6 @@ const { EmailProviderMock1, EmailProviderMock2 } = require('../../mocks/provider
 const mockedEmailProviders = [new EmailProviderMock1(), new EmailProviderMock2()];
 const emailProviderManager = new EmailProviderManager(mockedEmailProviders);
 
-// will add logging testing when logging has been implemented
-
 describe('EmailProviderManager Unit Tests', () => {
 
     it('should return success when the first available provider succeeds', async () => {
