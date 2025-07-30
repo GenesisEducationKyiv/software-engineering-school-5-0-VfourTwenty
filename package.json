@@ -39,7 +39,6 @@
     "playwright": "^1.54.1",
     "resend": "^4.5.1",
     "sequelize": "^6.37.7",
-    "sinon": "^21.0.0",
     "supertest": "^7.1.1"
   },
   "devDependencies": {

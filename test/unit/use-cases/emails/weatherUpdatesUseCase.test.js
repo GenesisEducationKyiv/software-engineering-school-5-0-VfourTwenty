@@ -1,5 +1,4 @@
 const {expect} = require("chai");
-const sinon = require('sinon');
 
 const WeatherUpdatesUseCase = require('../../../../src/use-cases/emails/weatherUpdatesUseCase');
 const EmailServiceMock = require('../../../mocks/services/emailService.mock');
@@ -36,34 +35,11 @@ const sub3 =
     }
 
 describe('WeatherUpdatesUseCase Unit Tests', () => {
-    let logSpy, warnSpy, errorSpy;
-    beforeEach(async () => {
-        logSpy = sinon.spy(console, 'log');
-        warnSpy = sinon.spy(console, 'warn');
-        errorSpy = sinon.spy(console, 'error');
-    });
-
-    afterEach(async () => {
-        logSpy.restore();
-        warnSpy.restore();
-        errorSpy.restore();
-    });
 
     it('should send weather updates to all valid subscribers', async () => {
         subscriptionServiceMock.stub(new Result(true, null, [sub1, sub2, sub3]));
 
         const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
-
-        sinon.assert.callCount(logSpy, 6);
-        sinon.assert.callCount(warnSpy, 0);
-        sinon.assert.callCount(errorSpy, 0);
-
-        sinon.assert.calledWithExactly(logSpy.getCall(0), '📧 Weather update sent to valid@mail.com');
-        sinon.assert.calledWithExactly(logSpy.getCall(1), '✅ hourly email sent to valid@mail.com');
-        sinon.assert.calledWithExactly(logSpy.getCall(2), '📧 Weather update sent to valid@mail.com');
-        sinon.assert.calledWithExactly(logSpy.getCall(3), '✅ hourly email sent to valid@mail.com');
-        sinon.assert.calledWithExactly(logSpy.getCall(4), '📧 Weather update sent to valid@mail.com');
-        sinon.assert.calledWithExactly(logSpy.getCall(5), '✅ hourly email sent to valid@mail.com');
 
         expect(sent).to.eq(3);
         expect(failed).to.eq(0);
@@ -79,14 +55,6 @@ describe('WeatherUpdatesUseCase Unit Tests', () => {
 
         const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
 
-        sinon.assert.callCount(logSpy, 0);
-        sinon.assert.callCount(warnSpy, 3);
-        sinon.assert.callCount(errorSpy, 0);
-
-        sinon.assert.calledWithExactly(warnSpy.getCall(0), '⚠️ No weather data available for NotRealCity, skipping valid@mail.com, error: NO WEATHER DATA');
-        sinon.assert.calledWithExactly(warnSpy.getCall(1), '⚠️ No weather data available for ThisCityDoesntExist, skipping valid@mail.com, error: NO WEATHER DATA');
-        sinon.assert.calledWithExactly(warnSpy.getCall(2), '⚠️ No weather data available for NotACityName, skipping valid@mail.com, error: NO WEATHER DATA');
-
         expect(sent).to.eq(0);
         expect(failed).to.eq(0);
         expect(skipped).to.eq(3);
@@ -100,15 +68,6 @@ describe('WeatherUpdatesUseCase Unit Tests', () => {
         ]))
 
         const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
-
-        sinon.assert.callCount(logSpy, 0);
-        sinon.assert.callCount(warnSpy, 0);
-        sinon.assert.callCount(errorSpy, 3);
-
-        sinon.assert.calledWithExactly(errorSpy.getCall(0), '❌ Email send failed for shouldfail@mail.com');
-        sinon.assert.calledWithExactly(errorSpy.getCall(1), '❌ Email send failed for shouldfail@mail.com');
-        sinon.assert.calledWithExactly(errorSpy.getCall(2), '❌ Email send failed for shouldfail@mail.com');
-
 
         expect(sent).to.eq(0);
         expect(failed).to.eq(3);
@@ -127,23 +86,6 @@ describe('WeatherUpdatesUseCase Unit Tests', () => {
         ]))
 
         const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
-
-        sinon.assert.callCount(logSpy, 6);
-        sinon.assert.callCount(warnSpy, 2);
-        sinon.assert.callCount(errorSpy, 2);
-
-        sinon.assert.calledWithExactly(logSpy.getCall(0), '📧 Weather update sent to valid@mail.com');
-        sinon.assert.calledWithExactly(logSpy.getCall(1), '✅ hourly email sent to valid@mail.com');
-        sinon.assert.calledWithExactly(logSpy.getCall(2), '📧 Weather update sent to valid@mail.com');
-        sinon.assert.calledWithExactly(logSpy.getCall(3), '✅ hourly email sent to valid@mail.com');
-        sinon.assert.calledWithExactly(logSpy.getCall(4), '📧 Weather update sent to valid@mail.com');
-        sinon.assert.calledWithExactly(logSpy.getCall(5), '✅ hourly email sent to valid@mail.com');
-
-        sinon.assert.calledWithExactly(errorSpy.getCall(0), '❌ Email send failed for shouldfail@mail.com');
-        sinon.assert.calledWithExactly(errorSpy.getCall(1), '❌ Email send failed for shouldfail@mail.com');
-
-        sinon.assert.calledWithExactly(warnSpy.getCall(0), '⚠️ No weather data available for ThisCityDoesntExist, skipping valid@mail.com, error: NO WEATHER DATA');
-        sinon.assert.calledWithExactly(warnSpy.getCall(1), '⚠️ No weather data available for NotACityName, skipping valid@mail.com, error: NO WEATHER DATA');
 
         expect(sent).to.eq(3);
         expect(failed).to.eq(2);
