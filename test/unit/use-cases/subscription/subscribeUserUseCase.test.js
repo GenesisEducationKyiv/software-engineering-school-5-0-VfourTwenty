@@ -19,12 +19,14 @@ const validSub = {
 
 describe('subscribeSubscriptionUseCase Unit Tests', () => {
     it('should return a successful response from subscription service', async () => {
+        subscriptionValidatorMock.stub(new Result(true));
         subscriptionServiceMock.stub(new Result(true, null, 'some-valid-token'));
         const result = await subscribeUserUseCase.subscribe(validSub.email, validSub.city, validSub.frequency);
         expect(result.success).to.be.true;
     });
 
     it('should return a failing response from subscription service if sub already exists', async () => {
+        subscriptionValidatorMock.stub(new Result(true));
         subscriptionServiceMock.stub(new Result(false, 'DUPLICATE'));
         const result = await subscribeUserUseCase.subscribe(validSub.email, validSub.city, validSub.frequency);
         expect(result.success).to.be.false;
@@ -32,6 +34,7 @@ describe('subscribeSubscriptionUseCase Unit Tests', () => {
     });
 
     it('should return a failing response from subscription service if confirmation email fails', async () => {
+        subscriptionValidatorMock.stub(new Result(true));
         subscriptionServiceMock.stub(new Result(false, 'SUBSCRIBED BUT CONFIRM EMAIL FAILED'));
         const result = await subscribeUserUseCase.subscribe(validSub.email, validSub.city, validSub.frequency);
         expect(result.success).to.be.false;
