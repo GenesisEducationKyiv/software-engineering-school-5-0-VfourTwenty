@@ -3,9 +3,10 @@ const Result = require('../domain/types/result');
 
 class WeatherService 
 {
-    constructor(weatherProviderManager) 
+    // weatherProvider implements IWeatherProvider
+    constructor(weatherProvider)
     {
-        this.weatherProviderManager = weatherProviderManager;
+        this.weatherProvider = weatherProvider;
     }
 
     /**
@@ -15,7 +16,7 @@ class WeatherService
      */
     async fetchWeather(city) 
     {
-        const result = await this.weatherProviderManager.fetchWeather(city);
+        const result = await this.weatherProvider.fetchWeather(city);
         // all providers have failed
         if (!result.success)
         {

@@ -2,14 +2,15 @@ const Result = require('../domain/types/result');
 
 class EmailService 
 {
-    constructor(emailProviderManager)
+    // emailProvider implements IEmailProvider
+    constructor(emailProvider)
     {
-        this.emailProviderManager = emailProviderManager;
+        this.emailProvider = emailProvider;
     }
 
     async sendEmail(to, subject, body) 
     {
-        const result = await this.emailProviderManager.sendEmail(to, subject, body);
+        const result = await this.emailProvider.sendEmail(to, subject, body);
         if (!result.success)
         {
             return new Result(false, 'EMAIL FAILED');
