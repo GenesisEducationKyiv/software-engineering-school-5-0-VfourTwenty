@@ -66,7 +66,7 @@ class Logger
     _buildLogString(level, message, meta)
     {
         const entityTag = this.entity ? ` [${this.entity}]` : '';
-        return `${new Date().toISOString()} [${level.toUpperCase()}]${entityTag} ${message}${meta ? ' ' + JSON.stringify(meta) : ''}`;
+        return `${new Date().toISOString()} [${level.toUpperCase()}]${entityTag} ${message}${meta ? ' ' + JSON.stringify(meta).slice(0, 1000) : ''}`;
     }
 
     _shouldBeLogged(level)
