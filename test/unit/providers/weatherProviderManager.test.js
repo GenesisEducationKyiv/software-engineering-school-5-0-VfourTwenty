@@ -8,7 +8,10 @@ const weatherProviderManager = new WeatherProviderManager(mockedWeatherProviders
 describe('WeatherProviderManager Unit Tests', () => {
 
     it('should return true for success and weather data if the first available provider can fetch it', async () => {
+        // Act
         const result = await weatherProviderManager.fetchWeather('Kyiv');
+
+        // Assert
         expect(result.success).to.be.true;
         expect(result.data).to.deep.eq({
                 temperature: 22,
@@ -18,7 +21,10 @@ describe('WeatherProviderManager Unit Tests', () => {
     });
 
     it('should delegate to the next provider and return weather data if the first provider fails to fetch', async () => {
+        // Act
         const result = await weatherProviderManager.fetchWeather('Odesa');
+
+        // Assert
         expect(result.success).to.be.true;
         expect(result.data).to.deep.equal({
             temperature: 22,
@@ -28,7 +34,10 @@ describe('WeatherProviderManager Unit Tests', () => {
     });
 
     it('should return false for success and an error message if all available providers fail', async () => {
+        // Act
         const data = await weatherProviderManager.fetchWeather('gfhhhh');
+
+        // Assert
         expect(data.success).to.be.false;
         expect(data.err).to.eq('all weather providers have failed');
     });

@@ -9,14 +9,24 @@ const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionSe
 
 describe('ConfirmSubscriptionUseCase Unit Tests', () => {
     it('should return a successful response from subscription service', async () => {
+        // Arrange
         subscriptionServiceMock.stub(new Result(true));
+
+        // Act
         const result = await confirmSubscriptionUseCase.confirm('some-valid-token');
+
+        // Assert
         expect(result.success).to.be.true;
     });
 
     it('should return a failing response from subscription service', async () => {
+        // Arrange
         subscriptionServiceMock.stub(new Result(false, 'ALREADY CONFIRMED'));
+
+        // Act
         const result = await confirmSubscriptionUseCase.confirm('some-valid-token');
+
+        // Assert
         expect(result.success).to.be.false;
         expect(result.err).to.eq('ALREADY CONFIRMED');
     });
