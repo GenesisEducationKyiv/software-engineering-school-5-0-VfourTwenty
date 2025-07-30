@@ -48,7 +48,6 @@ class TomorrowWeatherProvider extends IWeatherProvider
 
             if (data?.code === 400001 && data?.type === 'Invalid Query Parameters')
             {
-                console.log('invalid query');
                 return new Result(false, 'invalid location', null);
             }
 
