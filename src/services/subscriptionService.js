@@ -1,11 +1,12 @@
 const { genToken } = require('../utils/strings');
 const Result = require('../domain/types/result');
+const ISubscriptionService = require('../domain/interfaces/services/subscriptionServiceInterface');
 
-class SubscriptionService
+class SubscriptionService extends ISubscriptionService
 {
     constructor(subscriptionRepo)
     {
-        this.subscriptionRepo = subscriptionRepo;
+        super(subscriptionRepo);
     }
 
     async subscribeUser(email, city, frequency) 

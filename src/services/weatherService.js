@@ -1,12 +1,13 @@
 const Result = require('../domain/types/result');
+const IWeatherService = require('../domain/interfaces/services/weatherServiceInterface');
 // const { logProviderResponse } = require('../utils/logger');
 
-class WeatherService 
+class WeatherService extends IWeatherService
 {
     // weatherProvider implements IWeatherProvider
     constructor(weatherProvider)
     {
-        this.weatherProvider = weatherProvider;
+        super(weatherProvider);
     }
 
     /**
