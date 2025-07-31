@@ -38,6 +38,7 @@ services:
     build: .
     depends_on:
       - db-test
+      - redis-test
     env_file:
       - .env.test.intgr.docker
     entrypoint: [ "/bin/sh", "-c", "npm run migrate && NODE_ENV=docker_test npm run test-docker:integration" ]
