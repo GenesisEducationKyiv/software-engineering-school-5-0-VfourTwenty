@@ -1,4 +1,4 @@
-const ISubscriptionRepo = require('./subscriptionRepoInterface');
+const ISubscriptionRepo = require('../domain/interfaces/repositories/subscriptionRepoInterface');
 const Result = require('../domain/types/result');
 const { Subscription } = require('../db/models');
 

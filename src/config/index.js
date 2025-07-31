@@ -17,6 +17,12 @@ const password = process.env.DB_PASS;
 const database = process.env.DB_NAME;
 const host = process.env.DB_HOST;
 const dialect = process.env.DB_DIALECT;
+// redis
+const redisHost = process.env.REDIS_HOST;
+const redisPort = process.env.REDIS_PORT;
+const redisTTL = process.env.REDIS_TTL;
+const redisConnectRetries = process.env.REDIS_CONNECT_RETRIES;
+const redisConnectDelay = process.env.REDIS_CONNECT_DELAY;
 // weather providers
 const weatherApiKey = process.env.WEATHER_API_KEY;
 const tomorrowIoApiKey = process.env.TOMORROW_IO_API_KEY;
@@ -32,6 +38,11 @@ module.exports = {
     logToConsole,
     logSamplingRate,
     baseUrl,
+    redisHost,
+    redisPort,
+    redisTTL,
+    redisConnectRetries,
+    redisConnectDelay,
     use_env_variable,
     username,
     password,

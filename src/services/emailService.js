@@ -1,11 +1,12 @@
 const Result = require('../domain/types/result');
+const IEmailService = require('../domain/interfaces/services/emailServiceInterface');
 
-class EmailService 
+class EmailService extends IEmailService
 {
     // emailProvider implements IEmailProvider
     constructor(emailProvider)
     {
-        this.emailProvider = emailProvider;
+        super(emailProvider);
     }
 
     async sendEmail(to, subject, body) 

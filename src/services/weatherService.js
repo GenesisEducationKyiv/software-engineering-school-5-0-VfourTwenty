@@ -1,23 +1,52 @@
 const Result = require('../domain/types/result');
-// const { logProviderResponse } = require('../utils/logger');
+const IWeatherService = require('../domain/interfaces/services/weatherServiceInterface');
+const config = require('../config/index');
+const { normalizeString } = require('../utils/strings');
 
-class WeatherService 
+class WeatherServiceWithCacheAndMetrics extends IWeatherService
 {
     // weatherProvider implements IWeatherProvider
-    constructor(weatherProvider)
+    constructor(
+        weatherProvider,
+        redisCache,
+        cacheHitCounter,
+        cacheMissCounter)
     {
-        this.weatherProvider = weatherProvider;
+        super(weatherProvider);
+        this.redisCache = redisCache;
+        this.cacheHitCounter = cacheHitCounter;
+        this.cacheMissCounter = cacheMissCounter;
     }
 
     /**
-     * Try each provider in order until one succeeds.
      * @param {string} city
      * @returns {Promise<any>}
      */
     async fetchWeather(city) 
     {
+        if (!city)
+        {
+            return new Result(false, 'NO WEATHER DATA');
+        }
+        const cacheKey = `weather:${normalizeString(city)}`;
+        let cachedWeather = null;
+        try
+        {
+            cachedWeather = await this.redisCache.get(cacheKey);
+        }
+        catch (err)
+        {
+            console.error('Redis GET error:', err.message);
+        }
+        if (cachedWeather)
+        {
+            this.cacheHitCounter.inc();
+            return new Result(true, null, JSON.parse(cachedWeather));
+        }
+
+        this.cacheMissCounter.inc();
         const result = await this.weatherProvider.fetchWeather(city);
-        // all providers have failed
+
         if (!result.success)
         {
             return new Result(false, 'NO WEATHER DATA');
@@ -31,8 +60,16 @@ class WeatherService
         {
             return new Result(false, 'INVALID WEATHER DATA FORMAT');
         }
+        try
+        {
+            await this.redisCache.setEx(cacheKey, config.redisTTL, JSON.stringify(weather));
+        }
+        catch (err)
+        {
+            console.error('Redis SET error:', err.message);
+        }
         return result;
     }
 }
 
-module.exports = WeatherService;
+module.exports = WeatherServiceWithCacheAndMetrics;

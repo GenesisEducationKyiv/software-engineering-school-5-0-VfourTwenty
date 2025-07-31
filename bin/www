@@ -4,6 +4,10 @@
  * Module dependencies.
  */
 
+// start redis before starting the app to prevent race conditions
+const { connectToRedisWithRetry } = require('../src/utils/redisClient');
+connectToRedisWithRetry();
+
 var app = require('../src/app');
 var debug = require('debug')('backend:server');
 var http = require('http');

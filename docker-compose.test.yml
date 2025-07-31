@@ -14,11 +14,20 @@ services:
     ports:
       - "5434:5432"  # Host 5433 → Container 5432
 
+  redis-test:
+    image: redis:7
+    ports:
+      # REDIS_PORT must be set in .env
+      # not the one used for backend service!!
+      # because it has to be read before backend starts
+      - "3002:${REDIS_PORT}"
+
   backend-test:
     build: .
     restart: always
     depends_on:
       - db-test
+      - redis-test
     env_file:
       - .env.test.e2e.docker
     ports:
@@ -29,6 +38,7 @@ services:
     build: .
     depends_on:
       - db-test
+      - redis-test
     env_file:
       - .env.test.intgr.docker
     entrypoint: [ "/bin/sh", "-c", "npm run migrate && NODE_ENV=docker_test npm run test-docker:integration" ]
@@ -39,6 +49,7 @@ services:
       dockerfile: Dockerfile.test-e2e
     depends_on:
       - db-test
+      - redis-test
       - backend-test
     env_file:
       - .env.test.e2e.docker

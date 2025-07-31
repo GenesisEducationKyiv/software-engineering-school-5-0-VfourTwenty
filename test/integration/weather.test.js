@@ -1,17 +1,21 @@
-const request = require('supertest');
 const { expect } = require('chai');
+const request = require('supertest');
 const express = require('express');
 
 const WeatherApiController = require('../../src/controllers/weatherApiController');
-const WeatherService = require('../../src/services/weatherService');
+const WeatherServiceWithCacheAndMetrics = require('../../src/services/weatherService');
 const GetWeatherUseCase = require('../../src/use-cases/weather/getWeatherUseCase');
 const MockWeatherProviderManager = require('../mocks/providers/weatherProviderManager.mock');
+const { redisClient, connectToRedisWithRetry } = require('../../src/utils/redisClient');
+const SimpleCounter = require('../mocks/utils/metrics.mock');
 
+connectToRedisWithRetry();
 const app = express();
 app.use(express.json());
 
 const mockManager = new MockWeatherProviderManager();
-const weatherService = new WeatherService(mockManager);
+const weatherService = new WeatherServiceWithCacheAndMetrics(
+    mockManager, redisClient, new SimpleCounter(), new SimpleCounter());
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
 const weatherApiController = new WeatherApiController(getWeatherUseCase);
 

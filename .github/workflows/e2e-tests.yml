@@ -5,6 +5,8 @@ on: [push, pull_request]
 jobs:
   test-e2e:
     runs-on: ubuntu-latest
+    env:
+      REDIS_PORT: 6379
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
