@@ -2,14 +2,14 @@ const redis = require('redis');
 const config = require('../config/index');
 const retry = require('../utils/retry'); // Adjust the path if needed
 
-const client = redis.createClient({
+const redisClient = redis.createClient({
     socket: {
         host: config.redisHost,
         port: config.redisPort,
     },
 });
 
-client.on('error', (err) => console.error('Redis Client Error', err));
+redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
 async function connectWithRetry(client, retries = 5, delay = 1000)
 {
@@ -29,6 +29,6 @@ async function connectWithRetry(client, retries = 5, delay = 1000)
     }
 }
 
-connectWithRetry(client, config.redisConnectRetries, config.redisConnectDelay);
+connectWithRetry(redisClient, config.redisConnectRetries, config.redisConnectDelay);
 
-module.exports = client;
+module.exports = redisClient;

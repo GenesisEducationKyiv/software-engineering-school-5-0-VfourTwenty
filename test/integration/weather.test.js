@@ -6,7 +6,7 @@ const WeatherApiController = require('../../src/controllers/weatherApiController
 const WeatherServiceWithCacheAndMetrics = require('../../src/services/weatherService');
 const GetWeatherUseCase = require('../../src/use-cases/weather/getWeatherUseCase');
 const MockWeatherProviderManager = require('../mocks/providers/weatherProviderManager.mock');
-const client = require('../../src/utils/redisClient');
+const redisClient = require('../../src/utils/redisClient');
 const SimpleCounter = require('../mocks/utils/metrics.mock');
 
 const app = express();
@@ -14,7 +14,7 @@ app.use(express.json());
 
 const mockManager = new MockWeatherProviderManager();
 const weatherService = new WeatherServiceWithCacheAndMetrics(
-    mockManager, client, new SimpleCounter(), new SimpleCounter());
+    mockManager, redisClient, new SimpleCounter(), new SimpleCounter());
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
 const weatherApiController = new WeatherApiController(getWeatherUseCase);
 

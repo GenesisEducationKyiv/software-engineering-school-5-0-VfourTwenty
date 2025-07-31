@@ -2,7 +2,7 @@ const request = require('supertest');
 const { expect } = require('chai');
 const express = require('express');
 
-const client = require('../../src/utils/redisClient');
+const redisClient = require('../../src/utils/redisClient');
 const SimpleCounter = require('../mocks/utils/metrics.mock');
 
 const SubscriptionRepo = require('../../src/repositories/sequelizeSubscriptionRepo');
@@ -25,7 +25,7 @@ const emailProviderManagerMock = new EmailProviderManagerMock();
 const weatherProviderManagerMock = new WeatherProviderManagerMock();
 
 const weatherService = new WeatherServiceWithCacheAndMetrics(
-    weatherProviderManagerMock, client, new SimpleCounter(), new SimpleCounter());
+    weatherProviderManagerMock, redisClient, new SimpleCounter(), new SimpleCounter());
 const emailService = new EmailService(emailProviderManagerMock);
 
 const cityValidator = new CityValidator(weatherService);
