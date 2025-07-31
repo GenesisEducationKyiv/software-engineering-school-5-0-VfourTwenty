@@ -48,6 +48,7 @@ services:
       dockerfile: Dockerfile.test-e2e
     depends_on:
       - db-test
+      - redis-test
       - backend-test
     env_file:
       - .env.test.e2e.docker
