@@ -27,7 +27,8 @@ app.use('/api', subscriptionRouter);
 // public route
 app.use('/', publicRouter);
 
-app.get('/metrics', async (req, res) => {
+app.get('/metrics', async (req, res) =>
+{
     res.set('Content-Type', register.contentType);
     res.end(await register.metrics());
 });
