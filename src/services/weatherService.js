@@ -1,24 +1,46 @@
 const Result = require('../domain/types/result');
 const IWeatherService = require('../domain/interfaces/services/weatherServiceInterface');
-// const { logProviderResponse } = require('../utils/logger');
 
-class WeatherService extends IWeatherService
+class WeatherServiceWithCacheAndMetrics extends IWeatherService
 {
     // weatherProvider implements IWeatherProvider
-    constructor(weatherProvider)
+    constructor(
+        weatherProvider,
+        redisCache,
+        cacheHitCounter,
+        cacheMissCounter)
     {
         super(weatherProvider);
+        this.redisCache = redisCache;
+        this.cacheHitCounter = cacheHitCounter;
+        this.cacheMissCounter = cacheMissCounter;
     }
 
     /**
-     * Try each provider in order until one succeeds.
      * @param {string} city
      * @returns {Promise<any>}
      */
     async fetchWeather(city) 
     {
+        const cacheKey = `weather:${city.toLowerCase()}`;
+        let cachedWeather = null;
+        try
+        {
+            cachedWeather = await this.redisCache.get(cacheKey);
+        }
+        catch (err)
+        {
+            console.error('Redis GET error:', err.message);
+        }
+        if (cachedWeather)
+        {
+            this.cacheHitCounter.inc();
+            return new Result(true, null, JSON.parse(cachedWeather));
+        }
+
+        this.cacheMissCounter.inc();
         const result = await this.weatherProvider.fetchWeather(city);
-        // all providers have failed
+
         if (!result.success)
         {
             return new Result(false, 'NO WEATHER DATA');
@@ -32,8 +54,17 @@ class WeatherService extends IWeatherService
         {
             return new Result(false, 'INVALID WEATHER DATA FORMAT');
         }
+        try
+        {
+            const CACHE_TTL = process.env.CACHE_TTL || 3600;
+            await this.redisCache.setEx(cacheKey, CACHE_TTL, JSON.stringify(weather));
+        }
+        catch (err)
+        {
+            console.error('Redis SET error:', err.message);
+        }
         return result;
     }
 }
 
-module.exports = WeatherService;
+module.exports = WeatherServiceWithCacheAndMetrics;

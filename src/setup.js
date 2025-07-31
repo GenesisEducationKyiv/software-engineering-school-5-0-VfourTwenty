@@ -2,6 +2,9 @@ const Logger = require('./utils/logger');
 
 const SequelizeSubscriptionRepo = require('./repositories/sequelizeSubscriptionRepo');
 
+const redisClient = require('./utils/redisClient');
+const { weatherCacheHit, weatherCacheMiss } = require('./utils/promWeatherMetrics');
+
 const WeatherApiProvider = require('./providers/weather-providers/weatherApiProvider');
 const VisualCrossingWeatherProvider = require('./providers/weather-providers/visualCrossingWeatherProvider');
 const TomorrowWeatherProvider = require('./providers/weather-providers/tomorrowWeatherProvider');
@@ -12,7 +15,7 @@ const WeatherProviderManger = require('./providers/weather-providers/weatherProv
 const EmailProviderManager = require('./providers/email-providers/emailProviderManager');
 
 const SubscriptionService = require('./services/subscriptionService');
-const WeatherService = require('./services/weatherService');
+const WeatherServiceWithCacheAndMetrics = require('./services/weatherService');
 const EmailService = require('./services/emailService');
 
 const WeatherUpdatesUseCase = require('./use-cases/emails/weatherUpdatesUseCase');
@@ -59,7 +62,7 @@ const weatherProviderManager = new WeatherProviderManger(weatherProviders, logge
 const emailProviderManager = new EmailProviderManager(emailProviders);
 
 // 3
-const weatherService = new WeatherService(weatherProviderManager);
+const weatherService = new WeatherServiceWithCacheAndMetrics(weatherProviderManager, redisClient, weatherCacheHit, weatherCacheMiss);
 const emailService = new EmailService(emailProviderManager);
 const subscriptionService = new SubscriptionService(subscriptionRepo);
 
