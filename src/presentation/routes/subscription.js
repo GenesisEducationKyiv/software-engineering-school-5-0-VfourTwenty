@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { subscriptionApiController } = require('../setup');
+const { subscriptionApiController } = require('../../setup');
 
 // subscription
 router.post('/subscribe', subscriptionApiController.subscribe);

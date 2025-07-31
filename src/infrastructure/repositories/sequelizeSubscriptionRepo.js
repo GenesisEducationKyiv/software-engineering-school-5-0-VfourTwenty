@@ -1,5 +1,5 @@
-const ISubscriptionRepo = require('../domain/interfaces/repositories/subscriptionRepoInterface');
-const Result = require('../domain/types/result');
+const ISubscriptionRepo = require('../../domain/interfaces/repositories/subscriptionRepoInterface');
+const Result = require('../../domain/types/result');
 const { Subscription } = require('../db/models');
 
 class SequelizeSubscriptionRepo extends ISubscriptionRepo

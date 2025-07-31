@@ -1,4 +1,4 @@
-const { genToken } = require('../utils/strings');
+const { genToken } = require('../common/utils/strings');
 const Result = require('../domain/types/result');
 const ISubscriptionService = require('../domain/interfaces/services/subscriptionServiceInterface');
 

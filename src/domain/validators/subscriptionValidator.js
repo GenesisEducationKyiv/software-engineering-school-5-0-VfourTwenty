@@ -1,4 +1,4 @@
-const { emailRegex } = require('../../utils/strings');
+const { emailRegex } = require('../../common/utils/strings');
 const Result = require('../types/result');
 
 class SubscriptionValidator 

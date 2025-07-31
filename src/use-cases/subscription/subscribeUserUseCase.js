@@ -1,4 +1,4 @@
-const { buildConfirmEmail } = require('../../utils/emailTemplates');
+const { buildConfirmEmail } = require('../../common/utils/emailTemplates');
 const Result = require('../../domain/types/result');
 
 class SubscribeUserUseCase

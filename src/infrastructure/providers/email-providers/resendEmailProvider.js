@@ -1,13 +1,13 @@
-const IEmailProvider = require('../../domain/interfaces/providers/emailProviderInterface');
+const IEmailProvider = require('../../../domain/interfaces/providers/emailProviderInterface');
 const { Resend } = require('resend');
 
-const config = require('../../config/index');
+const config = require('../../../common/config');
 const fromEmail = config.fromEmail;
 const resend = new Resend(config.resendApiKey);
 
-const retry = require('../../utils/retry');
+const retry = require('../../../common/utils/retry');
 
-const Result = require('../../domain/types/result');
+const Result = require('../../../domain/types/result');
 
 class ResendEmailProvider extends IEmailProvider 
 {

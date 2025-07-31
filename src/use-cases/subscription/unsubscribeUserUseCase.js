@@ -1,4 +1,4 @@
-const { buildUnsubscribedEmail } = require('../../utils/emailTemplates');
+const { buildUnsubscribedEmail } = require('../../common/utils/emailTemplates');
 const Result = require('../../domain/types/result');
 
 class UnsubscribeUserUseCase

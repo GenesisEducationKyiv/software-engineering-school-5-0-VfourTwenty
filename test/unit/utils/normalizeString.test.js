@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const { normalizeString } = require('../../../src/utils/strings'); // Adjust path as needed
+const { normalizeString } = require('../../../src/common/utils/strings'); // Adjust path as needed
 
 describe('normalizeString', () => 
 {

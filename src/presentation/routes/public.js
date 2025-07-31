@@ -1,7 +1,7 @@
 const express = require('express');
 const publicRouter = express.Router();
 
-const { homepageController, subscriptionPublicController } = require('../setup');
+const { homepageController, subscriptionPublicController } = require('../../setup');
 
 publicRouter.get('/', homepageController.getStaticHomepage);
 

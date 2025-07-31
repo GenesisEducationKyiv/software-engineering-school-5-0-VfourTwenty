@@ -2,11 +2,11 @@ const request = require('supertest');
 const { expect } = require('chai');
 const express = require('express');
 
-const { redisClient, connectToRedisWithRetry } = require('../../src/utils/redisClient');
+const { redisClient, connectToRedisWithRetry } = require('../../src/common/utils/redisClient');
 const SimpleCounter = require('../mocks/utils/metrics.mock');
 
-const SubscriptionRepo = require('../../src/repositories/sequelizeSubscriptionRepo');
-const SubscriptionApiController = require('../../src/controllers/subscriptionApiController');
+const SubscriptionRepo = require('../../src/infrastructure/repositories/sequelizeSubscriptionRepo');
+const SubscriptionApiController = require('../../src/presentation/controllers/subscriptionApiController');
 const SubscriptionService = require('../../src/services/subscriptionService');
 const EmailService = require('../../src/services/emailService');
 const WeatherServiceWithCacheAndMetrics = require('../../src/services/weatherService');

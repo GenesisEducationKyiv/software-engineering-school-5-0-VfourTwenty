@@ -1,18 +1,18 @@
-const Logger = require('./utils/logger');
+const Logger = require('./common/utils/logger');
 
-const SequelizeSubscriptionRepo = require('./repositories/sequelizeSubscriptionRepo');
+const SequelizeSubscriptionRepo = require('./infrastructure/repositories/sequelizeSubscriptionRepo');
 
-const { redisClient } = require('./utils/redisClient');
-const { weatherCacheHit, weatherCacheMiss } = require('./utils/promWeatherMetrics');
+const { redisClient } = require('./common/utils/redisClient');
+const { weatherCacheHit, weatherCacheMiss } = require('./common/utils/promWeatherMetrics');
 
-const WeatherApiProvider = require('./providers/weather-providers/weatherApiProvider');
-const VisualCrossingWeatherProvider = require('./providers/weather-providers/visualCrossingWeatherProvider');
-const TomorrowWeatherProvider = require('./providers/weather-providers/tomorrowWeatherProvider');
+const WeatherApiProvider = require('./infrastructure/providers/weather-providers/weatherApiProvider');
+const VisualCrossingWeatherProvider = require('./infrastructure/providers/weather-providers/visualCrossingWeatherProvider');
+const TomorrowWeatherProvider = require('./infrastructure/providers/weather-providers/tomorrowWeatherProvider');
 
-const ResendEmailProvider = require('./providers/email-providers/resendEmailProvider');
+const ResendEmailProvider = require('./infrastructure/providers/email-providers/resendEmailProvider');
 
-const WeatherProviderManger = require('./providers/weather-providers/weatherProviderManager');
-const EmailProviderManager = require('./providers/email-providers/emailProviderManager');
+const WeatherProviderManger = require('./infrastructure/providers/weather-providers/weatherProviderManager');
+const EmailProviderManager = require('./infrastructure/providers/email-providers/emailProviderManager');
 
 const SubscriptionService = require('./services/subscriptionService');
 const WeatherServiceWithCacheAndMetrics = require('./services/weatherService');
@@ -29,18 +29,18 @@ const GetWeatherUseCase = require('./use-cases/weather/getWeatherUseCase');
 const CityValidator = require('./domain/validators/cityValidator');
 const SubscriptionValidator = require('./domain/validators/subscriptionValidator');
 
-const HomepageController = require('./controllers/homepageController');
-const SubscriptionPublicController = require('./controllers/subscriptionPublicController');
-const SubscriptionApiController = require('./controllers/subscriptionApiController');
-const WeatherApiController = require('./controllers/weatherApiController');
+const HomepageController = require('./presentation/controllers/homepageController');
+const SubscriptionPublicController = require('./presentation/controllers/subscriptionPublicController');
+const SubscriptionApiController = require('./presentation/controllers/subscriptionApiController');
+const WeatherApiController = require('./presentation/controllers/weatherApiController');
 
-const EmailJobHandler = require('./cron/handlers/emailJobHandler');
-const EmailJobs = require('./cron/emailJobs');
-const CronMain = require('./cron/main');
+const EmailJobHandler = require('./infrastructure/cron/handlers/emailJobHandler');
+const EmailJobs = require('./infrastructure/cron/emailJobs');
+const CronMain = require('./infrastructure/cron/main');
 
 // dependency injection will be replaced with communication (e.g. http)
 
-const config = require('./config/index');
+const config = require('./common/config/index');
 const logger = new Logger(
     {
         level: config.logLevel,

@@ -1,4 +1,4 @@
-const { handleError } = require('../utils/errors/clientErrors');
+const { handleError } = require('../../common/utils/errors/clientErrors');
 
 class WeatherApiController
 {
