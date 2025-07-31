@@ -1,5 +1,6 @@
 const Result = require('../domain/types/result');
 const IWeatherService = require('../domain/interfaces/services/weatherServiceInterface');
+const config = require('../config/index');
 
 class WeatherServiceWithCacheAndMetrics extends IWeatherService
 {
@@ -56,8 +57,7 @@ class WeatherServiceWithCacheAndMetrics extends IWeatherService
         }
         try
         {
-            const CACHE_TTL = process.env.CACHE_TTL || 3600;
-            await this.redisCache.setEx(cacheKey, CACHE_TTL, JSON.stringify(weather));
+            await this.redisCache.setEx(cacheKey, config.redisTTL, JSON.stringify(weather));
         }
         catch (err)
         {

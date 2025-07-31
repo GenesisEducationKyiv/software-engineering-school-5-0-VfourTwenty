@@ -20,6 +20,7 @@ const dialect = process.env.DB_DIALECT;
 // redis
 const redisHost = process.env.REDIS_HOST;
 const redisPort = process.env.REDIS_PORT;
+const redisTTL = process.env.REDIS_TTL;
 const redisConnectRetries = process.env.REDIS_CONNECT_RETRIES;
 const redisConnectDelay = process.env.REDIS_CONNECT_DELAY;
 // weather providers
@@ -39,6 +40,7 @@ module.exports = {
     baseUrl,
     redisHost,
     redisPort,
+    redisTTL,
     redisConnectRetries,
     redisConnectDelay,
     use_env_variable,
