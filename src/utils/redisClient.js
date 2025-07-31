@@ -11,7 +11,10 @@ const redisClient = redis.createClient({
 
 redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
-async function connectWithRetry(client, retries = 5, delay = 1000)
+async function connectToRedisWithRetry(
+    client = redisClient,
+    retries = config.redisConnectRetries,
+    delay = config.redisConnectDelay)
 {
     try
     {
@@ -29,6 +32,4 @@ async function connectWithRetry(client, retries = 5, delay = 1000)
     }
 }
 
-connectWithRetry(redisClient, config.redisConnectRetries, config.redisConnectDelay);
-
-module.exports = redisClient;
+module.exports = { redisClient, connectToRedisWithRetry };

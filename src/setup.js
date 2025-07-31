@@ -2,7 +2,7 @@ const Logger = require('./utils/logger');
 
 const SequelizeSubscriptionRepo = require('./repositories/sequelizeSubscriptionRepo');
 
-const redisClient = require('./utils/redisClient');
+const { redisClient } = require('./utils/redisClient');
 const { weatherCacheHit, weatherCacheMiss } = require('./utils/promWeatherMetrics');
 
 const WeatherApiProvider = require('./providers/weather-providers/weatherApiProvider');
