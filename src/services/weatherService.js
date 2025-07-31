@@ -23,6 +23,10 @@ class WeatherServiceWithCacheAndMetrics extends IWeatherService
      */
     async fetchWeather(city) 
     {
+        if (!city)
+        {
+            return new Result(false, 'NO WEATHER DATA');
+        }
         const cacheKey = `weather:${city.toLowerCase()}`;
         let cachedWeather = null;
         try
