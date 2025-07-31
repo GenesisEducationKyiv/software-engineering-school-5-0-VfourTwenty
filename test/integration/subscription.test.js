@@ -2,11 +2,14 @@ const request = require('supertest');
 const { expect } = require('chai');
 const express = require('express');
 
+const client = require('../../src/utils/redisClient');
+const SimpleCounter = require('../mocks/utils/metrics.mock');
+
 const SubscriptionRepo = require('../../src/repositories/sequelizeSubscriptionRepo');
 const SubscriptionApiController = require('../../src/controllers/subscriptionApiController');
 const SubscriptionService = require('../../src/services/subscriptionService');
 const EmailService = require('../../src/services/emailService');
-const WeatherService = require('../../src/services/weatherService');
+const WeatherServiceWithCacheAndMetrics = require('../../src/services/weatherService');
 
 const SubscribeUserUseCase = require('../../src/use-cases/subscription/subscribeUserUseCase');
 const ConfirmSubscriptionUseCase = require('../../src/use-cases/subscription/confirmSubscriptionUseCase');
@@ -21,7 +24,8 @@ const subscriptionRepo = new SubscriptionRepo();
 const emailProviderManagerMock = new EmailProviderManagerMock();
 const weatherProviderManagerMock = new WeatherProviderManagerMock();
 
-const weatherService = new WeatherService(weatherProviderManagerMock);
+const weatherService = new WeatherServiceWithCacheAndMetrics(
+    weatherProviderManagerMock, client, new SimpleCounter(), new SimpleCounter());
 const emailService = new EmailService(emailProviderManagerMock);
 
 const cityValidator = new CityValidator(weatherService);
