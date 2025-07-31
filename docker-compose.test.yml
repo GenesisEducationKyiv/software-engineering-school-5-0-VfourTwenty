@@ -27,6 +27,7 @@ services:
     restart: always
     depends_on:
       - db-test
+      - redis-test
     env_file:
       - .env.test.e2e.docker
     ports:
