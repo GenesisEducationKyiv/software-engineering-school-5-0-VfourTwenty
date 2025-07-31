@@ -1,6 +1,7 @@
 const Result = require('../domain/types/result');
 const IWeatherService = require('../domain/interfaces/services/weatherServiceInterface');
 const config = require('../config/index');
+const { normalizeString } = require('../utils/strings');
 
 class WeatherServiceWithCacheAndMetrics extends IWeatherService
 {
@@ -27,7 +28,7 @@ class WeatherServiceWithCacheAndMetrics extends IWeatherService
         {
             return new Result(false, 'NO WEATHER DATA');
         }
-        const cacheKey = `weather:${city.toLowerCase()}`;
+        const cacheKey = `weather:${normalizeString(city)}`;
         let cachedWeather = null;
         try
         {
