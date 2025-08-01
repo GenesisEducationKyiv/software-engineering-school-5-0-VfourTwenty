@@ -142,7 +142,7 @@ function resolveLayer(varName, varToLayer, varAssignment, arrayVarToElements, de
 const layerRules = {
     services:         { allowed: ['common', 'infrastructure'] },
     application:      { allowed: ['common', 'application', 'services'] },
-    infrastructure:   { allowed: ['common', 'application', 'infrastructure'] },
+    infrastructure:   { allowed: ['common'] },
     presentation:     { allowed: ['common', 'application', 'presentation'] },
 };
 
