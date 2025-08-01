@@ -15,7 +15,8 @@ class SubscriptionPublicController
         this.unsusbcribeUserUseCase = unsubscribeUserUseCase;
     }
 
-    confirm = async (req, res) => {
+    confirm = async (req, res) => 
+    {
         const { token } = req.params;
 
         const validationResult = this.subscriptionValidator.validateToken(token);
@@ -26,7 +27,8 @@ class SubscriptionPublicController
         }
 
         const confirmResult = await this.confirmSubscriptionUseCase.confirm(token);
-        if (confirmResult.success) {
+        if (confirmResult.success) 
+        {
             const sub = confirmResult.data;
             const url = buildConfirmedUrl(sub.city, sub.frequency, token);
             return res.redirect(url);
