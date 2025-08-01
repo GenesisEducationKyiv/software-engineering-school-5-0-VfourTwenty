@@ -4,22 +4,30 @@ const path = require('path');
 const layerRules = [
     {
         layer: 'src/domain/',
-        forbidden: ['src/services/', 'src/infrastructure/', 'src/presentation/'],
+        forbidden: ['src/application/', 'src/services/', 'src/infrastructure/', 'src/presentation/', 'src/setup.js'],
         name: 'domain'
     },
     {
-        layer: 'src/services/',
-        forbidden: ['src/infrastructure/', 'src/presentation/'],
-        name: 'services'
-    },
-    {
         layer: 'src/application/',
-        forbidden: ['src/infrastructure/', 'src/presentation/'],
+        forbidden: ['src/services/', 'src/infrastructure/', 'src/presentation/', 'src/setup.js'],
         name: 'application'
     },
     {
+        // services are a separate layer as they are self-contained
+        // and will be made into separate microservice in the near future
+        layer: 'src/services/',
+        forbidden: ['src/application/', 'src/infrastructure/', 'src/presentation/'],
+        name: 'services'
+    },
+    {
+        // infrastructure imports from the composition root - setup.js
         layer: 'src/infrastructure/',
         forbidden: ['src/presentation/'],
+        name: 'infrastructure'
+    },
+    {
+        layer: 'src/presentation/',
+        forbidden: ['src/infrastructure/', 'src/services/', 'src/domain/'],
         name: 'infrastructure'
     },
     {

@@ -3,11 +3,11 @@ require('dotenv').config({
 });
 
 // logger
-const logLevel = process.env.LOG_LEVEL;
-const logLevelStrict = process.env.LOG_LEVEL_STRICT === 'true';
-const logFilePath = logLevel === 'null' ? '' : process.env.LOG_FILE_PATH;
+const level = process.env.LOG_LEVEL;
+const levelStrict = process.env.LOG_LEVEL_STRICT === 'true';
+const filePath = level === 'null' ? '' : process.env.LOG_FILE_PATH;
 const logToConsole = process.env.LOG_TO_CONSOLE === 'true';
-const logSamplingRate = process.env.LOG_SAMPLING_RATE;
+const samplingRate = process.env.LOG_SAMPLING_RATE;
 // domain
 const baseUrl = process.env.BASE_URL || 'http://localhost:3001';
 
@@ -27,11 +27,11 @@ const fromEmail = process.env.FROM_EMAIL;
 
 module.exports = {
     logger: {
-        logLevel,
-        logLevelStrict,
-        logFilePath,
+        level,
+        levelStrict,
+        filePath,
         logToConsole,
-        logSamplingRate,
+        samplingRate,
     },
     domain: {
         baseUrl,

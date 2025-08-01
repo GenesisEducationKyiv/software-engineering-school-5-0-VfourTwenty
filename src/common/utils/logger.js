@@ -15,6 +15,7 @@ class Logger
 
     constructor(options = {}, entity = null)
     {
+        console.log('receiving logger options: ', options);
         /* eslint-disable @stylistic/brace-style */ // for constructor readability
         if (!options) {
             throw new LoggerError('config', 'No options for config provided');
@@ -29,13 +30,13 @@ class Logger
 
         if (this.level === 'null') return; // no further setup is needed, logging is disabled
 
-        if (!options.logFilePath)
+        if (!options.filePath)
         {
             throw new LoggerError('config', 'Invalid filepath provided.');
         }
-        const resolvedLogFilePath = path.isAbsolute(options.logFilePath)
-            ? options.logFilePath
-            : path.resolve(process.cwd(), options.logFilePath);
+        const resolvedLogFilePath = path.isAbsolute(options.filePath)
+            ? options.filePath
+            : path.resolve(process.cwd(), options.filePath);
 
         const logDir = path.dirname(resolvedLogFilePath);
         try
@@ -47,7 +48,7 @@ class Logger
         {
             throw new LoggerError('filesystem', `Failed to create log file: ${err.message}`);
         }
-        this.logFilePath = resolvedLogFilePath;
+        this.filePath = resolvedLogFilePath;
 
         if (typeof options.samplingRate !== 'number' || options.samplingRate < 0 || options.samplingRate > 1) {
             console.warn(`Invalid sampling rate: ${options.samplingRate}. Defaulting to 1.`);
@@ -58,9 +59,11 @@ class Logger
         /* eslint-enable @stylistic/brace-style */
 
         this.levelStrict = options.levelStrict;
-        this.writeToConsole = options.writeToConsole;
+        this.logToConsole = options.logToConsole;
 
         this.entity = entity;
+
+        console.log('inited a logger: ', this);
     }
 
     _buildLogString(level, message, meta)
@@ -81,7 +84,7 @@ class Logger
 
     _log(logString)
     {
-        fs.appendFileSync(this.logFilePath, logString + '\n');
+        fs.appendFileSync(this.filePath, logString + '\n');
     }
 
     // external functions
@@ -91,8 +94,8 @@ class Logger
         return new Logger({
             level: this.level,
             levelStrict: this.levelStrict,
-            logFilePath: this.logFilePath,
-            writeToConsole: this.writeToConsole,
+            filePath: this.filePath,
+            logToConsole: this.logToConsole,
             samplingRate: this.samplingRate
         }, entity);
     }
