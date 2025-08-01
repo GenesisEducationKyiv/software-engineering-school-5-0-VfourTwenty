@@ -1,5 +1,5 @@
 const redis = require('redis');
-const config = require('../config');
+const config = require('../config').redis;
 const retry = require('./retry'); // Adjust the path if needed
 
 const redisClient = redis.createClient({

@@ -1,7 +1,7 @@
 const IEmailProvider = require('../../../../domain/interfaces/providers/emailProviderInterface');
 const { Resend } = require('resend');
 
-const config = require('../../../../common/config');
+const config = require('../../../../common/config').email;
 const fromEmail = config.fromEmail;
 const resend = new Resend(config.resendApiKey);
 
