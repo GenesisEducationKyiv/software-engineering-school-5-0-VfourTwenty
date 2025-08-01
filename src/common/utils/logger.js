@@ -15,7 +15,6 @@ class Logger
 
     constructor(options = {}, entity = null)
     {
-        console.log('receiving logger options: ', options);
         /* eslint-disable @stylistic/brace-style */ // for constructor readability
         if (!options) {
             throw new LoggerError('config', 'No options for config provided');
@@ -62,8 +61,6 @@ class Logger
         this.logToConsole = options.logToConsole;
 
         this.entity = entity;
-
-        console.log('inited a logger: ', this);
     }
 
     _buildLogString(level, message, meta)
