@@ -1,4 +1,4 @@
-const CityValidator = require('../../../src/domain/validators/cityValidator');
+const CityValidator = require('../../../src/application/validators/cityValidator');
 const WeatherServiceMock = require('../../mocks/services/weatherService.mock');
 const { expect } = require('chai');
 
@@ -13,7 +13,7 @@ describe('CityValidator Unit Tests', () =>
         const result = await cityValidator.validate('Kyiv');
 
         // Assert
-        expect(result).to.be.true;
+        expect(result.success).to.be.true;
     });
 
     it('should return false for an invalid city', async () => 
@@ -22,7 +22,7 @@ describe('CityValidator Unit Tests', () =>
         const result = await cityValidator.validate('hfgshdf');
 
         // Assert
-        expect(result).to.be.false;
+        expect(result.success).to.be.false;
     });
 
     it('should return false if city is missing', async () => 
@@ -31,7 +31,7 @@ describe('CityValidator Unit Tests', () =>
         const result = await cityValidator.validate();
 
         // Assert
-        expect(result).to.be.false;
+        expect(result.success).to.be.false;
     });
 });
 
