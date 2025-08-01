@@ -1,14 +1,9 @@
 const { emailRegex } = require('../../common/utils/strings');
-const Result = require('../types/result');
+const Result = require('../../domain/types/result');
 
 class SubscriptionValidator 
 {
-    constructor(cityValidator)
-    {
-        this.cityValidator = cityValidator;
-    }
-
-    async validateNewSubscription(email, city, frequency) 
+    validateNewSubscription(email, city, frequency)
     {
         if (!email || !city || !frequency) 
         {
@@ -22,8 +17,15 @@ class SubscriptionValidator
         {
             return new Result(false, 'INVALID FREQUENCY');
         }
-        const cityIsValid = await this.cityValidator.validate(city);
-        if (!cityIsValid) return new Result(false, 'INVALID CITY');
+        return new Result(true);
+    }
+
+    validateToken(token)
+    {
+        if (!token || token.length < 10)
+        {
+            return new Result(false, 'INVALID TOKEN');
+        }
         return new Result(true);
     }
 }

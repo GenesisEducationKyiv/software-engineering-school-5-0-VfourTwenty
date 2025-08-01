@@ -18,16 +18,16 @@ const SubscriptionService = require('./services/subscriptionService');
 const WeatherServiceWithCacheAndMetrics = require('./services/weatherService');
 const EmailService = require('./services/emailService');
 
-const WeatherUpdatesUseCase = require('./use-cases/emails/weatherUpdatesUseCase');
+const WeatherUpdatesUseCase = require('./application/use-cases/emails/weatherUpdatesUseCase');
 
-const SubscribeUserUseCase = require('./use-cases/subscription/subscribeUserUseCase');
-const ConfirmSubscriptionUseCase = require('./use-cases/subscription/confirmSubscriptionUseCase');
-const UnsubscribeUserUseCase = require('./use-cases/subscription/unsubscribeUserUseCase');
+const SubscribeUserUseCase = require('./application/use-cases/subscription/subscribeUserUseCase');
+const ConfirmSubscriptionUseCase = require('./application/use-cases/subscription/confirmSubscriptionUseCase');
+const UnsubscribeUserUseCase = require('./application/use-cases/subscription/unsubscribeUserUseCase');
 
-const GetWeatherUseCase = require('./use-cases/weather/getWeatherUseCase');
+const GetWeatherUseCase = require('./application/use-cases/weather/getWeatherUseCase');
 
-const CityValidator = require('./domain/validators/cityValidator');
-const SubscriptionValidator = require('./domain/validators/subscriptionValidator');
+const CityValidator = require('./application/validators/cityValidator');
+const SubscriptionValidator = require('./presentation/validators/subscriptionValidator');
 
 const HomepageController = require('./presentation/controllers/homepageController');
 const SubscriptionPublicController = require('./presentation/controllers/subscriptionPublicController');
@@ -68,20 +68,22 @@ const subscriptionService = new SubscriptionService(subscriptionRepo);
 
 // 4
 const cityValidator = new CityValidator(weatherService);
-const subscriptionValidator = new SubscriptionValidator(cityValidator);
 
 // 5
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
 const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionService);
 
-const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionValidator, subscriptionService, emailService);
+const subscribeUserUseCase = new SubscribeUserUseCase(cityValidator, subscriptionService, emailService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService, emailService);
 
 // 6
+const subscriptionValidator = new SubscriptionValidator();
+
 const homepageController = new HomepageController();
-const subscriptionPublicController = new SubscriptionPublicController(confirmSubscriptionUseCase, unsubscribeUserUseCase);
-const subscriptionApiController = new SubscriptionApiController(subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
+const subscriptionPublicController = new SubscriptionPublicController(subscriptionValidator, confirmSubscriptionUseCase, unsubscribeUserUseCase);
+const subscriptionApiController = new SubscriptionApiController(
+    subscriptionValidator, subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
 const weatherApiController = new WeatherApiController(getWeatherUseCase);
 
 // 7 cron

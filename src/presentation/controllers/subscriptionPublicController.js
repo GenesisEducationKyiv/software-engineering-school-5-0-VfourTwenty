@@ -5,24 +5,33 @@ const { mapErrorToClientMessage } = require('../../common/utils/errors/clientErr
 class SubscriptionPublicController
 {
     constructor(
+        subscriptionValidator,     // will be deprecated once frontend starts calling the api
         confirmSubscriptionUseCase,
         unsubscribeUserUseCase
     )
     {
+        this.subscriptionValidator = subscriptionValidator;
         this.confirmSubscriptionUseCase = confirmSubscriptionUseCase;
         this.unsusbcribeUserUseCase = unsubscribeUserUseCase;
     }
 
-    confirm = async (req, res) => 
-    {
+    confirm = async (req, res) => {
         const { token } = req.params;
-        const confirmResult = await this.confirmSubscriptionUseCase.confirm(token);
-        if (confirmResult.success)
+
+        const validationResult = this.subscriptionValidator.validateToken(token);
+        if (!validationResult.success)
         {
+            const errorUrl = buildErrorUrl(mapErrorToClientMessage(validationResult.err));
+            return res.redirect(errorUrl);
+        }
+
+        const confirmResult = await this.confirmSubscriptionUseCase.confirm(token);
+        if (confirmResult.success) {
             const sub = confirmResult.data;
             const url = buildConfirmedUrl(sub.city, sub.frequency, token);
             return res.redirect(url);
         }
+
         let errorMsg = mapErrorToClientMessage(confirmResult.err) || 'Internal server error';
         const errorUrl = buildErrorUrl(errorMsg);
         return res.redirect(errorUrl);
@@ -31,6 +40,14 @@ class SubscriptionPublicController
     unsubscribe = async (req, res) => 
     {
         const { token } = req.params;
+
+        const validationResult = this.subscriptionValidator.validateToken(token);
+        if (!validationResult.success)
+        {
+            const errorUrl = buildErrorUrl(mapErrorToClientMessage(validationResult.err));
+            return res.redirect(errorUrl);
+        }
+
         const result = await this.unsusbcribeUserUseCase.unsubscribe(token);
         if (result.success)
         {

@@ -1,4 +1,4 @@
-const Result = require('../../domain/types/result');
+const Result = require('../../../domain/types/result');
 
 class GetWeatherUseCase
 {

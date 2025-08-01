@@ -1,3 +1,5 @@
+const Result = require('../../domain/types/result');
+
 class CityValidator
 {
     constructor(weatherService)
@@ -8,7 +10,11 @@ class CityValidator
     async validate(city)
     {
         const result = await this.weatherService.fetchWeather(city);
-        return result.success;
+        if (!result.success)
+        {
+            return new Result(false, 'INVALID CITY');
+        }
+        return new Result(true);
     }
 }
 

@@ -3,11 +3,13 @@ const { handleError } = require('../../common/utils/errors/clientErrors');
 class SubscriptionApiController
 {
     constructor(
+        subscriptionValidator,
         subscribeUserUseCase,
         confirmSubscriptionUseCase,
         unsubscribeUserUseCase
     )
     {
+        this.subscriptionValidator = subscriptionValidator;
         this.subscribeUserUseCase = subscribeUserUseCase;
         this.confirmSubscriptionUseCase = confirmSubscriptionUseCase;
         this.unsubscribeUserUseCase = unsubscribeUserUseCase;
@@ -16,6 +18,11 @@ class SubscriptionApiController
     subscribe = async (req, res) => 
     {
         const { email, city, frequency } = req.body;
+
+        // basic field validation
+        const validationResult = this.subscriptionValidator.validateNewSubscription(email, city, frequency);
+        if (!validationResult.success) return handleError(validationResult.err, res);
+
         const result = await this.subscribeUserUseCase.subscribe(email, city, frequency);
         if (result.success)
         {
@@ -27,6 +34,10 @@ class SubscriptionApiController
     confirm = async (req, res) => 
     {
         const { token } = req.params;
+
+        const validationResult = this.subscriptionValidator.validateToken(token);
+        if (!validationResult.success) return handleError(validationResult.err, res);
+
         const result = await this.confirmSubscriptionUseCase.confirm(token);
         if (result.success)
         {
@@ -38,6 +49,10 @@ class SubscriptionApiController
     unsubscribe = async (req, res) => 
     {
         const { token } = req.params;
+
+        const validationResult = this.subscriptionValidator.validateToken(token);
+        if (!validationResult.success) return handleError(validationResult.err, res);
+
         const result = await this.unsubscribeUserUseCase.unsubscribe(token);
         if (result.success)
         {

@@ -1,12 +1,12 @@
-const { buildConfirmEmail } = require('../../common/utils/emailTemplates');
-const Result = require('../../domain/types/result');
+const { buildConfirmEmail } = require('../../../common/utils/emailTemplates');
+const Result = require('../../../domain/types/result');
 
 class SubscribeUserUseCase
 {
     // depends on a service interface
-    constructor(subscriptionValidator, subscriptionService, emailService)
+    constructor(cityValidator, subscriptionService, emailService)
     {
-        this.validator = subscriptionValidator;
+        this.cityValidator = cityValidator;
         this.subscriptionService = subscriptionService;
         this.emailService = emailService;
     }
@@ -21,7 +21,7 @@ class SubscribeUserUseCase
 
     async subscribe(email, city, frequency)
     {
-        const validationResult = await this.validator.validateNewSubscription(email, city, frequency);
+        const validationResult = await this.cityValidator.validate(city);
         if (!validationResult.success) return validationResult;
         const subscriptionResult = await this.subscriptionService.subscribeUser(email, city, frequency);
         if (!subscriptionResult.success)

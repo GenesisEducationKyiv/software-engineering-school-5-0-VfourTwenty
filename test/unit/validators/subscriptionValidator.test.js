@@ -1,9 +1,7 @@
 const { expect } = require('chai');
-const SubscriptionValidator = require('../../../src/domain/validators/subscriptionValidator');
-const CityValidatorMock = require('../../mocks/validators/cityValidator.mock');
+const SubscriptionValidator = require('../../../src/presentation/validators/subscriptionValidator');
 
-const cityValidatorMock = new CityValidatorMock();
-const subscriptionValidator = new SubscriptionValidator(cityValidatorMock);
+const subscriptionValidator = new SubscriptionValidator();
 
 const validSub = {
     email: 'valid@mail.com',
@@ -70,15 +68,5 @@ describe('SubscriptionValidator Unit Tests', () =>
         // Assert
         expect(result.success).to.be.false;
         expect(result.err).to.eq('INVALID FREQUENCY');
-    });
-
-    it('should return false for success and an error message for invalid city', async () => 
-    {
-        // Act
-        const result = await subscriptionValidator.validateNewSubscription(validSub.email, 'nfgfgh', validSub.frequency);
-
-        // Assert
-        expect(result.success).to.be.false;
-        expect(result.err).to.eq('INVALID CITY');
     });
 });

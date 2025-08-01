@@ -29,11 +29,6 @@ class SubscriptionService extends ISubscriptionService
 
     async confirmSubscription(token) 
     {
-        if (!token || token.length < 10)
-        {
-            return new Result(false, 'INVALID TOKEN');
-        }
-
         const result = await this.subscriptionRepo.findSub({ token });
         const sub = result.data;
         if (!sub)
@@ -57,11 +52,6 @@ class SubscriptionService extends ISubscriptionService
 
     async unsubscribeUser(token) 
     {
-        if (!token || token.length < 10)
-        {
-            return new Result(false, 'INVALID TOKEN');
-        }
-
         const result = await this.subscriptionRepo.findSub({ token });
         const sub = result.data;
         if (!sub)
