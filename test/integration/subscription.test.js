@@ -5,7 +5,7 @@ const express = require('express');
 const { redisClient, connectToRedisWithRetry } = require('../../src/common/utils/redisClient');
 const SimpleCounter = require('../mocks/utils/metrics.mock');
 
-const SubscriptionRepo = require('../../src/infrastructure/repositories/sequelizeSubscriptionRepo');
+const SubscriptionRepo = require('../../src/infrastructure/adapters/db/repositories/sequelizeSubscriptionRepo');
 const SubscriptionApiController = require('../../src/presentation/controllers/subscriptionApiController');
 const SubscriptionService = require('../../src/services/subscriptionService');
 const EmailService = require('../../src/services/emailService');

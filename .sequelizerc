@@ -2,6 +2,6 @@ const path = require('path');
 
 module.exports = {
   'config': path.resolve('src/common/config/index.js'),
-  'models-path': path.resolve('src/infrastructure/db/models'),
-  'migrations-path': path.resolve('src/infrastructure/db/migrations'),
+  'models-path': path.resolve('src/infrastructure/adapters/db/models'),
+  'migrations-path': path.resolve('src/infrastructure/adapters/db/migrations'),
 };
