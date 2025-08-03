@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const WeatherServiceWithCacheAndMetrics = require('../../../src/services/weatherService');
+const WeatherServiceWithCacheAndMetrics = require('../../../src/application/services/weatherService');
 const MockWeatherProviderManager = require('../../mocks/providers/weatherProviderManager.mock');
 const RedisClientMock = require('../../mocks/utils/redisClient.mock');
 const SimpleCounter = require('../../mocks/utils/metrics.mock');

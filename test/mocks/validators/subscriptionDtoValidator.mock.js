@@ -1,4 +1,4 @@
-class SubscriptionValidatorMock
+class SubscriptionDtoValidatorMock
 {
     stub(value)
     {
@@ -11,4 +11,4 @@ class SubscriptionValidatorMock
     }
 }
 
-module.exports = SubscriptionValidatorMock;
+module.exports = SubscriptionDtoValidatorMock;

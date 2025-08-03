@@ -1,7 +1,7 @@
 const { emailRegex } = require('../../common/utils/strings');
 const Result = require('../../domain/types/result');
 
-class SubscriptionValidator 
+class SubscriptionDtoValidator
 {
     validateNewSubscription(email, city, frequency)
     {
@@ -30,4 +30,4 @@ class SubscriptionValidator
     }
 }
 
-module.exports = SubscriptionValidator;
+module.exports = SubscriptionDtoValidator;

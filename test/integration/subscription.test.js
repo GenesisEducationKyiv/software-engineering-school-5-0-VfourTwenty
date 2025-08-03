@@ -7,15 +7,15 @@ const SimpleCounter = require('../mocks/utils/metrics.mock');
 
 const SubscriptionRepo = require('../../src/infrastructure/adapters/db/repositories/sequelizeSubscriptionRepo');
 const SubscriptionApiController = require('../../src/presentation/controllers/subscriptionApiController');
-const SubscriptionService = require('../../src/services/subscriptionService');
-const EmailService = require('../../src/services/emailService');
-const WeatherServiceWithCacheAndMetrics = require('../../src/services/weatherService');
+const SubscriptionService = require('../../src/application/services/subscriptionService');
+const EmailService = require('../../src/application/services/emailService');
+const WeatherServiceWithCacheAndMetrics = require('../../src/application/services/weatherService');
 
 const SubscribeUserUseCase = require('../../src/application/use-cases/subscription/subscribeUserUseCase');
 const ConfirmSubscriptionUseCase = require('../../src/application/use-cases/subscription/confirmSubscriptionUseCase');
 const UnsubscribeUserUseCase = require('../../src/application/use-cases/subscription/unsubscribeUserUseCase');
 
-const SubscriptionValidator = require('../../src/presentation/validators/subscriptionValidator');
+const SubscriptionValidator = require('../../src/presentation/validators/subscriptionDtoValidator');
 const CityValidator = require('../../src/application/validators/cityValidator');
 const EmailProviderManagerMock = require('../mocks/providers/emailProviderManager.mock');
 const WeatherProviderManagerMock = require('../mocks/providers/weatherProviderManager.mock');

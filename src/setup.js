@@ -14,9 +14,9 @@ const ResendEmailProvider = require('./infrastructure/adapters/providers/email-p
 const WeatherProviderManger = require('./infrastructure/adapters/providers/weather-providers/weatherProviderManager');
 const EmailProviderManager = require('./infrastructure/adapters/providers/email-providers/emailProviderManager');
 
-const SubscriptionService = require('./services/subscriptionService');
-const WeatherServiceWithCacheAndMetrics = require('./services/weatherService');
-const EmailService = require('./services/emailService');
+const SubscriptionService = require('./application/services/subscriptionService');
+const WeatherServiceWithCacheAndMetrics = require('./application/services/weatherService');
+const EmailService = require('./application/services/emailService');
 
 const WeatherUpdatesUseCase = require('./application/use-cases/emails/weatherUpdatesUseCase');
 
@@ -27,7 +27,7 @@ const UnsubscribeUserUseCase = require('./application/use-cases/subscription/uns
 const GetWeatherUseCase = require('./application/use-cases/weather/getWeatherUseCase');
 
 const CityValidator = require('./application/validators/cityValidator');
-const SubscriptionValidator = require('./presentation/validators/subscriptionValidator');
+const SubscriptionDtoValidator = require('./presentation/validators/subscriptionDtoValidator');
 
 const HomepageController = require('./presentation/controllers/homepageController');
 const SubscriptionPublicController = require('./presentation/controllers/subscriptionPublicController');
@@ -76,12 +76,12 @@ const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionSe
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService, emailService);
 
 // 6
-const subscriptionValidator = new SubscriptionValidator();
+const subscriptionDtoValidator = new SubscriptionDtoValidator();
 
 const homepageController = new HomepageController();
-const subscriptionPublicController = new SubscriptionPublicController(subscriptionValidator, confirmSubscriptionUseCase, unsubscribeUserUseCase);
+const subscriptionPublicController = new SubscriptionPublicController(subscriptionDtoValidator, confirmSubscriptionUseCase, unsubscribeUserUseCase);
 const subscriptionApiController = new SubscriptionApiController(
-    subscriptionValidator, subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
+    subscriptionDtoValidator, subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
 const weatherApiController = new WeatherApiController(getWeatherUseCase);
 
 // 7 cron
