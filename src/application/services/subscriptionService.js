@@ -1,6 +1,6 @@
-const { genToken } = require('../common/utils/strings');
-const Result = require('../domain/types/result');
-const ISubscriptionService = require('../domain/interfaces/services/subscriptionServiceInterface');
+const { genToken } = require('../../common/utils/strings');
+const Result = require('../../domain/types/result');
+const ISubscriptionService = require('../../domain/interfaces/services/subscriptionServiceInterface');
 
 class SubscriptionService extends ISubscriptionService
 {

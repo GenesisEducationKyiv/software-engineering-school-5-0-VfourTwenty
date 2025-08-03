@@ -1,7 +1,7 @@
-const Result = require('../domain/types/result');
-const IWeatherService = require('../domain/interfaces/services/weatherServiceInterface');
-const config = require('../common/config/index').redis;
-const { normalizeString } = require('../common/utils/strings');
+const Result = require('../../domain/types/result');
+const IWeatherService = require('../../domain/interfaces/services/weatherServiceInterface');
+const config = require('../../common/config').redis;
+const { normalizeString } = require('../../common/utils/strings');
 
 class WeatherServiceWithCacheAndMetrics extends IWeatherService
 {

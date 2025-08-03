@@ -1,5 +1,5 @@
-const Result = require('../domain/types/result');
-const IEmailService = require('../domain/interfaces/services/emailServiceInterface');
+const Result = require('../../domain/types/result');
+const IEmailService = require('../../domain/interfaces/services/emailServiceInterface');
 
 class EmailService extends IEmailService
 {
