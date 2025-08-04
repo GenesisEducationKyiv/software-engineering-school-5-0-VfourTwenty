@@ -2,6 +2,10 @@ name: Integration Tests
 
 on: [push, pull_request]
 
+defaults:
+  run:
+    working-directory: monolith
+
 jobs:
   test-integration:
     runs-on: ubuntu-latest
