@@ -2,6 +2,10 @@ name: End to End Tests
 
 on: [push, pull_request]
 
+defaults:
+  run:
+    working-directory: monolith
+
 jobs:
   test-e2e:
     runs-on: ubuntu-latest

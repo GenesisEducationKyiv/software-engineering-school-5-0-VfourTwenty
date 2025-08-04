@@ -2,6 +2,10 @@ name: Architecture Tests
 
 on: [push, pull_request]
 
+defaults:
+  run:
+    working-directory: monolith
+
 jobs:
   test-architecture:
     runs-on: ubuntu-latest

@@ -2,6 +2,10 @@ name: Unit Tests
 
 on: [push, pull_request]
 
+defaults:
+  run:
+    working-directory: monolith
+
 jobs:
   test-unit:
     runs-on: ubuntu-latest

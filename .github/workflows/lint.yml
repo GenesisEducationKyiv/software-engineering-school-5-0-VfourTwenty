@@ -2,6 +2,10 @@ name: Lint with ESLint
 
 on: [push, pull_request]
 
+defaults:
+  run:
+    working-directory: monolith
+
 jobs:
   eslint:
     runs-on: ubuntu-latest
