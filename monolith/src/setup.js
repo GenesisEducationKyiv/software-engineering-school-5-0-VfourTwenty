@@ -40,7 +40,7 @@ const CronMain = require('./infrastructure/entry-points/cron/main');
 
 // dependency injection will be replaced with communication (e.g. http)
 
-const loggerConfig = require('./common/config/index').logger;
+const loggerConfig = require('./common/config').logger;
 const logger = new Logger(loggerConfig);
 
 // 1

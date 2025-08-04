@@ -26,7 +26,7 @@ class SubscribeUserUseCase
         const subscriptionResult = await this.subscriptionService.subscribeUser(email, city, frequency);
         if (!subscriptionResult.success)
         {
-            return subscriptionResult; // or new DTO(false, 'FAILED TO SUBSCRIBE)
+            return subscriptionResult;
         }
         const token = subscriptionResult.data.token;
         const emailSuccess = await this._sendConfirmationEmail(email, token);
