@@ -25,7 +25,7 @@ We will transition from a monolithic architecture to a microservice-based archit
 
 #### Separation of Core Logic and Business Concerns
 
-- **Backend**: <br>
+- **Backend (API + business logic)**: <br>
 Core Responsibility: Aggregates business logic from several services and handles request/response orchestration. For example, the backend’s use cases (see microservices/backend/src/application/use-cases/) coordinate between the Subscription Service, Email Service, and Weather Service to implement flows such as subscribing a user, unsubscribing, confirming a subscription, and sending weather update emails. This aggregation ensures that complex workflows are managed centrally, while individual services remain focused on their domains.
 
 - **Weather Service**:
