@@ -3,8 +3,5 @@ logs
 .env
 .env.development
 .env.docker
-.env.test.intgr
-.env.test.intgr.docker
-.env.test.e2e
 
 test-results
