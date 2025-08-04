@@ -1,7 +1,0 @@
-const path = require('path');
-
-module.exports = {
-  'config': path.resolve('src/common/config/db.js'),
-  'models-path': path.resolve('src/infrastructure/adapters/db/models'),
-  'migrations-path': path.resolve('src/infrastructure/adapters/db/migrations'),
-};
