@@ -6,7 +6,7 @@ class WeatherService extends IWeatherService
 {
     async fetchWeather(city)
     {
-        const weatherRes = await fetch(`${config.weatherCurrentUrl}?city=${encodeURIComponent(city)}`);
+        const weatherRes = await fetch(`${config.weatherUrl}/weather-current?city=${encodeURIComponent(city)}`);
 
         if (weatherRes.status !== 200) return new Result(false, 'WEATHER SERVICE FAILED');
 
