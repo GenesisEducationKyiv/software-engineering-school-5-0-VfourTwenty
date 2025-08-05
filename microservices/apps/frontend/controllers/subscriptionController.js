@@ -6,7 +6,6 @@ class SubscriptionController
         const { token } = req.params;
         try {
             const fetchRes = await fetch(`http://backend:4000/api/confirm/${token}`);
-            console.log('confirm fetch result: ', fetchRes);
             const resJson = await fetchRes.json();
             let url;
             if (fetchRes.status === 200)
@@ -16,7 +15,7 @@ class SubscriptionController
             }
             else
             {
-                const error = resJson.err;
+                const error = resJson.error;
                 url = buildErrorUrl(error);
             }
             return res.redirect(url);
@@ -32,7 +31,6 @@ class SubscriptionController
         const { token } = req.params;
         try {
             const fetchRes = await fetch(`http://backend:4000/api/unsubscribe/${token}`);
-            console.log('confirm fetch result: ', fetchRes);
             const resJson = await fetchRes.json();
             let url;
             if (fetchRes.status === 200)
@@ -41,7 +39,7 @@ class SubscriptionController
             }
             else
             {
-                const error = resJson.err;
+                const error = resJson.error;
                 url = buildErrorUrl(error);
             }
             return res.redirect(url);
