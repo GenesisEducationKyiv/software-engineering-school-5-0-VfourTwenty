@@ -1,6 +1,5 @@
 const { buildConfirmEmail } = require('../../../common/utils/emailTemplates');
 const Result = require('../../../domain/types/result');
-const {subscriptionController} = require("../../../../setup");
 
 class SubscribeUserUseCase
 {
