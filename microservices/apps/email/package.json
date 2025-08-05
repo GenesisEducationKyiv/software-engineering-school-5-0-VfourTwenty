@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:unit": "mocha tests/unit --recursive"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +13,8 @@
   "dependencies": {
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "resend": "^4.7.0"
+    "resend": "^4.7.0",
+    "mocha": "^11.2.2",
+    "chai": "^4.3.7"
   }
 }
