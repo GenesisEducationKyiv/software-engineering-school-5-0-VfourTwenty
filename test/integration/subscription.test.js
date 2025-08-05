@@ -2,7 +2,7 @@ const request = require('supertest');
 const { expect } = require('chai');
 const express = require('express');
 
-const { redisClient, connectToRedisWithRetry } = require('../../src/utils/redisClient');
+const { redisClient, connectToRedisWithRetry } = require('../../src/common/cache/redis/redisClient');
 const MetricsProviderMock = require('../mocks/metrics/metricsProvider.mock');
 
 const SubscriptionRepo = require('../../src/repositories/sequelizeSubscriptionRepo');

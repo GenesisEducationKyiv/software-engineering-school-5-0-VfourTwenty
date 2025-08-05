@@ -4,8 +4,6 @@ const SequelizeSubscriptionRepo = require('./repositories/sequelizeSubscriptionR
 
 const RedisCacheProvider = require('./common/cache/redis/redisCacheProvider');
 const PromMetricsProvider = require('./common/metrics/prometheus/promMetricsProvider');
-// const { redisClient } = require('./utils/redisClient');
-// const { weatherCacheHit, weatherCacheMiss } = require('./utils/promWeatherMetrics');
 
 const WeatherApiProvider = require('./providers/weather-providers/weatherApiProvider');
 const VisualCrossingWeatherProvider = require('./providers/weather-providers/visualCrossingWeatherProvider');
