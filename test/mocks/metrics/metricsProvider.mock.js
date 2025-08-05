@@ -21,7 +21,8 @@ class MetricsProviderMock extends IMetricsProvider
 
     reset()
     {
-        Object.keys(this.metrics).forEach(name => {
+        Object.keys(this.metrics).forEach(name =>
+        {
             this.metrics[name] = 0;
         });
     }
