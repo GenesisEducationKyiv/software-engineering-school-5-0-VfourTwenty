@@ -85,12 +85,50 @@ class SubscriptionService extends ISubscriptionService
 
     async findSub(params)
     {
-
+        try {
+            const queryString = new URLSearchParams(params).toString();
+            const url = `${config.subscriptionUrl}/find-sub?${queryString}`;
+            const findSubRes = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log('findSub status: ', findSubRes.status);
+            const findSubResJson = await findSubRes.json();
+            console.log('unsubscribe in sub service in backend', findSubRes)
+            if (findSubRes.status !== 200) return new Result(false, findSubResJson.error);
+            return findSubResJson;
+        }
+        catch (err)
+        {
+            console.error('error happened', err)
+            return new Result(false, 'error in unsubscribe controller');
+        }
     }
 
     async findAllSubs(params)
     {
-
+        try {
+            const queryString = new URLSearchParams(params).toString();
+            const url = `${config.subscriptionUrl}/find-all-subs?${queryString}`;
+            const findAllSubsRes = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log('findAllSubsSub status: ', findAllSubsRes.status);
+            const findAllSubsResJson = await findAllSubsRes.json();
+            console.log('unsubscribe in sub service in backend', findAllSubsRes)
+            if (findAllSubsRes.status !== 200) return new Result(false, findAllSubsResJson.error);
+            return findAllSubsResJson;
+        }
+        catch (err)
+        {
+            console.error('error happened', err)
+            return new Result(false, 'error in unsubscribe controller');
+        }
     }
 }
 

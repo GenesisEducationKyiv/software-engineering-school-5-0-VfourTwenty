@@ -7,11 +7,16 @@ const SubscribeUserUseCase = require('./src/application/use-cases/subscription/s
 const ConfirmSubscriptionUseCase = require('./src/application/use-cases/subscription/confirmSubscriptionUseCase');
 const UnsubscribeUserUseCase = require('./src/application/use-cases/subscription/unsubscribeUserUseCase');
 const GetWeatherUseCase = require('./src/application/use-cases/weather/getWeatherUseCase');
+const WeatherUpdatesUseCase = require('./src/application/use-cases/emails/weatherUpdatesUseCase');
 
 const SubscriptionDtoValidator = require('./src/presentation/validators/subscriptionDtoValidator');
 const SubscriptionController = require('./src/presentation/controllers/subscriptionController');
 
 const WeatherController = require('./src/presentation/controllers/weatherController');
+
+const EmailJobHandler = require('./src/infrastructure/cron/handlers/emailJobHandler');
+const EmailJobs = require('./src/infrastructure/cron/emailJobs');
+const CronMain = require('./src/infrastructure/cron/main');
 
 // call dedicated services' APIs
 const emailService = new EmailService();
@@ -23,13 +28,19 @@ const subscribeUserUseCase = new SubscribeUserUseCase(cityValidator, subscriptio
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService, emailService);
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionService);
 
 const subscriptionDtoValidator = new SubscriptionDtoValidator();
 const subscriptionController = new SubscriptionController(
     subscriptionDtoValidator, subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
 const weatherController = new WeatherController(getWeatherUseCase);
 
+const emailJobHandler = new EmailJobHandler(weatherUpdatesUseCase);
+const emailJobs = new EmailJobs(emailJobHandler);
+const cronMain = new CronMain(emailJobs);
+
 module.exports = {
     weatherController,
-    subscriptionController
+    subscriptionController,
+    cronMain
 }
