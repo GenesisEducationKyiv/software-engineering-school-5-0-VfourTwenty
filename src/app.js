@@ -8,7 +8,7 @@ const weatherRouter = require('./routes/weather');
 const subscriptionRouter = require('./routes/subscription');
 const publicRouter = require('./routes/public');
 
-const { register } = require('./utils/promWeatherMetrics');
+const { register } = require('./common/metrics/prometheus/promClient');
 
 const { cronMain } = require('./setup');
 

@@ -1,28 +1,98 @@
 const Result = require('../domain/types/result');
 const IWeatherService = require('../domain/interfaces/services/weatherServiceInterface');
-const config = require('../config/index');
+// const config = require('../config/index');
 const { normalizeString } = require('../utils/strings');
+//
+// class WeatherServiceWithCacheAndMetrics extends IWeatherService
+// {
+//     // weatherProvider implements IWeatherProvider
+//     constructor(
+//         weatherProvider,
+//         redisCache,
+//         cacheHitCounter,
+//         cacheMissCounter)
+//     {
+//         super(weatherProvider);
+//         this.redisCache = redisCache;
+//         this.cacheHitCounter = cacheHitCounter;
+//         this.cacheMissCounter = cacheMissCounter;
+//     }
+//
+//     /**
+//      * @param {string} city
+//      * @returns {Promise<any>}
+//      */
+//     async fetchWeather(city)
+//     {
+//         if (!city)
+//         {
+//             return new Result(false, 'NO WEATHER DATA');
+//         }
+//         const cacheKey = `weather:${normalizeString(city)}`;
+//         let cachedWeather = null;
+//         try
+//         {
+//             cachedWeather = await this.redisCache.get(cacheKey);
+//         }
+//         catch (err)
+//         {
+//             console.error('Redis GET error:', err.message);
+//         }
+//         if (cachedWeather)
+//         {
+//             this.cacheHitCounter.inc();
+//             return new Result(true, null, JSON.parse(cachedWeather));
+//         }
+//
+//         this.cacheMissCounter.inc();
+//         const result = await this.weatherProvider.fetchWeather(city);
+//
+//         if (!result.success)
+//         {
+//             return new Result(false, 'NO WEATHER DATA');
+//         }
+//         const weather = result.data;
+//         if (
+//             typeof weather.temperature !== 'number' ||
+//             typeof weather.humidity !== 'number' ||
+//             typeof weather.description !== 'string'
+//         )
+//         {
+//             return new Result(false, 'INVALID WEATHER DATA FORMAT');
+//         }
+//         try
+//         {
+//             await this.redisCache.setEx(cacheKey, config.redisTTL, JSON.stringify(weather));
+//         }
+//         catch (err)
+//         {
+//             console.error('Redis SET error:', err.message);
+//         }
+//         return result;
+//     }
+// }
 
 class WeatherServiceWithCacheAndMetrics extends IWeatherService
 {
     // weatherProvider implements IWeatherProvider
     constructor(
         weatherProvider,
-        redisCache,
-        cacheHitCounter,
-        cacheMissCounter)
+        cacheProvider,
+        metricsProvider)
     {
         super(weatherProvider);
-        this.redisCache = redisCache;
-        this.cacheHitCounter = cacheHitCounter;
-        this.cacheMissCounter = cacheMissCounter;
+        this.cacheProvider = cacheProvider;
+        this.metricsProvider = metricsProvider;
+
+        this.metricsProvider.registerMetric('counter', 'weatherCacheHits','Total number of weather cache hits');
+        this.metricsProvider.registerMetric('counter', 'weatherCacheMisses', 'Total number of weather cache misses');
     }
 
     /**
      * @param {string} city
      * @returns {Promise<any>}
      */
-    async fetchWeather(city) 
+    async fetchWeather(city)
     {
         if (!city)
         {
@@ -32,7 +102,7 @@ class WeatherServiceWithCacheAndMetrics extends IWeatherService
         let cachedWeather = null;
         try
         {
-            cachedWeather = await this.redisCache.get(cacheKey);
+            cachedWeather = await this.cacheProvider.get(cacheKey);
         }
         catch (err)
         {
@@ -40,11 +110,11 @@ class WeatherServiceWithCacheAndMetrics extends IWeatherService
         }
         if (cachedWeather)
         {
-            this.cacheHitCounter.inc();
+            this.metricsProvider.incrementCounter('weatherCacheHits');
             return new Result(true, null, JSON.parse(cachedWeather));
         }
 
-        this.cacheMissCounter.inc();
+        this.metricsProvider.incrementCounter('weatherCacheMisses');
         const result = await this.weatherProvider.fetchWeather(city);
 
         if (!result.success)
@@ -62,7 +132,7 @@ class WeatherServiceWithCacheAndMetrics extends IWeatherService
         }
         try
         {
-            await this.redisCache.setEx(cacheKey, config.redisTTL, JSON.stringify(weather));
+            await this.cacheProvider.set(cacheKey, JSON.stringify(weather));
         }
         catch (err)
         {
