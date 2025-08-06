@@ -15,7 +15,7 @@ class RedisClientMock
         return this.cache[key];
     }
 
-    async setEx(key, ttl, objAsString)
+    async set(key, objAsString)
     {
         this.cache[key] = objAsString;
     }

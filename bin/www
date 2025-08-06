@@ -5,7 +5,7 @@
  */
 
 // start redis before starting the app to prevent race conditions
-const { connectToRedisWithRetry } = require('../src/common/utils/redisClient');
+const { connectToRedisWithRetry } = require('../src/common/cache/redis/redisClient');
 connectToRedisWithRetry();
 
 var app = require('../src/app');

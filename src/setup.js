@@ -2,8 +2,8 @@ const Logger = require('./common/utils/logger');
 
 const SequelizeSubscriptionRepo = require('./infrastructure/adapters/db/repositories/sequelizeSubscriptionRepo');
 
-const { redisClient } = require('./common/utils/redisClient');
-const { weatherCacheHit, weatherCacheMiss } = require('./common/utils/promWeatherMetrics');
+const RedisCacheProvider = require('./common/cache/redis/redisCacheProvider');
+const metricsProvider = require('./common/metrics/metricsSetup');
 
 const WeatherApiProvider = require('./infrastructure/adapters/providers/weather-providers/weatherApiProvider');
 const VisualCrossingWeatherProvider = require('./infrastructure/adapters/providers/weather-providers/visualCrossingWeatherProvider');
@@ -15,7 +15,7 @@ const WeatherProviderManger = require('./infrastructure/adapters/providers/weath
 const EmailProviderManager = require('./infrastructure/adapters/providers/email-providers/emailProviderManager');
 
 const SubscriptionService = require('./application/services/subscriptionService');
-const WeatherServiceWithCacheAndMetrics = require('./application/services/weatherService');
+const WeatherService = require('./application/services/weatherService');
 const EmailService = require('./application/services/emailService');
 
 const WeatherUpdatesUseCase = require('./application/use-cases/emails/weatherUpdatesUseCase');
@@ -45,6 +45,7 @@ const logger = new Logger(loggerConfig);
 
 // 1
 const subscriptionRepo = new SequelizeSubscriptionRepo();
+const redisCacheProvider = new RedisCacheProvider();
 
 const visualCrossingProvider = new VisualCrossingWeatherProvider();
 const tomorrowWeatherProvider = new TomorrowWeatherProvider();
@@ -57,10 +58,10 @@ const weatherProviders = [visualCrossingProvider, tomorrowWeatherProvider, weath
 const emailProviders = [resendEmailProvider];
 
 const weatherProviderManager = new WeatherProviderManger(weatherProviders, logger);
-const emailProviderManager = new EmailProviderManager(emailProviders);
+const emailProviderManager = new EmailProviderManager(emailProviders, logger);
 
 // 3
-const weatherService = new WeatherServiceWithCacheAndMetrics(weatherProviderManager, redisClient, weatherCacheHit, weatherCacheMiss);
+const weatherService = new WeatherService(weatherProviderManager, redisCacheProvider, metricsProvider);
 const emailService = new EmailService(emailProviderManager);
 const subscriptionService = new SubscriptionService(subscriptionRepo);
 
