@@ -22,7 +22,7 @@ describe('WeatherService Unit Tests', () =>
         metricsProviderMock.reset();
     });
 
-    it('should return true for success and weather data for a valid city saving the data to cache and incrementing cache miss counter', async () =>
+    it('should return true for success and weather data for a valid city saving the data to cache', async () =>
     {
         // Act
         const data = await weatherService.fetchWeather('Kyiv');
@@ -32,12 +32,9 @@ describe('WeatherService Unit Tests', () =>
         expect(data.success).to.be.true;
         expect(data.data).to.deep.equal(expectedWeatherData);
         expect(cachedData).to.eq(JSON.stringify(expectedWeatherData));
-        console.log('metrics: ', metricsProviderMock.metrics);
-        expect(metricsProviderMock.metrics['weatherCacheHits']).to.eq(0);
-        expect(metricsProviderMock.metrics['weatherCacheMisses']).to.eq(1);
     });
 
-    it('should return true for success and weather data for a valid city from cache if it is present and increment cache hit counter', async () =>
+    it('should return true for success and weather data for a valid city from cache if it is present', async () =>
     {
         // Arrange
         await redisClientMock.set('weather:kyiv', JSON.stringify(expectedWeatherData));
@@ -48,8 +45,6 @@ describe('WeatherService Unit Tests', () =>
         // Assert
         expect(data.success).to.be.true;
         expect(data.data).to.deep.equal(expectedWeatherData);
-        expect(metricsProviderMock.metrics['weatherCacheHits']).to.eq(1);
-        expect(metricsProviderMock.metrics['weatherCacheMisses']).to.eq(0);
     });
 
     it('should return false for success and and error message for invalid city', async() => 

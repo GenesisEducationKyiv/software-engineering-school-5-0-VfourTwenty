@@ -13,9 +13,6 @@ class WeatherService extends IWeatherService
         super(weatherProvider);
         this.cacheProvider = cacheProvider;
         this.metricsProvider = metricsProvider;
-
-        this.metricsProvider.registerMetric('counter', 'weatherCacheHits','Total number of weather cache hits');
-        this.metricsProvider.registerMetric('counter', 'weatherCacheMisses', 'Total number of weather cache misses');
     }
 
     /**
