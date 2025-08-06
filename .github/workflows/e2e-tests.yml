@@ -1,6 +1,16 @@
 name: End to End Tests
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'monolith/**'
+  pull_request:
+    paths:
+      - 'monolith/**'
+
+defaults:
+  run:
+    working-directory: monolith
 
 jobs:
   test-e2e:

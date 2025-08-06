@@ -1,0 +1,51 @@
+<!-- public/error.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to top, #ffdddd, #ffe6e6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .box {
+            background: white;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+        h1 {
+            color: #cc0000;
+        }
+        p {
+            color: #333;
+        }
+        a {
+            color: #3399ff;
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h1>Oops!</h1>
+    <p id="error-message">Invalid conformation token. Perhaps you've navigated to the wrong email?</p>
+    <p><a href="/html/subscribe.html.html.html">Return to subscription</a></p>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+    if (error) {
+        document.getElementById('error-message').innerText = decodeURIComponent(error);
+    }
+</script>
+</body>
+</html>

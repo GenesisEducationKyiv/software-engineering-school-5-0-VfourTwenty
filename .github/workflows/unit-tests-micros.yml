@@ -1,0 +1,40 @@
+name: Unit Tests Microservices
+
+on:
+  push:
+    paths:
+      - 'microservices/**'
+  pull_request:
+    paths:
+      - 'microservices/**'
+
+defaults:
+  run:
+    working-directory: microservices
+
+jobs:
+  test-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies in backend
+        run: npm install
+        working-directory: microservices/apps/backend
+
+      - name: Install dependencies in weather
+        run: npm install
+        working-directory: microservices/apps/weather
+
+      - name: Install dependencies in subscription
+        run: npm install
+        working-directory: microservices/apps/subscription
+
+      - name: Install dependencies in email
+        run: npm install
+        working-directory: microservices/apps/email
+
+      - name: Run all unit tests
+        run: chmod +x unit-tests-all.sh && ./unit-tests-all.sh
+        working-directory: microservices/scripts

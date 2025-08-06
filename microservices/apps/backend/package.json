@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "test:unit": "mocha tests/unit --recursive"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "chai": "^4.3.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "node-cron": "^4.0.5",
+    "express": "^5.1.0",
+    "mocha": "^11.7.1"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "subscription",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run migrate && node app.js",
+    "migrate": "npx sequelize-cli db:migrate",
+    "test:unit": "mocha tests/unit --recursive"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "sequelize": "^6.37.7",
+    "mocha": "^11.2.2",
+    "chai": "^4.3.7"
+  }
+}
