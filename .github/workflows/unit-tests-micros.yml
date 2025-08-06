@@ -36,5 +36,5 @@ jobs:
         working-directory: microservices/apps/email
 
       - name: Run all unit tests
-        run: ./unit-tests-all.sh
+        run: chmod +x unit-tests-all.sh && ./unit-tests-all.sh
         working-directory: microservices/scripts
