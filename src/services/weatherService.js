@@ -1,5 +1,6 @@
 const Result = require('../domain/types/result');
 const IWeatherService = require('../domain/interfaces/services/weatherServiceInterface');
+const METRICS_KEYS = require('../common/metrics/metricsKeys');
 const { normalizeString } = require('../utils/strings');
 
 class WeatherService extends IWeatherService
@@ -37,11 +38,11 @@ class WeatherService extends IWeatherService
         }
         if (cachedWeather)
         {
-            this.metricsProvider.incrementCounter('weatherCacheHits');
+            this.metricsProvider.incrementCounter(METRICS_KEYS.WEATHER_CACHE_HITS);
             return new Result(true, null, JSON.parse(cachedWeather));
         }
 
-        this.metricsProvider.incrementCounter('weatherCacheMisses');
+        this.metricsProvider.incrementCounter(METRICS_KEYS.WEATHER_CACHE_MISSES);
         const result = await this.weatherProvider.fetchWeather(city);
 
         if (!result.success)
