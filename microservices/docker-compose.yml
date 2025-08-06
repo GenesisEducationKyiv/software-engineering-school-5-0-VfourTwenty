@@ -2,6 +2,8 @@ services:
   backend:
     container_name: skyfetch-backend
     build: apps/backend
+    depends_on:
+      - rabbitmq
     ports:
       - "5000:4000"
     command: npm start
@@ -30,8 +32,19 @@ services:
     build: apps/subscription
     depends_on:
       - db
+      - rabbitmq
     ports:
       - "5003:4003"
+    command: npm start
+    restart: always
+
+  notification:
+    container_name: skyfetch-notification
+    build: apps/notification
+    depends_on:
+      - rabbitmq
+    ports:
+      - "5009:4009"
     command: npm start
     restart: always
 
@@ -70,6 +83,13 @@ services:
       - "5007:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: always
+
+  rabbitmq:
+    container_name: skyfetch-rabbitmq
+    image: rabbitmq:3
+    ports:
+      - "5008:5672"
     restart: always
 
 volumes:
