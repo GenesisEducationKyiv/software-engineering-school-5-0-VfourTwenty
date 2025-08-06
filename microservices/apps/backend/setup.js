@@ -1,4 +1,3 @@
-const EmailService = require('./src/application/services/emailService');
 const SubscriptionService = require('./src/application/services/subscriptionService');
 const WeatherService = require('./src/application/services/weatherService');
 
@@ -19,7 +18,6 @@ const EmailJobs = require('./src/infrastructure/cron/emailJobs');
 const CronMain = require('./src/infrastructure/cron/main');
 
 // call dedicated services' APIs
-const emailService = new EmailService();
 const subscriptionService = new SubscriptionService();
 const weatherService = new WeatherService();
 
@@ -28,7 +26,7 @@ const subscribeUserUseCase = new SubscribeUserUseCase(cityValidator, subscriptio
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
-const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionService);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(weatherService, subscriptionService);
 
 const subscriptionDtoValidator = new SubscriptionDtoValidator();
 const subscriptionController = new SubscriptionController(

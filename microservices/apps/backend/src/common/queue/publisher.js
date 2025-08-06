@@ -1,6 +1,7 @@
 const amqp = require('amqplib');
 
 let channel;
+const defaultQueue = 'test_queue';
 
 async function setupRabbitMQ() {
     if (!channel) {
@@ -10,10 +11,11 @@ async function setupRabbitMQ() {
     }
 }
 
-async function publish(msg) {
-    await setupRabbitMQ();
-    channel.sendToQueue('test_queue', Buffer.from(msg));
-    console.log(" [x] Sent '%s'", msg);
+async function publish(type, payload, queue = defaultQueue) {
+    await setupRabbitMQ(queue);
+    const message = JSON.stringify({ type, payload });
+    channel.sendToQueue(queue, Buffer.from(message));
+    console.log(` [x] Sent event of type '${type}' to queue '${queue}':`, payload);
 }
 
 module.exports = { publish };
