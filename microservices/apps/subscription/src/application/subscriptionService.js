@@ -2,6 +2,9 @@ const { genToken } = require('../common/utils/strings');
 const Result = require('../domain/types/result');
 const ISubscriptionService = require('../domain/interfaces/services/subscriptionServiceInterface');
 
+const { publish } = require('../common/queue/publisher');
+const events = require('../common/queue/events');
+
 class SubscriptionService extends ISubscriptionService
 {
     constructor(subscriptionRepo)
@@ -24,6 +27,10 @@ class SubscriptionService extends ISubscriptionService
             return new Result(false, 'FAILED TO CREATE SUBSCRIPTION');
         }
 
+        publish(
+            events.USER_SUBSCRIBED,
+            {email, token}
+        );
         return new Result(true, null, { token: token });
     }
 
@@ -65,6 +72,10 @@ class SubscriptionService extends ISubscriptionService
             return new Result(false, 'FAILED TO DELETE SUBSCRIPTION');
         }
 
+        publish(
+            events.USER_UNSUBSCRIBED,
+            {email: sub.email, city: sub.city }
+        );
         return new Result(true, null, { email: sub.email, city: sub.city });
     }
 
