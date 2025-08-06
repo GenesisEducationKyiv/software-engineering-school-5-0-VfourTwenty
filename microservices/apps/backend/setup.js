@@ -24,9 +24,9 @@ const subscriptionService = new SubscriptionService();
 const weatherService = new WeatherService();
 
 const cityValidator = new CityValidator(weatherService);
-const subscribeUserUseCase = new SubscribeUserUseCase(cityValidator, subscriptionService, emailService);
+const subscribeUserUseCase = new SubscribeUserUseCase(cityValidator, subscriptionService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
-const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService, emailService);
+const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
 const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionService);
 
