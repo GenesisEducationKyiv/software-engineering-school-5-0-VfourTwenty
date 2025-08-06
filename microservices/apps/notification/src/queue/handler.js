@@ -28,6 +28,13 @@ class EventHandler
                     emailRes = await this.emailService.sendUnsubscribedEmail(sub.email, sub.city);
                     if (!emailRes) console.error('Email service failed unsubscribed flow');
                     break;
+
+                case events.WEATHER_UPDATES_AVAILABLE:
+                    const payload = event.payload;
+                    const {sent, failed} = await this.emailService.sendWeatherUpdates(payload);
+                    console.log(`${sent} emails sent, ${failed} emails failed for ${payload.city}`);
+                    break;
+
                 default:
                     console.warn('Unknown event type:', event.type);
             }

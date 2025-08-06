@@ -1,6 +1,6 @@
 const config = require('../common/config');
 const Result = require('../domain/types/result');
-const { buildConfirmEmail, buildUnsubscribedEmail } = require('../common/utils/emailTemplates');
+const { buildConfirmEmail, buildUnsubscribedEmail, buildWeatherUpdateEmail } = require('../common/utils/emailTemplates');
 
 class EmailService
 {
@@ -43,6 +43,42 @@ class EmailService
         const body = buildUnsubscribedEmail(city);
         const result = await this._sendEmail(to, subject, body);
         return result.success;
+    }
+
+    async _sendWeatherUpdate(email, city, weather, token)
+    {
+        const subject = `SkyFetch Weather Update for ${city}`;
+        const html = buildWeatherUpdateEmail(city, weather, token);
+        const result = await this._sendEmail(email, subject, html);
+        if (!result.success)
+        {
+            return false;
+        }
+        console.log(`📧 Weather update sent to ${email}`);
+        return true;
+    }
+
+    async sendWeatherUpdates(payload) {
+        const { city, weather, subscribers } = payload;
+        let sent = 0, failed = 0;
+
+        for (const sub of subscribers) {
+            try {
+                const result = await this._sendWeatherUpdate(sub.email, city, weather, sub.token);
+                if (result) {
+                    sent++;
+                    console.log(`📧 Weather update sent to ${sub.email}`);
+                } else {
+                    failed++;
+                    console.error(`❌ Failed to send weather update to ${sub.email}`);
+                }
+            } catch (err) {
+                failed++;
+                console.error(`❌ Error sending weather update to ${sub.email}:`, err.message);
+            }
+        }
+
+        return { sent, failed };
     }
 }
 
