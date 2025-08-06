@@ -15,11 +15,18 @@ defaults:
 jobs:
   test-e2e:
     runs-on: ubuntu-latest
-    env:
-      REDIS_PORT: 6379
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Debug chmod
+        run: |
+          echo "PATH is: $PATH"
+          which chmod
+          ls -l /bin/chmod
+          ls -l /usr/bin/chmod
+          uname -a
+        working-directory: microservices/scripts
 
       - name: Run E2E tests
         run: chmod +x create-db-if-needed.sh && \
