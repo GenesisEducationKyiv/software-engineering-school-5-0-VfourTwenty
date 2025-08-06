@@ -61,7 +61,7 @@ const weatherProviders = [new VisualCrossingWeatherProvider(), new TomorrowWeath
 const emailProviders = [new ResendEmailProvider()];
 
 const weatherProviderManager = new WeatherProviderManger(weatherProviders, logger);
-const emailProviderManager = new EmailProviderManager(emailProviders);
+const emailProviderManager = new EmailProviderManager(emailProviders, logger);
 
 // 3
 const weatherService = new WeatherServiceWithCacheAndMetrics(weatherProviderManager, redisCacheProvider, promMetricsProvider);
