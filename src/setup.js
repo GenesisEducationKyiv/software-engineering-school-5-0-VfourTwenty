@@ -15,7 +15,7 @@ const WeatherProviderManger = require('./providers/weather-providers/weatherProv
 const EmailProviderManager = require('./providers/email-providers/emailProviderManager');
 
 const SubscriptionService = require('./services/subscriptionService');
-const WeatherServiceWithCacheAndMetrics = require('./services/weatherService');
+const WeatherService = require('./services/weatherService');
 const EmailService = require('./services/emailService');
 
 const WeatherUpdatesUseCase = require('./use-cases/emails/weatherUpdatesUseCase');
@@ -64,7 +64,7 @@ const weatherProviderManager = new WeatherProviderManger(weatherProviders, logge
 const emailProviderManager = new EmailProviderManager(emailProviders, logger);
 
 // 3
-const weatherService = new WeatherServiceWithCacheAndMetrics(weatherProviderManager, redisCacheProvider, promMetricsProvider);
+const weatherService = new WeatherService(weatherProviderManager, redisCacheProvider, promMetricsProvider);
 const emailService = new EmailService(emailProviderManager);
 const subscriptionService = new SubscriptionService(subscriptionRepo);
 

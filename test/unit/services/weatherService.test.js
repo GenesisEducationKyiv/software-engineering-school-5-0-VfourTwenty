@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const WeatherServiceWithCacheAndMetrics = require('../../../src/services/weatherService');
+const WeatherService = require('../../../src/services/weatherService');
 const MockWeatherProviderManager = require('../../mocks/providers/weatherProviderManager.mock');
 const RedisClientMock = require('../../mocks/cache/redisClient.mock');
 const MetricsProviderMock = require('../../mocks/metrics/metricsProvider.mock');
@@ -7,8 +7,7 @@ const MetricsProviderMock = require('../../mocks/metrics/metricsProvider.mock');
 const metricsProviderMock = new MetricsProviderMock();
 const mockWeatherProviderManager = new MockWeatherProviderManager();
 const redisClientMock = new RedisClientMock();
-const weatherService = new WeatherServiceWithCacheAndMetrics(
-    mockWeatherProviderManager, redisClientMock, metricsProviderMock); // create metrics provider mock before each test
+const weatherService = new WeatherService(mockWeatherProviderManager, redisClientMock, metricsProviderMock);
 
 const expectedWeatherData = {
     temperature: 22,

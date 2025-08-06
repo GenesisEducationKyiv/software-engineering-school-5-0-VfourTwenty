@@ -9,7 +9,7 @@ const SubscriptionRepo = require('../../src/repositories/sequelizeSubscriptionRe
 const SubscriptionApiController = require('../../src/controllers/subscriptionApiController');
 const SubscriptionService = require('../../src/services/subscriptionService');
 const EmailService = require('../../src/services/emailService');
-const WeatherServiceWithCacheAndMetrics = require('../../src/services/weatherService');
+const WeatherService = require('../../src/services/weatherService');
 
 const SubscribeUserUseCase = require('../../src/use-cases/subscription/subscribeUserUseCase');
 const ConfirmSubscriptionUseCase = require('../../src/use-cases/subscription/confirmSubscriptionUseCase');
@@ -25,8 +25,7 @@ const metricsProviderMock = new MetricsProviderMock();
 const emailProviderManagerMock = new EmailProviderManagerMock();
 const weatherProviderManagerMock = new WeatherProviderManagerMock();
 
-const weatherService = new WeatherServiceWithCacheAndMetrics(
-    weatherProviderManagerMock, redisClient, metricsProviderMock);
+const weatherService = new WeatherService(weatherProviderManagerMock, redisClient, metricsProviderMock);
 const emailService = new EmailService(emailProviderManagerMock);
 
 const cityValidator = new CityValidator(weatherService);
