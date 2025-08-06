@@ -1,4 +1,4 @@
-const IEmailProvider = require('./emailProviderInterface');
+const IEmailProvider = require('../../domain/interfaces/providers/emailProviderInterface');
 const Result = require('../../domain/types/result');
 
 class EmailProviderManager extends IEmailProvider 

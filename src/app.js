@@ -8,6 +8,8 @@ const weatherRouter = require('./routes/weather');
 const subscriptionRouter = require('./routes/subscription');
 const publicRouter = require('./routes/public');
 
+const { register } = require('./common/metrics/prometheus/promClient');
+
 const { cronMain } = require('./setup');
 
 const app = express();
@@ -24,6 +26,12 @@ app.use('/api', subscriptionRouter);
 
 // public route
 app.use('/', publicRouter);
+
+app.get('/metrics', async (req, res) =>
+{
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+});
 
 // 404 handler
 app.use(function(req, res, next) 

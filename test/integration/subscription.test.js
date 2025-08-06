@@ -2,6 +2,9 @@ const request = require('supertest');
 const { expect } = require('chai');
 const express = require('express');
 
+const { redisClient, connectToRedisWithRetry } = require('../../src/common/cache/redis/redisClient');
+const MetricsProviderMock = require('../mocks/metrics/metricsProvider.mock');
+
 const SubscriptionRepo = require('../../src/repositories/sequelizeSubscriptionRepo');
 const SubscriptionApiController = require('../../src/controllers/subscriptionApiController');
 const SubscriptionService = require('../../src/services/subscriptionService');
@@ -18,10 +21,11 @@ const EmailProviderManagerMock = require('../mocks/providers/emailProviderManage
 const WeatherProviderManagerMock = require('../mocks/providers/weatherProviderManager.mock');
 
 const subscriptionRepo = new SubscriptionRepo();
+const metricsProviderMock = new MetricsProviderMock();
 const emailProviderManagerMock = new EmailProviderManagerMock();
 const weatherProviderManagerMock = new WeatherProviderManagerMock();
 
-const weatherService = new WeatherService(weatherProviderManagerMock);
+const weatherService = new WeatherService(weatherProviderManagerMock, redisClient, metricsProviderMock);
 const emailService = new EmailService(emailProviderManagerMock);
 
 const cityValidator = new CityValidator(weatherService);
@@ -35,6 +39,7 @@ const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService, e
 
 const subscriptionApiController = new SubscriptionApiController(subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
 
+connectToRedisWithRetry();
 const app = express();
 app.use(express.json());
 

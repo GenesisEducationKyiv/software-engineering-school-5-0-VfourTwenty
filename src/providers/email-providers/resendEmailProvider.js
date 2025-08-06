@@ -1,4 +1,4 @@
-const IEmailProvider = require('./emailProviderInterface');
+const IEmailProvider = require('../../domain/interfaces/providers/emailProviderInterface');
 const { Resend } = require('resend');
 
 const config = require('../../config/index');

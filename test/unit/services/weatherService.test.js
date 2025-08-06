@@ -1,24 +1,50 @@
 const { expect } = require('chai');
 const WeatherService = require('../../../src/services/weatherService');
 const MockWeatherProviderManager = require('../../mocks/providers/weatherProviderManager.mock');
+const RedisClientMock = require('../../mocks/cache/redisClient.mock');
+const MetricsProviderMock = require('../../mocks/metrics/metricsProvider.mock');
 
+const metricsProviderMock = new MetricsProviderMock();
 const mockWeatherProviderManager = new MockWeatherProviderManager();
-const weatherService = new WeatherService(mockWeatherProviderManager);
+const redisClientMock = new RedisClientMock();
+const weatherService = new WeatherService(mockWeatherProviderManager, redisClientMock, metricsProviderMock);
 
-describe('WeatherService Unit Tests', () => 
+const expectedWeatherData = {
+    temperature: 22,
+    humidity: 60,
+    description: 'Clear sky'
+};
+
+describe('WeatherService Unit Tests', () =>
 {
-    it('should return true for success and weather data for a valid city', async () => 
+    beforeEach(async () =>
     {
+        metricsProviderMock.reset();
+    });
+
+    it('should return true for success and weather data for a valid city saving the data to cache', async () =>
+    {
+        // Act
+        const data = await weatherService.fetchWeather('Kyiv');
+        const cachedData = await redisClientMock.get('weather:kyiv');
+
+        // Assert
+        expect(data.success).to.be.true;
+        expect(data.data).to.deep.equal(expectedWeatherData);
+        expect(cachedData).to.eq(JSON.stringify(expectedWeatherData));
+    });
+
+    it('should return true for success and weather data for a valid city from cache if it is present', async () =>
+    {
+        // Arrange
+        await redisClientMock.set('weather:kyiv', JSON.stringify(expectedWeatherData));
+
         // Act
         const data = await weatherService.fetchWeather('Kyiv');
 
         // Assert
         expect(data.success).to.be.true;
-        expect(data.data).to.deep.equal({
-            temperature: 22,
-            humidity: 60,
-            description: 'Clear sky'
-        });
+        expect(data.data).to.deep.equal(expectedWeatherData);
     });
 
     it('should return false for success and and error message for invalid city', async() => 

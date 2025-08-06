@@ -2,6 +2,9 @@ const Logger = require('./utils/logger');
 
 const SequelizeSubscriptionRepo = require('./repositories/sequelizeSubscriptionRepo');
 
+const RedisCacheProvider = require('./common/cache/redis/redisCacheProvider');
+const metricsProvider = require('./common/metrics/metricsSetup');
+
 const WeatherApiProvider = require('./providers/weather-providers/weatherApiProvider');
 const VisualCrossingWeatherProvider = require('./providers/weather-providers/visualCrossingWeatherProvider');
 const TomorrowWeatherProvider = require('./providers/weather-providers/tomorrowWeatherProvider');
@@ -50,6 +53,7 @@ const logger = new Logger(
 
 // 1
 const subscriptionRepo = new SequelizeSubscriptionRepo();
+const redisCacheProvider = new RedisCacheProvider();
 
 // 2
 const weatherProviders = [new VisualCrossingWeatherProvider(), new TomorrowWeatherProvider(), new WeatherApiProvider()];
@@ -59,7 +63,7 @@ const weatherProviderManager = new WeatherProviderManger(weatherProviders, logge
 const emailProviderManager = new EmailProviderManager(emailProviders, logger);
 
 // 3
-const weatherService = new WeatherService(weatherProviderManager);
+const weatherService = new WeatherService(weatherProviderManager, redisCacheProvider, metricsProvider);
 const emailService = new EmailService(emailProviderManager);
 const subscriptionService = new SubscriptionService(subscriptionRepo);
 

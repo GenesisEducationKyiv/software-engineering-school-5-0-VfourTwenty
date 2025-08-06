@@ -1,4 +1,4 @@
-const IWeatherProvider = require('./weatherProviderInterface');
+const IWeatherProvider = require('../../domain/interfaces/providers/weatherProviderInterface');
 const config = require('../../config/index');
 const WEATHER_API_KEY = config.weatherApiKey;
 

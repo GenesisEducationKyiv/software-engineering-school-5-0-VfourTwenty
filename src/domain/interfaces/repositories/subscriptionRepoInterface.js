@@ -1,6 +1,6 @@
 /**
- * @typedef {import('../domain/types/result').Result} Result
- * @typedef {import('../domain/types/subscription').Subscription} Subscription
+ * @typedef {import('../../types/result').Result} Result
+ * @typedef {import('../../types/subscription').Subscription} Subscription
  */
 
 class ISubscriptionRepo 
