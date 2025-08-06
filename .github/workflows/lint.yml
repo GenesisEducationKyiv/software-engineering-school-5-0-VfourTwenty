@@ -1,6 +1,12 @@
 name: Lint with ESLint
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - 'monolith/**'
+  pull_request:
+    paths:
+      - 'monolith/**'
 
 defaults:
   run:
