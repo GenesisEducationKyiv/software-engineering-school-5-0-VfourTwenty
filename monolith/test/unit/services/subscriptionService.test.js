@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const SubscriptionService = require('../../../src/services/subscriptionService');
+const SubscriptionService = require('../../../src/application/services/subscriptionService');
 
 const SubscriptionRepoMock = require('../../mocks/repositories/subscriptionRepo.mock');
 const subscriptionRepoMock = new SubscriptionRepoMock();

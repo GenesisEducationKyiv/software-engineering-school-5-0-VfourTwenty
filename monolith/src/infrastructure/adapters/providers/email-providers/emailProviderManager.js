@@ -5,31 +5,39 @@ const Result = require('../../../../domain/types/result');
 
 class EmailProviderManager extends IEmailProvider 
 {
-    constructor(providers)
+    constructor(providers, logger)
     {
         super();
         this.providers = providers;
-        // this.logPath = path.join(__dirname, '../../../logs/emailProvider.log');
+        this.log = logger.for('EmailProviderManager');
     }
 
     async sendEmail(to, subject, body) 
     {
-        for (const provider of this.providers) 
+        // sending an email is atomic action, it cannot be performed partially
+        // so there is no need for a separate result object in the current setup
+        for (const provider of this.providers)
         {
             try 
             {
                 const result = await provider.sendEmail(to, subject, body);
-                //    logProviderResponse(this.logPath, provider.name, { to, subject, ...result });
-                if (result.success) return new Result(true);
-                console.log(`Email provider ${provider.name} has failed: ${result.err}`);
-                // log result.err
+                this.log.info(`Sending email to ${to}`);
+                this.log.debug(`Email subject: {${subject}} and body: {${body}}`);
+
+                if (result.success)
+                {
+                    this.log.info(`Provider ${provider.name} has succeeded.`);
+                    return new Result(true);
+                }
+                this.log.warn(`External provider ${provider.name} has failed.`);
             }
             catch (err)
             {
                 console.log(err);
-                //   logProviderResponse(this.logPath, provider.name, { to, subject, error: err }, true);
+                this.log.error('External provider error', JSON.stringify(err));
             }
         }
+        this.log.error('All external providers have failed');
         return new Result(false, 'all email providers have failed');
     }
 }

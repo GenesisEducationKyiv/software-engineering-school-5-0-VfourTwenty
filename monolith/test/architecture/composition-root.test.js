@@ -4,15 +4,13 @@ const path = require('path');
 const SETUP_PATH = path.join(__dirname, '../../src/setup.js');
 
 // architectural dependencies:
-// application     => domain (Service Interfaces, Types)
-// services        => domain (Provider Interfaces, Types)
+// application     => domain (Service and Provider Interfaces, Types)
 // Infrastructure  => application (use-cases (for cron), Provider and Repo Interfaces)
 // Presentation    => application (use-cases)
 
 const layerMap = [
     { prefix: 'domain/', layer: 'domain' },
     { prefix: 'application/', layer: 'application' },
-    { prefix: 'services/', layer: 'services' },
     { prefix: 'infrastructure/', layer: 'infrastructure' },
     { prefix: 'presentation/', layer: 'presentation' },
     { prefix: 'common/', layer: 'common' },
@@ -133,15 +131,13 @@ function resolveLayer(varName, varToLayer, varAssignment, arrayVarToElements, de
     return 'unknown';
 }
 
-// infrastructure adapters implement domain interfaces and should be initialized first
-// services implement domain interfaces and should be initialized with infrastructure adapters injected
-// application layer depends on service domain interfaces and should be initialized with services injected
-// presentation and infrastructure entry-points depend on the application layer and should be initialized with use-cases injected
+// infrastructure: adapters implement interfaces and should be initialized first
+// application: use-cases depend on service interfaces and should be initialized with services injected (services depend on provider interfaces)
+// presentation and infrastructure entry-points: depend on the application layer and should be initialized with use-cases injected
 
 // domain entities are not initialized as they are prototypes and are not implemented
 const layerRules = {
-    services:         { allowed: ['common', 'infrastructure'] },
-    application:      { allowed: ['common', 'application', 'services'] },
+    application:      { allowed: ['common', 'application', 'infrastructure'] },
     infrastructure:   { allowed: ['common', 'application', 'infrastructure'] },
     presentation:     { allowed: ['common', 'application', 'presentation'] },
 };

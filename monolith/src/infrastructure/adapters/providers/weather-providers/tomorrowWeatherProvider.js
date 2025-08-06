@@ -46,6 +46,7 @@ class TomorrowWeatherProvider extends IWeatherProvider
             const res = await fetch(url);
             const data = await res.json();
 
+            // provider specific failure response
             if (data?.code === 400001 && data?.type === 'Invalid Query Parameters')
             {
                 return new Result(false, 'invalid location', null);
