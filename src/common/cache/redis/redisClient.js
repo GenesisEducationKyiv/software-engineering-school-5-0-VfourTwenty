@@ -2,7 +2,6 @@ const redis = require('redis');
 const config = require('../../../config/index');
 const retry = require('../../../utils/retry');
 
-// Create the client ONCE
 const redisClient = redis.createClient({
     socket: {
         host: config.redisHost,
