@@ -36,8 +36,8 @@ services:
     networks:
       - backend-weather
       - weather-redis-prom
-#    depends_on:
-#      - redis
+    depends_on:
+      - redis
     ports:
       - "5002:4002"
     command: npm start

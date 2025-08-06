@@ -1,5 +1,7 @@
 const Logger = require('./src/common/utils/logger.mock');
 
+const RedisCacheProvider = require('./src/common/cache/redis/redisCacheProvider');
+const MetricsProvider = require('./src/common/metrics/metricsProvider.mock');
 const WeatherApiProvider = require('./src/infrastructure/weather-providers/weatherApiProvider');
 const TomorrowWeatherProvider = require('./src/infrastructure/weather-providers/tomorrowWeatherProvider');
 const VisualCrossingWeatherProvider = require('./src/infrastructure/weather-providers/visualCrossingWeatherProvider');
@@ -10,9 +12,12 @@ const WeatherController = require('./src/presentation/controllers/weatherControl
 
 const logger = new Logger();
 
+const cacheProvider = new RedisCacheProvider();
+const metricsProvider = new MetricsProvider();
+
 const weatherProviders = [new WeatherApiProvider(), new TomorrowWeatherProvider(), new VisualCrossingWeatherProvider()];
 const weatherProviderManger = new WeatherProviderManager(weatherProviders, logger);
-const weatherService = new WeatherService(weatherProviderManger);
+const weatherService = new WeatherService(weatherProviderManger, cacheProvider, metricsProvider);
 const weatherController = new WeatherController(weatherService);
 
 module.exports =

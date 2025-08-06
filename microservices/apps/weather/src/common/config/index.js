@@ -14,6 +14,13 @@ const weatherApiKey = process.env.WEATHER_API_KEY;
 const tomorrowIoApiKey = process.env.TOMORROW_IO_API_KEY;
 const visualCrossingApiKey = process.env.VISUAL_CROSSING_API_KEY;
 
+// redis
+const redisHost = process.env.REDIS_HOST;
+const redisPort = process.env.REDIS_PORT;
+const redisTTL = process.env.REDIS_TTL;
+const redisConnectRetries = process.env.REDIS_CONNECT_RETRIES;
+const redisConnectDelay = process.env.REDIS_CONNECT_DELAY;
+
 module.exports = {
     logger: {
         level,
@@ -26,5 +33,12 @@ module.exports = {
         weatherApiKey,
         tomorrowIoApiKey,
         visualCrossingApiKey,
+    },
+    redis: {
+        redisHost,
+        redisPort,
+        redisTTL,
+        redisConnectRetries,
+        redisConnectDelay,
     },
 }

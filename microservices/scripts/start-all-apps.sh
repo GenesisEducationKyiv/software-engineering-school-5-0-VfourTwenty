@@ -1,1 +1,1 @@
-./create-db-if-needed.sh && docker compose up --build frontend backend subscription db weather email
+./create-db-if-needed.sh && docker compose up --build frontend backend subscription db weather email redis
