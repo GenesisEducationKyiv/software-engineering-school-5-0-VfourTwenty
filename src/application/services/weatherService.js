@@ -1,9 +1,8 @@
 const Result = require('../../domain/types/result');
-const IWeatherService = require('../../domain/interfaces/services/weatherServiceInterface');
 const METRICS_KEYS = require('../../common/metrics/metricsKeys');
 const { normalizeString } = require('../../common/utils/strings');
 
-class WeatherService extends IWeatherService
+class WeatherService
 {
     // weatherProvider implements IWeatherProvider
     constructor(
@@ -11,7 +10,7 @@ class WeatherService extends IWeatherService
         cacheProvider,
         metricsProvider)
     {
-        super(weatherProvider);
+        this.weatherProvider = weatherProvider;
         this.cacheProvider = cacheProvider;
         this.metricsProvider = metricsProvider;
     }
