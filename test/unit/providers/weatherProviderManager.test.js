@@ -1,13 +1,15 @@
 const { expect } = require('chai');
 const WeatherProviderManager = require('../../../src/providers/weather-providers/weatherProviderManager');
 const { WeatherProviderMock1, WeatherProviderMock2 } = require('../../mocks/providers/weatherProviders.mock');
+const LoggerMock = require('../../mocks/utils/logger.mock');
 
 const mockedWeatherProviders = [new WeatherProviderMock1(), new WeatherProviderMock2()];
-const weatherProviderManager = new WeatherProviderManager(mockedWeatherProviders);
+const loggerMock = new LoggerMock();
+const weatherProviderManager = new WeatherProviderManager(mockedWeatherProviders, loggerMock);
 
 describe('WeatherProviderManager Unit Tests', () => 
 {
-    it('should return true for success and weather data if the first available provider can fetch it', async () => 
+    it('should return true for success and weather data if the first available provider can fetch it', async () =>
     {
         // Act
         const result = await weatherProviderManager.fetchWeather('Kyiv');

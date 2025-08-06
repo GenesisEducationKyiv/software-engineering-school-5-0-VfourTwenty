@@ -21,7 +21,7 @@ class WeatherApiProvider extends IWeatherProvider
         if (data.error)
         {
             console.error('Weather API error:', data.error.message);
-            return new Result(false, data.error.message, null);
+            return new Result(false, 'no data', null);
         }
 
         return new Result(true, null, {
