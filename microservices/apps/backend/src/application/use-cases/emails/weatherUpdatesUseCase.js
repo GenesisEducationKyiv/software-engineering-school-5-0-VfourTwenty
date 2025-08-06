@@ -1,5 +1,7 @@
 const { buildWeatherUpdateEmail } = require('../../../common/utils/emailTemplates');
 
+// publish weather data and a list of subscribers
+
 class WeatherUpdatesUseCase
 {
     // depends on a service interface
@@ -16,6 +18,7 @@ class WeatherUpdatesUseCase
         const subject = `SkyFetch Weather Update for ${city}`;
         const html = buildWeatherUpdateEmail(city, weather, token);
         // call email service
+        // dont call it directly
         const result = await this.emailService.sendEmail(email, subject, html);
         if (!result.success)
         {
