@@ -1,5 +1,5 @@
-const ISubscriptionRepo = require('../../../src/domain/interfaces/repositories/subscriptionRepoInterface');
-const Result = require('../../../src/domain/types/result');
+const ISubscriptionRepo = require('../../src/domain/interfaces/repositories/subscriptionRepoInterface');
+const Result = require('../../src/domain/types/result');
 
 class SubscriptionRepoMock extends ISubscriptionRepo
 {
