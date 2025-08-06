@@ -1,9 +1,11 @@
 const { expect } = require('chai');
 const EmailProviderManager = require('../../../src/providers/email-providers/emailProviderManager');
 const { EmailProviderMock1, EmailProviderMock2 } = require('../../mocks/providers/emailProviders.mock');
+const LoggerMock = require('../../mocks/utils/logger.mock');
 
 const mockedEmailProviders = [new EmailProviderMock1(), new EmailProviderMock2()];
-const emailProviderManager = new EmailProviderManager(mockedEmailProviders);
+const loggerMock = new LoggerMock();
+const emailProviderManager = new EmailProviderManager(mockedEmailProviders, loggerMock);
 
 describe('EmailProviderManager Unit Tests', () => 
 {
