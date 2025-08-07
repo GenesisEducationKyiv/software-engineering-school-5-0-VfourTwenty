@@ -1,4 +1,4 @@
-const Result = require('../domain/types/result');
+const Result = require('../common/utils/result');
 const METRICS_KEYS = require('../common/metrics/metricsKeys');
 const { normalizeString } = require('../common/utils/strings');
 
