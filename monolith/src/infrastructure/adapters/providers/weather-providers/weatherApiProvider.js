@@ -2,7 +2,7 @@ const IWeatherProvider = require('../../../../domain/interfaces/providers/weathe
 const config = require('../../../../common/config').weatherProviders;
 const WEATHER_API_KEY = config.weatherApiKey;
 
-const Result = require('../../../../domain/types/result');
+const Result = require('../../../../common/utils/result');
 
 class WeatherApiProvider extends IWeatherProvider
 {

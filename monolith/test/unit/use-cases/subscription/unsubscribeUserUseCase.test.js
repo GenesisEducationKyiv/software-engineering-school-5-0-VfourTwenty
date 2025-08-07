@@ -3,7 +3,7 @@ const UnsubscribeUserUseCase = require('../../../../src/application/use-cases/su
 const EmailServiceMock = require('../../../mocks/services/emailService.mock');
 const SubscriptionServiceMock = require('../../../mocks/services/subscriptionService.mock');
 
-const Result = require('../../../../src/domain/types/result');
+const Result = require('../../../../src/common/utils/result');
 
 const subscriptionServiceMock = new SubscriptionServiceMock();
 const emailServiceMock = new EmailServiceMock();
