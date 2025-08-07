@@ -2,7 +2,7 @@ const IWeatherProvider = require('../../../../domain/interfaces/providers/weathe
 const config = require('../../../../common/config').weatherProviders;
 const VISUAL_CROSSING_API_KEY = config.visualCrossingApiKey;
 
-const Result = require('../../../../domain/types/result');
+const Result = require('../../../../common/utils/result');
 
 class VisualCrossingWeatherProvider extends IWeatherProvider
 {
