@@ -2,7 +2,7 @@ const config = require('../common/config');
 const Result = require('../domain/types/result');
 const { buildConfirmEmail, buildUnsubscribedEmail, buildWeatherUpdateEmail } = require('../common/utils/emailTemplates');
 
-class EmailService
+class EmailChannel
 {
     async _sendEmail(to, subject, body)
     {
@@ -82,4 +82,4 @@ class EmailService
     }
 }
 
-module.exports = EmailService;
+module.exports = EmailChannel;
