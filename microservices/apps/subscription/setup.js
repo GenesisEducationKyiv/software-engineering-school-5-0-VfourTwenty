@@ -4,7 +4,9 @@ const SubscriptionService = require('./src/application/subscriptionService');
 const SubscriptionValidator = require('./src/presentation/validators/subscriptionDtoValidator');
 const SubscriptionController = require('./src/presentation/controllers/subscriptionController');
 
-const queuePublisher = new QueuePublisher('amqp://rabbitmq:5672', 'test_queue');
+const config = require('./src/common/config/index').queue;
+const queuePublisher = new QueuePublisher(config.queueUrl, config.queueName);
+
 const subscriptionValidator = new SubscriptionValidator();
 const subscriptionRepo = new SubscriptionRepo();
 const subscriptionService = new SubscriptionService(subscriptionRepo, queuePublisher);

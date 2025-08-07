@@ -19,7 +19,8 @@ const EmailJobHandler = require('./src/infrastructure/cron/handlers/emailJobHand
 const EmailJobs = require('./src/infrastructure/cron/emailJobs');
 const CronMain = require('./src/infrastructure/cron/main');
 
-const queuePublisher = new QueuePublisher('amqp://rabbitmq:5672', 'test_queue');
+const config = require('./src/common/config/index').queue;
+const queuePublisher = new QueuePublisher(config.queueUrl, config.queueName);
 
 // call dedicated services' APIs
 const subscriptionService = new SubscriptionService();

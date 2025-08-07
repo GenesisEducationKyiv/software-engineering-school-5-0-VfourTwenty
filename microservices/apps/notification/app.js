@@ -8,4 +8,5 @@ app.listen(PORT, () => {
 });
 
 const { eventHandler, queueConsumer } = require('./setup');
-queueConsumer.start('test_queue', (msg) => eventHandler.handleEvent(msg));
+const config = require('./src/common/config/index').queue;
+queueConsumer.start(config.queueName, (msg) => eventHandler.handleEvent(msg));
