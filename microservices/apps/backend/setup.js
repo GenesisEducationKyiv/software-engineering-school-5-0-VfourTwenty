@@ -1,3 +1,5 @@
+const QueuePublisher = require('./src/common/queue/rabbitMQ/RabbitMQPublisher');
+
 const SubscriptionService = require('./src/application/services/subscriptionService');
 const WeatherService = require('./src/application/services/weatherService');
 
@@ -17,6 +19,8 @@ const EmailJobHandler = require('./src/infrastructure/cron/handlers/emailJobHand
 const EmailJobs = require('./src/infrastructure/cron/emailJobs');
 const CronMain = require('./src/infrastructure/cron/main');
 
+const queuePublisher = new QueuePublisher('amqp://rabbitmq:5672', 'test_queue');
+
 // call dedicated services' APIs
 const subscriptionService = new SubscriptionService();
 const weatherService = new WeatherService();
@@ -26,7 +30,7 @@ const subscribeUserUseCase = new SubscribeUserUseCase(cityValidator, subscriptio
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
-const weatherUpdatesUseCase = new WeatherUpdatesUseCase(weatherService, subscriptionService);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(weatherService, subscriptionService, queuePublisher);
 
 const subscriptionDtoValidator = new SubscriptionDtoValidator();
 const subscriptionController = new SubscriptionController(

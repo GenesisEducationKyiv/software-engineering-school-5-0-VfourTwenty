@@ -1,12 +1,12 @@
-const { publish } = require('../../../common/queue/publisher');
 const events = require('../../../common/queue/events');
 
 class WeatherUpdatesUseCase
 {
-    constructor(weatherService, subscriptionService)
+    constructor(weatherService, subscriptionService, queuePublisher)
     {
         this.weatherService = weatherService;
         this.subscriptionService = subscriptionService;
+        this.queuePublisher = queuePublisher;
     }
 
     async sendWeatherUpdates(frequency)
@@ -48,7 +48,7 @@ class WeatherUpdatesUseCase
                     subscribers
                 };
 
-                await publish(events.WEATHER_UPDATES_AVAILABLE, payload);
+                this.queuePublisher.publish(events.WEATHER_UPDATES_AVAILABLE, payload);
                 published += subscribers.length;
                 console.log(`✅ Weather update event published for ${city} (${subscribers.length} subscribers)`);
             }
