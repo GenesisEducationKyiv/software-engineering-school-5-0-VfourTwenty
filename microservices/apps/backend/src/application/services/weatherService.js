@@ -1,8 +1,7 @@
-const Result = require('../../domain/types/result');
-const IWeatherService = require('../../domain/interfaces/weatherServiceInterface');
+const Result = require('../../common/utils/result');
 const config = require('../../common/config');
 
-class WeatherService extends IWeatherService
+class WeatherService
 {
     async fetchWeather(city)
     {

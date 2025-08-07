@@ -1,5 +1,5 @@
 const IWeatherProvider = require('../../src/domain/interfaces/weatherProviderInterface');
-const Result = require('../../src/domain/types/result');
+const Result = require('../../src/common/utils/result');
 
 class WeatherProviderMock1 extends  IWeatherProvider
 {

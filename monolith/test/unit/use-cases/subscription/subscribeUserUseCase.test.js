@@ -4,7 +4,7 @@ const CityValidatorMock = require('../../../mocks/validators/cityValidator.mock'
 const SubscriptionServiceMock = require('../../../mocks/services/subscriptionService.mock');
 const EmailServiceMock = require('../../../mocks/services/emailService.mock');
 
-const Result = require('../../../../src/domain/types/result');
+const Result = require('../../../../src/common/utils/result');
 
 const cityValidatorMock = new CityValidatorMock();
 const subscriptionServiceMock = new SubscriptionServiceMock();

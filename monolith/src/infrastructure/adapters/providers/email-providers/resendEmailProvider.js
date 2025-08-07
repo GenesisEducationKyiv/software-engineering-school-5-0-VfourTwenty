@@ -7,7 +7,7 @@ const resend = new Resend(config.resendApiKey);
 
 const retry = require('../../../../common/utils/retry');
 
-const Result = require('../../../../domain/types/result');
+const Result = require('../../../../common/utils/result');
 
 class ResendEmailProvider extends IEmailProvider 
 {

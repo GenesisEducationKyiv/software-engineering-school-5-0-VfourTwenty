@@ -2,7 +2,7 @@ const IWeatherProvider = require('../../../../domain/interfaces/providers/weathe
 const config = require('../../../../common/config').weatherProviders;
 const TOMORROW_IO_API_KEY = config.tomorrowIoApiKey;
 
-const Result = require('../../../../domain/types/result');
+const Result = require('../../../../common/utils/result');
 
 const WeatherCodes = {
     1000: 'Clear',

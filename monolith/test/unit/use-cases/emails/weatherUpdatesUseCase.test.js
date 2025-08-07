@@ -11,7 +11,7 @@ const subscriptionServiceMock = new SubscriptionServiceMock();
 
 const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailServiceMock, weatherServiceMock, subscriptionServiceMock);
 
-const Result = require('../../../../src/domain/types/result');
+const Result = require('../../../../src/common/utils/result');
 
 const sub1 =
     {   email: 'valid@mail.com',
