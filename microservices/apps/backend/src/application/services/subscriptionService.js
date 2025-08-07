@@ -1,8 +1,7 @@
-const ISubscriptionService = require('../../domain/interfaces/subscriptionServiceInterface');
-const Result = require("../../domain/types/result");
-const config = require("../../common/config");
+const Result = require('../../common/utils/result');
+const config = require('../../common/config');
 
-class SubscriptionService extends ISubscriptionService
+class SubscriptionService
 {
     async subscribeUser(email, city, frequency)
     {

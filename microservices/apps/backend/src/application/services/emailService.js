@@ -1,8 +1,7 @@
-const IEmailService = require('../../domain/interfaces/emailServiceInterface');
 const config = require('../../common/config');
-const Result = require('../../domain/types/result');
+const Result = require('../../common/utils/result');
 
-class EmailService extends IEmailService
+class EmailService
 {
     async sendEmail(to, subject, body)
     {
