@@ -2,6 +2,8 @@
 const { test, expect } = require('@playwright/test');
 
 const baseURL = process.env.BASE_URL || 'http://frontend:4001';
+const confirmUrl = (token) => `${baseURL}/confirm/${token}`;
+const unsubscribeUrl = (token) => `${baseURL}/unsubscribe/${token}`;
 
 const sub = {
     email: 'test@example.com',
@@ -18,22 +20,17 @@ test.describe('SkyFetch E2E Tests', () => {
     test('should display all input fields and submit button on homepage', async ({ page }) => {
         await page.goto(baseURL);
 
-        // Check URL
         await expect(page).toHaveURL(baseURL + '/');
 
-        // Check email input
         await expect(page.locator('input[name="email"]')).toBeVisible();
         await expect(page.locator('input[name="email"]')).toHaveAttribute('placeholder', 'Your email');
 
-        // Check city input
         await expect(page.locator('input[name="city"]')).toBeVisible();
         await expect(page.locator('input[name="city"]')).toHaveAttribute('placeholder', 'City');
 
-        // Check frequency select
         await expect(page.locator('select[name="frequency"]')).toBeVisible();
         await expect(page.locator('select[name="frequency"] option[value=""]')).toHaveText('Frequency');
 
-        // Check submit button
         await expect(page.locator('button[type="submit"]')).toBeVisible();
         await expect(page.locator('button[type="submit"]')).toHaveText('Subscribe');
     });
@@ -51,6 +48,7 @@ test.describe('SkyFetch E2E Tests', () => {
         const message = await page.textContent('#message');
         expect(message).toBe('Subscription successful. Confirmation email sent.');
     });
+
     test('should reject subscription for invalid city and show a message', async ({ page }) => {
         await page.goto(baseURL);
         await expect(page).toHaveURL(baseURL + '/');
@@ -67,21 +65,22 @@ test.describe('SkyFetch E2E Tests', () => {
         expect(message).toBe('Invalid city.');
     });
 
-    test('should reject duplicate subscription and show a message', async ({ page }) => {
+    test('should reject duplicate subscription and show a message', async ({ page, request }) => {
         const email = `dupe-${Date.now()}@example.com`;
 
         await page.goto(baseURL);
         await expect(page).toHaveURL(baseURL + '/');
 
-        // First subscription (should succeed)
-        await page.fill('input[name="email"]', email);
-        await page.fill('input[name="city"]', 'Paris');
-        await page.selectOption('select[name="frequency"]', 'daily');
-        await page.click('button[type="submit"]');
-        await page.waitForTimeout(3000);
+        const subscribeRes = await request.post(`${baseURL}/api/subscribe`, {
+            data: {
+                email: sub.email,
+                city: sub.city,
+                frequency: sub.frequency
+            }
+        });
+        expect(subscribeRes.ok()).toBeTruthy();
 
-        // Second subscription with the same data (should be duplicate)
-        await page.fill('input[name="email"]', email);
+        await page.fill('input[name="email"]', sub.email);
         await page.fill('input[name="city"]', 'Paris');
         await page.selectOption('select[name="frequency"]', 'daily');
         await page.click('button[type="submit"]');
@@ -96,17 +95,14 @@ test.describe('SkyFetch E2E Tests', () => {
         await page.goto(baseURL);
         await expect(page).toHaveURL(baseURL + '/');
 
-        // Try submitting with all fields empty
         await page.click('button[type="submit"]');
         await expect(page).toHaveURL(baseURL + '/');
         await expect(page.locator('#message')).toHaveText('');
 
-        // Fill only email
         await page.fill('input[name="email"]', sub.email);
         await expect(page).toHaveURL(baseURL + '/');
         await expect(page.locator('#message')).toHaveText('');
 
-        // Fill frequency, clear email
         await page.selectOption('select[name="frequency"]', sub.frequency);
         await page.fill('input[name="email"]', '');
         await expect(page).toHaveURL(baseURL + '/');
@@ -125,61 +121,114 @@ test.describe('SkyFetch E2E Tests', () => {
         await expect(page).toHaveURL(baseURL + '/');
         await expect(page.locator('#message')).toHaveText('');
     });
+
+    //     // Confirmation page ------------------------------------ \
+    test('should confirm a new subscription with a valid token', async ({ page, request }) => {
+        const subscribeRes = await request.post(`${baseURL}/api/subscribe`, {
+            data: {
+                email: sub.email,
+                city: sub.city,
+                frequency: sub.frequency
+            }
+        });
+        expect(subscribeRes.ok()).toBeTruthy();
+
+        const findSubRes = await request.get('http://subscription:4003/api/find-sub', {
+            params: {
+                email: sub.email,
+                city: sub.city,
+                frequency: sub.frequency
+            }
+        });
+        const resJson = await findSubRes.json();
+        const token = resJson.data.token;
+
+        const response = await request.get(confirmUrl(token), { maxRedirects: 0 });
+        expect(response.status()).toBe(302); // redirect to "subscription confirmed" page
+
+        const location = response.headers()['location'];
+        const regex = new RegExp(`/confirmed\\.html\\?city=${encodeURIComponent(sub.city)}&frequency=${encodeURIComponent(sub.frequency)}&token=${token}$`);
+        expect(location).toMatch(regex);
+        // swap frontend domain for docker service name
+        const locationInDocker = location.replace(/^.*(?=\/html\/confirmed\.html)/, baseURL);
+
+        await page.goto(locationInDocker, { waitUntil: 'domcontentloaded', timeout: 10000 });
+        const headerText = await page.textContent('h1');
+        expect(headerText).toContain('Your subscription is confirmed!');
+    });
+
+    // Unsubscribed page ------------------------------------ \
+    test('should unsubscribe a user with a valid token', async ({ page, request }) => {
+        const subscribeRes = await request.post(`${baseURL}/api/subscribe`, {
+            data: {
+                email: sub.email,
+                city: sub.city,
+                frequency: sub.frequency
+            }
+        });
+        expect(subscribeRes.ok()).toBeTruthy();
+
+        const findSubRes = await request.get('http://subscription:4003/api/find-sub', {
+            params: {
+                email: sub.email,
+                city: sub.city,
+                frequency: sub.frequency
+            }
+        });
+        const resJson = await findSubRes.json();
+        const token = resJson.data.token;
+
+        const unsubscribeUrl = `${baseURL}/unsubscribe/${token}`;
+        const unsubscribeRes = await request.get(unsubscribeUrl, { maxRedirects: 0 });
+        expect(unsubscribeRes.status()).toBe(302);
+
+        const location = unsubscribeRes.headers()['location'];
+        const regex = /\/html\/unsubscribed\.html$/;
+        expect(location).toMatch(regex);
+
+        const locationInDocker = location.replace(/^.*(?=\/html\/unsubscribed\.html)/, baseURL);
+
+        await page.goto(locationInDocker, { waitUntil: 'domcontentloaded', timeout: 10000 });
+        const unsubscribeHeaderText = await page.textContent('h1');
+        expect(unsubscribeHeaderText).toContain("You've successfully unsubscribed!");
+    });
+
+    // Error page ------------------------------------ \
+    test('should not allow duplicate confirmation and navigate to error page', async ({ page, request }) => {
+        // 1. Subscribe and confirm
+        const subscribeRes = await request.post(`${baseURL}/api/subscribe`, {
+            data: { email: sub.email, city: sub.city, frequency: sub.frequency }
+        });
+        expect(subscribeRes.ok()).toBeTruthy();
+
+        const findSubRes = await request.get('http://subscription:4003/api/find-sub', {
+            params: { email: sub.email, city: sub.city, frequency: sub.frequency }
+        });
+        const resJson = await findSubRes.json();
+        const token = resJson.data.token;
+
+        // 2. Confirm once
+        await request.get(confirmUrl(token));
+
+        // 3. Try to confirm again, expect redirect to error page
+        const response = await request.get(confirmUrl(token), { maxRedirects: 0 });
+        expect(response.status()).toBe(302);
+
+        const location = response.headers()['location'];
+        console.log('location ', location);
+        // Regex for /html/error.html?error=Subscription+already+confirmed
+        const regex = /\/html\/error\.html\?error=Subscription\+already\+confirmed$/;
+        expect(location).toMatch(regex);
+
+        // Swap everything before /html/error.html with baseURL
+        const locationInDocker = location.replace(/^.*(?=\/html\/error\.html)/, baseURL);
+
+        // 4. Go to the error page and assert content
+        await page.goto(locationInDocker, { waitUntil: 'domcontentloaded', timeout: 10000 });
+        await expect(page.locator('#error-message')).toHaveText('Subscription already confirmed');
+    });
 });
 
-//
-//     // Confirmation page ------------------------------------ \
-//     it('should confirm a new subscription with a valid token', async () =>
-//     {
-//         await subscriptionRepo.clear();
-//         const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
-//         const token = result.data.token;
-//         const url = confirmUrl(token);
-//         console.log('Navigating to confirm URL:', url);
-//         let redirectDetected = false;
-//         page.on('response', response =>
-//         {
-//             if (response.url().includes('/confirm/') && response.status() === 302)
-//             {
-//                 console.log('Redirect detected with status 302 for confirm URL');
-//                 redirectDetected = true;
-//             }
-//         });
-//         await page.goto(url, { timeout: 10000 });
-//         await delay(2000);
-//         await expect(redirectDetected).to.equal(true, 'Expected a 302 redirect during confirmation');
-//         await expect(page.url()).to.equal(baseURL + `/confirmed.html?city=${sub.city}&frequency=${sub.frequency}&token=${token}`);
-//         const headerText = await page.textContent('h1');
-//         await expect(headerText).to.include('Your subscription is confirmed!', 'Expected confirmation page header');
-//     });
-//
-//     // Unsubscribed page ------------------------------------ \
-//     it('should unsubscribe a user with a valid token', async () =>
-//     {
-//         await subscriptionRepo.clear();
-//         const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
-//         const token = result.data.token;
-//         await subscriptionService.confirmSubscription(token);
-//         const url = `${baseURL}/unsubscribe/${token}`;
-//         console.log('Navigating to unsubscribe URL:', url);
-//         let redirectDetected = false;
-//         page.on('response', response =>
-//         {
-//             if (response.url().includes('/unsubscribe/') && response.status() === 302)
-//             {
-//                 console.log('Redirect detected with status 302 for unsubscribe URL');
-//                 redirectDetected = true;
-//             }
-//         });
-//         await page.goto(url, { timeout: 10000 });
-//         await delay(2000);
-//         await expect(redirectDetected).to.equal(true, 'Expected a 302 redirect during unsubscription');
-//         await expect(page.url()).to.equal(baseURL + '/unsubscribed.html');
-//         const unsubscribeHeaderText = await page.textContent('h1');
-//         await expect(unsubscribeHeaderText).to.include('You\'ve successfully unsubscribed!', 'Expected unsubscription page header');
-//     });
-//
-//     // Error page ------------------------------------ \
 //     it('should not not allow duplicate confirmation and navigate to error page', async () =>
 //     {
 //         await subscriptionRepo.clear();
