@@ -3,6 +3,11 @@ const { test, expect } = require('@playwright/test');
 
 const baseURL = process.env.BASE_URL || 'http://frontend:4001';
 
+test.beforeEach(async ({ request }) => {
+    const response = await request.post('http://subscription:4003/api/test/clear');
+    expect(response.ok()).toBeTruthy();
+});
+
 test.describe('SkyFetch E2E Tests', () => {
     test('should display all input fields and submit button on homepage', async ({ page }) => {
         await page.goto(baseURL);
@@ -31,17 +36,53 @@ test.describe('SkyFetch E2E Tests', () => {
         await page.goto(baseURL);
 
         await page.fill('input[name="email"]', 'test@example.com');
-        await page.fill('input[name="city"]', 'Paris');
+        await page.fill('input[name="city"]', 'Milan');
         await page.selectOption('select[name="frequency"]', 'daily');
         await page.click('button[type="submit"]');
 
         await page.waitForTimeout(3000);
 
         const message = await page.textContent('#message');
-        console.log('Message after submit:', message);
-
-// Optionally, assert the message is what you expect
         expect(message).toBe('Subscription successful. Confirmation email sent.');
+    });
+    test('should reject subscription for invalid city and show a message', async ({ page }) => {
+        await page.goto(baseURL);
+        await expect(page).toHaveURL(baseURL + '/');
+
+        await page.fill('input[name="email"]', `invalid-city-${Date.now()}@example.com`);
+        await page.fill('input[name="city"]', 'noTaValIDciTY');
+        await page.selectOption('select[name="frequency"]', 'daily');
+        await page.click('button[type="submit"]');
+
+        // Allow time for backend to respond
+        await page.waitForTimeout(6000);
+
+        const message = await page.textContent('#message');
+        expect(message).toBe('Invalid city.');
+    });
+
+    test('should reject duplicate subscription and show a message', async ({ page }) => {
+        const email = `dupe-${Date.now()}@example.com`;
+
+        await page.goto(baseURL);
+        await expect(page).toHaveURL(baseURL + '/');
+
+        // First subscription (should succeed)
+        await page.fill('input[name="email"]', email);
+        await page.fill('input[name="city"]', 'Paris');
+        await page.selectOption('select[name="frequency"]', 'daily');
+        await page.click('button[type="submit"]');
+        await page.waitForTimeout(3000);
+
+        // Second subscription with the same data (should be duplicate)
+        await page.fill('input[name="email"]', email);
+        await page.fill('input[name="city"]', 'Paris');
+        await page.selectOption('select[name="frequency"]', 'daily');
+        await page.click('button[type="submit"]');
+        await page.waitForTimeout(5000);
+
+        const message = await page.textContent('#message');
+        expect(message).toBe('Subscription already exists for this city and frequency.');
     });
 });
 //     it('should reject subscription for invalid city and show a message', async () =>
