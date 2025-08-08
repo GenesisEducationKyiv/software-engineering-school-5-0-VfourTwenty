@@ -1,5 +1,11 @@
 services:
-  # overwrites the dev db
+  # combine/overwrite dev config
+  subscription:
+    container_name: test-subscription
+    build: apps/subscription
+    environment:
+      - NODE_ENV=test
+
   db:
     container_name: test-subscription-db
     image: postgres:15

@@ -6,6 +6,7 @@ docker compose -f ../docker-compose.yml -f ../docker-compose.e2e.yml up --build 
 docker compose -f ../docker-compose.yml -f ../docker-compose.e2e.yml up --build -d frontend backend weather email test-e2e
 
 echo "==== Tailing logs for test-e2e ===="
-docker compose -f ../docker-compose.yml -f ../docker-compose.e2e.yml logs -f test-e2e -f subscription
+docker compose -f ../docker-compose.yml -f ../docker-compose.e2e.yml logs -f test-e2e
 
 docker compose down --remove-orphans
+docker compose -f ../docker-compose.e2e.yml down --volumes
