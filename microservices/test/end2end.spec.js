@@ -3,20 +3,9 @@ const { test, expect } = require('@playwright/test');
 
 const baseURL = process.env.BASE_URL || 'http://frontend:4001';
 
-async function waitForService(url, timeout = 20000) {
-    const start = Date.now();
-    while (Date.now() - start < timeout) {
-        try {
-            const res = await fetch(url, { method: 'POST' });
-            if (res.ok) return;
-        } catch (e) {}
-        await new Promise(r => setTimeout(r, 1000));
-    }
-    throw new Error(`Service at ${url} not available after ${timeout}ms`);
-}
-
-test.beforeEach(async () => {
-    await waitForService('http://subscription:4003/api/test/clear');
+test.beforeEach(async ({ request }) => {
+    const response = await request.post('http://subscription:4003/api/test/clear');
+    expect(response.ok()).toBeTruthy();
 });
 
 test.describe('SkyFetch E2E Tests', () => {

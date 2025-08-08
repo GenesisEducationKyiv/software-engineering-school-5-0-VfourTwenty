@@ -18,15 +18,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-##
-      - name: Debug chmod
-        run: |
-          echo "PATH is: $PATH"
-          which chmod
-          ls -l /bin/chmod
-          ls -l /usr/bin/chmod
-          uname -a
-        working-directory: microservices/scripts
 
       - name: Run E2E tests
         run: chmod +x create-db-if-needed.sh && chmod +x run-e2e-tests.sh && ./run-e2e-tests.sh
