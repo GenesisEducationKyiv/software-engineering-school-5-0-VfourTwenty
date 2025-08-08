@@ -1,8 +1,8 @@
 const { expect } = require('chai');
-const ConfirmSubscriptionUseCase = require('../../../../src/use-cases/subscription/confirmSubscriptionUseCase');
+const ConfirmSubscriptionUseCase = require('../../../../src/application/use-cases/subscription/confirmSubscriptionUseCase');
 const SubscriptionServiceMock = require('../../../mocks/services/subscriptionService.mock');
 
-const Result = require('../../../../src/domain/types/result');
+const Result = require('../../../../src/common/utils/result');
 
 const subscriptionServiceMock = new SubscriptionServiceMock();
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionServiceMock);

@@ -2,9 +2,9 @@ const { expect } = require('chai');
 const request = require('supertest');
 const express = require('express');
 
-const WeatherApiController = require('../../src/controllers/weatherApiController');
-const WeatherService = require('../../src/services/weatherService');
-const GetWeatherUseCase = require('../../src/use-cases/weather/getWeatherUseCase');
+const WeatherApiController = require('../../src/presentation/controllers/weatherApiController');
+const WeatherService = require('../../src/application/services/weatherService');
+const GetWeatherUseCase = require('../../src/application/use-cases/weather/getWeatherUseCase');
 const MockWeatherProviderManager = require('../mocks/providers/weatherProviderManager.mock');
 const { redisClient, connectToRedisWithRetry } = require('../../src/common/cache/redis/redisClient');
 const MetricsProviderMock = require('../mocks/metrics/metricsProvider.mock');

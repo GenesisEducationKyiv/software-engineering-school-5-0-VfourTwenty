@@ -1,8 +1,12 @@
+const Result = require('../../../src/common/utils/result');
+
 class CityValidatorMock
 {
     async validate(city)
     {
-        return ['Kyiv', 'Lviv', 'Odesa', 'Dnipro'].includes(city);
+        const success = ['Kyiv', 'Lviv', 'Odesa', 'Dnipro'].includes(city);
+        const errorMessage = success ? null : 'INVALID CITY';
+        return new Result(success, errorMessage);
     }
 }
 

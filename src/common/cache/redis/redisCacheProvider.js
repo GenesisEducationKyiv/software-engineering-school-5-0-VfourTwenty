@@ -1,6 +1,6 @@
 const ICacheProvider = require('../cacheProviderInterface');
 const { redisClient } = require('./redisClient');
-const config = require('../../../config/index');
+const config = require('../../config/index').redis;
 
 class RedisCacheProvider extends ICacheProvider
 {

@@ -1,15 +1,15 @@
 const { expect } = require('chai');
-const SubscribeUserUseCase = require('../../../../src/use-cases/subscription/subscribeUserUseCase');
-const SubscriptionValidatorMock = require('../../../mocks/validators/subscriptionValidator.mock');
+const SubscribeUserUseCase = require('../../../../src/application/use-cases/subscription/subscribeUserUseCase');
+const CityValidatorMock = require('../../../mocks/validators/cityValidator.mock');
 const SubscriptionServiceMock = require('../../../mocks/services/subscriptionService.mock');
 const EmailServiceMock = require('../../../mocks/services/emailService.mock');
 
-const Result = require('../../../../src/domain/types/result');
+const Result = require('../../../../src/common/utils/result');
 
-const subscriptionValidatorMock = new SubscriptionValidatorMock();
+const cityValidatorMock = new CityValidatorMock();
 const subscriptionServiceMock = new SubscriptionServiceMock();
 const emailServiceMock = new EmailServiceMock();
-const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionValidatorMock, subscriptionServiceMock, emailServiceMock);
+const subscribeUserUseCase = new SubscribeUserUseCase(cityValidatorMock, subscriptionServiceMock, emailServiceMock);
 
 const validSub = {
     email: 'valid@mail.com',
@@ -22,7 +22,6 @@ describe('subscribeSubscriptionUseCase Unit Tests', () =>
     it('should return a successful response from subscription service', async () => 
     {
         // Arrange
-        subscriptionValidatorMock.stub(new Result(true));
         subscriptionServiceMock.stub(new Result(true, null, 'some-valid-token'));
 
         // Act
@@ -35,7 +34,6 @@ describe('subscribeSubscriptionUseCase Unit Tests', () =>
     it('should return a failing response from subscription service if sub already exists', async () => 
     {
         // Arrange
-        subscriptionValidatorMock.stub(new Result(true));
         subscriptionServiceMock.stub(new Result(false, 'DUPLICATE'));
 
         // Act
@@ -49,7 +47,6 @@ describe('subscribeSubscriptionUseCase Unit Tests', () =>
     it('should return a failing response from subscription service if confirmation email fails', async () => 
     {
         // Arrange
-        subscriptionValidatorMock.stub(new Result(true));
         subscriptionServiceMock.stub(new Result(false, 'SUBSCRIBED BUT CONFIRM EMAIL FAILED'));
 
         // Act

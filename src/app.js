@@ -4,9 +4,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const createError = require('http-errors');
 
-const weatherRouter = require('./routes/weather');
-const subscriptionRouter = require('./routes/subscription');
-const publicRouter = require('./routes/public');
+const weatherRouter = require('./presentation/routes/weather');
+const subscriptionRouter = require('./presentation/routes/subscription');
+const publicRouter = require('./presentation/routes/public');
 
 const { register } = require('./common/metrics/prometheus/promClient');
 
@@ -18,7 +18,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'presentation/public')));
 
 // Mount routes
 app.use('/api', weatherRouter);

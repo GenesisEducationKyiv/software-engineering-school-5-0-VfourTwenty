@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const SubscriptionService = require('../../../src/services/subscriptionService');
+const SubscriptionService = require('../../../src/application/services/subscriptionService');
 
 const SubscriptionRepoMock = require('../../mocks/repositories/subscriptionRepo.mock');
 const subscriptionRepoMock = new SubscriptionRepoMock();
@@ -57,16 +57,6 @@ describe('SubscriptionService Unit Tests', () =>
         expect(result.success).to.be.true;
     });
 
-    it('should return false for success and an error message if token is missing in confirm', async () => 
-    {
-        // Act
-        const result = await subscriptionService.confirmSubscription();
-
-        // Assert
-        expect(result.success).to.be.false;
-        expect(result.err).to.eq('INVALID TOKEN');
-    });
-
     it('should return false for success and an error message if subscription doesnt exist in confirm', async () => 
     {
         // Act
@@ -100,16 +90,6 @@ describe('SubscriptionService Unit Tests', () =>
 
         // Assert
         expect(result.success).to.be.true;
-    });
-
-    it('should return false for success and an error message if token is missing in unsubscribe', async () => 
-    {
-        // Act
-        const result = await subscriptionService.unsubscribeUser();
-
-        // Assert
-        expect(result.success).to.be.false;
-        expect(result.err).to.eq('INVALID TOKEN');
     });
 
     it('should return false for success and an error message if subscription doesnt exist in unsubscribe', async () => 

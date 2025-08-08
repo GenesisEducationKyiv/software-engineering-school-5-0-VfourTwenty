@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const EmailProviderManager = require('../../../src/providers/email-providers/emailProviderManager');
+const EmailProviderManager = require('../../../src/infrastructure/adapters/providers/email-providers/emailProviderManager');
 const { EmailProviderMock1, EmailProviderMock2 } = require('../../mocks/providers/emailProviders.mock');
 const LoggerMock = require('../../mocks/utils/logger.mock');
 

@@ -1,6 +1,6 @@
 const redis = require('redis');
-const config = require('../../../config/index');
-const retry = require('../../../utils/retry');
+const config = require('../../config/index').redis;
+const retry = require('../../utils/retry');
 
 const redisClient = redis.createClient({
     socket: {

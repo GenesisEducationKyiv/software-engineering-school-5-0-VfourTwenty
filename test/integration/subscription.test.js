@@ -5,18 +5,18 @@ const express = require('express');
 const { redisClient, connectToRedisWithRetry } = require('../../src/common/cache/redis/redisClient');
 const MetricsProviderMock = require('../mocks/metrics/metricsProvider.mock');
 
-const SubscriptionRepo = require('../../src/repositories/sequelizeSubscriptionRepo');
-const SubscriptionApiController = require('../../src/controllers/subscriptionApiController');
-const SubscriptionService = require('../../src/services/subscriptionService');
-const EmailService = require('../../src/services/emailService');
-const WeatherService = require('../../src/services/weatherService');
+const SubscriptionRepo = require('../../src/infrastructure/adapters/db/repositories/sequelizeSubscriptionRepo');
+const SubscriptionApiController = require('../../src/presentation/controllers/subscriptionApiController');
+const SubscriptionService = require('../../src/application/services/subscriptionService');
+const EmailService = require('../../src/application/services/emailService');
+const WeatherService = require('../../src/application/services/weatherService');
 
-const SubscribeUserUseCase = require('../../src/use-cases/subscription/subscribeUserUseCase');
-const ConfirmSubscriptionUseCase = require('../../src/use-cases/subscription/confirmSubscriptionUseCase');
-const UnsubscribeUserUseCase = require('../../src/use-cases/subscription/unsubscribeUserUseCase');
+const SubscribeUserUseCase = require('../../src/application/use-cases/subscription/subscribeUserUseCase');
+const ConfirmSubscriptionUseCase = require('../../src/application/use-cases/subscription/confirmSubscriptionUseCase');
+const UnsubscribeUserUseCase = require('../../src/application/use-cases/subscription/unsubscribeUserUseCase');
 
-const SubscriptionValidator = require('../../src/domain/validators/subscriptionValidator');
-const CityValidator = require('../../src/domain/validators/cityValidator');
+const SubscriptionDtoValidator = require('../../src/presentation/validators/subscriptionDtoValidator');
+const CityValidator = require('../../src/application/validators/cityValidator');
 const EmailProviderManagerMock = require('../mocks/providers/emailProviderManager.mock');
 const WeatherProviderManagerMock = require('../mocks/providers/weatherProviderManager.mock');
 
@@ -29,15 +29,16 @@ const weatherService = new WeatherService(weatherProviderManagerMock, redisClien
 const emailService = new EmailService(emailProviderManagerMock);
 
 const cityValidator = new CityValidator(weatherService);
-const subscriptionValidator = new SubscriptionValidator(cityValidator);
 
 const subscriptionService = new SubscriptionService(subscriptionRepo);
 
-const subscribeUserUseCase = new SubscribeUserUseCase(subscriptionValidator, subscriptionService, emailService);
+const subscribeUserUseCase = new SubscribeUserUseCase(cityValidator, subscriptionService, emailService);
 const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
 const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService, emailService);
 
-const subscriptionApiController = new SubscriptionApiController(subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
+const subscriptionDtoValidator = new SubscriptionDtoValidator();
+const subscriptionApiController = new SubscriptionApiController(
+    subscriptionDtoValidator, subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
 
 connectToRedisWithRetry();
 const app = express();
