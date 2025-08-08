@@ -66,8 +66,6 @@ test.describe('SkyFetch E2E Tests', () => {
     });
 
     test('should reject duplicate subscription and show a message', async ({ page, request }) => {
-        const email = `dupe-${Date.now()}@example.com`;
-
         await page.goto(baseURL);
         await expect(page).toHaveURL(baseURL + '/');
 
@@ -125,20 +123,12 @@ test.describe('SkyFetch E2E Tests', () => {
     //     // Confirmation page ------------------------------------ \
     test('should confirm a new subscription with a valid token', async ({ page, request }) => {
         const subscribeRes = await request.post(`${baseURL}/api/subscribe`, {
-            data: {
-                email: sub.email,
-                city: sub.city,
-                frequency: sub.frequency
-            }
+            data: { email: sub.email, city: sub.city, frequency: sub.frequency }
         });
         expect(subscribeRes.ok()).toBeTruthy();
 
         const findSubRes = await request.get('http://subscription:4003/api/find-sub', {
-            params: {
-                email: sub.email,
-                city: sub.city,
-                frequency: sub.frequency
-            }
+            params: { email: sub.email, city: sub.city, frequency: sub.frequency }
         });
         const resJson = await findSubRes.json();
         const token = resJson.data.token;
@@ -195,7 +185,6 @@ test.describe('SkyFetch E2E Tests', () => {
 
     // Error page ------------------------------------ \
     test('should not allow duplicate confirmation and navigate to error page', async ({ page, request }) => {
-        // 1. Subscribe and confirm
         const subscribeRes = await request.post(`${baseURL}/api/subscribe`, {
             data: { email: sub.email, city: sub.city, frequency: sub.frequency }
         });
@@ -207,113 +196,60 @@ test.describe('SkyFetch E2E Tests', () => {
         const resJson = await findSubRes.json();
         const token = resJson.data.token;
 
-        // 2. Confirm once
-        await request.get(confirmUrl(token));
+        const confirmResponse = await request.get(confirmUrl(token), { maxRedirects: 0 });
+        expect(confirmResponse.status()).toBe(302); // redirect to "subscription confirmed" page
 
-        // 3. Try to confirm again, expect redirect to error page
-        const response = await request.get(confirmUrl(token), { maxRedirects: 0 });
-        expect(response.status()).toBe(302);
+        const duplicateResponse = await request.get(confirmUrl(token), { maxRedirects: 0 });
+        expect(duplicateResponse.status()).toBe(302);
 
-        const location = response.headers()['location'];
-        console.log('location ', location);
-        // Regex for /html/error.html?error=Subscription+already+confirmed
+        const location = duplicateResponse.headers()['location'];
         const regex = /\/html\/error\.html\?error=Subscription\+already\+confirmed$/;
         expect(location).toMatch(regex);
 
-        // Swap everything before /html/error.html with baseURL
         const locationInDocker = location.replace(/^.*(?=\/html\/error\.html)/, baseURL);
-
-        // 4. Go to the error page and assert content
         await page.goto(locationInDocker, { waitUntil: 'domcontentloaded', timeout: 10000 });
         await expect(page.locator('#error-message')).toHaveText('Subscription already confirmed');
     });
-});
 
-//     it('should not not allow duplicate confirmation and navigate to error page', async () =>
-//     {
-//         await subscriptionRepo.clear();
-//         const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
-//         const token = result.data.token;
-//         await subscriptionService.confirmSubscription(token);
-//         console.log('Navigating to confirm URL for duplicate check:', confirmUrl(token));
-//         try
-//         {
-//             await page.goto(confirmUrl(token), { timeout: 10000 });
-//         }
-//         catch (error)
-//         {
-//             console.error('Error navigating to confirm URL for duplicate check:', error.message);
-//             console.log('Retrying navigation...');
-//             await page.goto(confirmUrl(token), { timeout: 10000 });
-//         }
-//         await expect(page.url()).to.equal(baseURL + '/error.html?error=Subscription+already+confirmed');
-//         await expect(await page.textContent('#error-message')).to.equal('Subscription already confirmed');
-//     });
-//
-//     it('should require a valid token and navigate to error page if one is missing', async () =>
-//     {
-//         const invalidToken = 'fgdfgdsf';
-//
-//         console.log('Navigating to confirm URL with invalid token:', confirmUrl(invalidToken));
-//         try
-//         {
-//             await page.goto(confirmUrl(invalidToken), { timeout: 10000 });
-//         }
-//         catch (error)
-//         {
-//             console.error('Error navigating to confirm URL with invalid token:', error.message);
-//             console.log('Retrying navigation...');
-//             await page.goto(confirmUrl(invalidToken), { timeout: 10000 });
-//         }
-//         await expect(page.url()).to.equal(baseURL + '/error.html?error=Invalid+token');
-//         await expect(await page.textContent('#error-message')).to.equal('Invalid token');
-//
-//         console.log('Navigating to unsubscribe URL with invalid token:', unsubscribeUrl(invalidToken));
-//         try
-//         {
-//             await page.goto(unsubscribeUrl(invalidToken), { timeout: 10000 });
-//         }
-//         catch (error)
-//         {
-//             console.error('Error navigating to unsubscribe URL with invalid token:', error.message);
-//             console.log('Retrying navigation...');
-//             await page.goto(unsubscribeUrl(invalidToken), { timeout: 10000 });
-//         }
-//         await expect(page.url()).to.equal(baseURL + '/error.html?error=Invalid+token');
-//         await expect(await page.textContent('#error-message')).to.equal('Invalid token');
-//     });
-//
-//     it('should not allow to reuse a token that was deleted and should navigate to error page', async () =>
-//     {
-//         await subscriptionRepo.clear();
-//         const result = await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
-//         const token = result.data.token;
-//         await subscriptionService.unsubscribeUser(token);
-//         console.log('Navigating to confirm URL with deleted token:', confirmUrl(token));
-//         try
-//         {
-//             await page.goto(confirmUrl(token), { timeout: 10000 });
-//         }
-//         catch (error)
-//         {
-//             console.error('Error navigating to confirm URL with deleted token:', error.message);
-//             console.log('Retrying navigation...');
-//             await page.goto(confirmUrl(token), { timeout: 10000 });
-//         }
-//         await expect(page.url()).to.equal(baseURL + '/error.html?error=Token+not+found');
-//         await expect(await page.textContent('#error-message')).to.equal('Token not found');
-//         console.log('Navigating to unsubscribe URL with deleted token:', unsubscribeUrl(token));
-//         try
-//         {
-//             await page.goto(unsubscribeUrl(token), { timeout: 10000 });
-//         }
-//         catch (error)
-//         {
-//             console.error('Error navigating to unsubscribe URL with deleted token:', error.message);
-//             console.log('Retrying navigation...');
-//             await page.goto(unsubscribeUrl(token), { timeout: 10000 });
-//         }
-//         await expect(page.url()).to.equal(baseURL + '/error.html?error=Token+not+found');
-//         await expect(await page.textContent('#error-message')).to.equal('Token not found');
-//     });
-// });
+    test('should require a valid token and navigate to error page if one is missing', async ({ page, request }) => {
+        const invalidToken = 'fgdfgdsf'
+
+        const duplicateResponse = await request.get(confirmUrl(invalidToken), { maxRedirects: 0 });
+        expect(duplicateResponse.status()).toBe(302);
+
+        const location = duplicateResponse.headers()['location'];
+        const regex = /\/html\/error\.html\?error=Invalid\+token$/;
+        expect(location).toMatch(regex);
+
+        const locationInDocker = location.replace(/^.*(?=\/html\/error\.html)/, baseURL);
+        await page.goto(locationInDocker, { waitUntil: 'domcontentloaded', timeout: 10000 });
+        await expect(page.locator('#error-message')).toHaveText('Invalid token');
+    });
+
+    test('should not allow to reuse a token that was deleted and should navigate to error page', async ({ page, request }) => {
+        const subscribeRes = await request.post(`${baseURL}/api/subscribe`, {
+            data: { email: sub.email, city: sub.city, frequency: sub.frequency }
+        });
+        expect(subscribeRes.ok()).toBeTruthy();
+
+        const findSubRes = await request.get('http://subscription:4003/api/find-sub', {
+            params: { email: sub.email, city: sub.city, frequency: sub.frequency }
+        });
+        const resJson = await findSubRes.json();
+        const token = resJson.data.token;
+
+        const confirmResponse = await request.get(unsubscribeUrl(token), { maxRedirects: 0 });
+        expect(confirmResponse.status()).toBe(302); //
+
+        const duplicateResponse = await request.get(unsubscribeUrl(token), { maxRedirects: 0 });
+        expect(duplicateResponse.status()).toBe(302);
+
+        const location = duplicateResponse.headers()['location'];
+        const regex = /\/html\/error\.html\?error=Token\+not\+found$/;
+        expect(location).toMatch(regex);
+
+        const locationInDocker = location.replace(/^.*(?=\/html\/error\.html)/, baseURL);
+        await page.goto(locationInDocker, { waitUntil: 'domcontentloaded', timeout: 10000 });
+        await expect(page.locator('#error-message')).toHaveText('Token not found');
+    });
+});
