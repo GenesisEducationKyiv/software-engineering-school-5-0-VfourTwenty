@@ -2,7 +2,6 @@
 set -e
 
 ./create-db-if-needed.sh && \
-./reset-db.sh && \
 docker compose -f ../docker-compose.yml -f ../docker-compose.e2e.yml up --build -d db subscription && sleep 7 && \
 docker compose -f ../docker-compose.yml -f ../docker-compose.e2e.yml up --build -d frontend backend weather email test-e2e
 
