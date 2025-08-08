@@ -76,6 +76,11 @@ class SubscriptionService
     {
         return await this.subscriptionRepo.findAllSubs(params);
     }
+
+    async clear()
+    {
+        return await this.subscriptionRepo.clear();
+    }
 }
 
 module.exports = SubscriptionService;

@@ -86,6 +86,18 @@ class SubscriptionController
         // subscription specific errors to statuses
         return handleError(result.err, res);
     };
+
+    clear = async (req, res) =>
+    {
+        console.log('hitting clear DB...');
+        const result = await this.subscriptionService.clear();
+        console.log('res in subscription controller in subscription (clear): ', result);
+        if (result.success)
+        {
+            return res.status(200).json(result);
+        }
+        return res.status(500).json(result.err);
+    };
 }
 
 module.exports = SubscriptionController;
