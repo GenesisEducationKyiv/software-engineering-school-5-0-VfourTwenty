@@ -3,6 +3,12 @@ const { test, expect } = require('@playwright/test');
 
 const baseURL = process.env.BASE_URL || 'http://frontend:4001';
 
+const sub = {
+    email: 'test@example.com',
+    city: 'Paris',
+    frequency: 'daily'
+};
+
 test.beforeEach(async ({ request }) => {
     const response = await request.post('http://subscription:4003/api/test/clear');
     expect(response.ok()).toBeTruthy();
@@ -35,9 +41,9 @@ test.describe('SkyFetch E2E Tests', () => {
     test('should show a confirmation message after subscribing', async ({ page }) => {
         await page.goto(baseURL);
 
-        await page.fill('input[name="email"]', 'test@example.com');
-        await page.fill('input[name="city"]', 'Milan');
-        await page.selectOption('select[name="frequency"]', 'daily');
+        await page.fill('input[name="email"]', sub.email);
+        await page.fill('input[name="city"]', sub.city);
+        await page.selectOption('select[name="frequency"]', sub.frequency);
         await page.click('button[type="submit"]');
 
         await page.waitForTimeout(3000);
@@ -84,90 +90,43 @@ test.describe('SkyFetch E2E Tests', () => {
         const message = await page.textContent('#message');
         expect(message).toBe('Subscription already exists for this city and frequency.');
     });
+
+
+    test('should not allow submission if not all fields are filled', async ({ page }) => {
+        await page.goto(baseURL);
+        await expect(page).toHaveURL(baseURL + '/');
+
+        // Try submitting with all fields empty
+        await page.click('button[type="submit"]');
+        await expect(page).toHaveURL(baseURL + '/');
+        await expect(page.locator('#message')).toHaveText('');
+
+        // Fill only email
+        await page.fill('input[name="email"]', sub.email);
+        await expect(page).toHaveURL(baseURL + '/');
+        await expect(page.locator('#message')).toHaveText('');
+
+        // Fill frequency, clear email
+        await page.selectOption('select[name="frequency"]', sub.frequency);
+        await page.fill('input[name="email"]', '');
+        await expect(page).toHaveURL(baseURL + '/');
+        await expect(page.locator('#message')).toHaveText('');
+    });
+
+    test('should not allow submission if email format is invalid', async ({ page }) => {
+        await page.goto(baseURL);
+        await expect(page).toHaveURL(baseURL + '/');
+
+        await page.fill('input[name="email"]', 'jhkhhj');
+        await page.fill('input[name="city"]', sub.city);
+        await page.selectOption('select[name="frequency"]', sub.frequency);
+        await page.click('button[type="submit"]');
+
+        await expect(page).toHaveURL(baseURL + '/');
+        await expect(page.locator('#message')).toHaveText('');
+    });
 });
-//     it('should reject subscription for invalid city and show a message', async () =>
-//     {
-//         await subscriptionRepo.clear();
-//         await page.goto(baseURL);
-//         await expect(page.url()).to.equal(baseURL + '/');
-//
-//         // Fill out the form
-//         await page.fill('input[name="email"]', sub.email);
-//         await page.fill('input[name="city"]', 'gkhghfgh');
-//         await page.selectOption('select[name="frequency"]', sub.frequency);
-//         await page.click('button[type="submit"]');
-//
-//         // Verify no redirect (still on homepage)
-//         await expect(page.url()).to.equal(baseURL + '/');
-//
-//         // Verify success message in #message div
-//         await expect(await page.textContent('#message')).to.equal('Validating city...');
-//
-//         // Wait for success message (up to 3 seconds to account for API delay)
-//         await delay(6000);
-//
-//         await expect(await page.textContent('#message')).to.equal('❌ Invalid city: No weather data available for this location');
-//     });
-//
-//     it('should reject duplicate subscription and show a message', async () =>
-//     {
-//         await subscriptionRepo.clear();
-//         await page.goto(baseURL);
-//         await expect(page.url()).to.equal(baseURL + '/');
-//
-//         await subscriptionService.subscribeUser(sub.email, sub.city, sub.frequency);
-//         // Fill out the form
-//         await page.fill('input[name="email"]', sub.email);
-//         await page.fill('input[name="city"]', sub.city);
-//         await page.selectOption('select[name="frequency"]', sub.frequency);
-//         await page.click('button[type="submit"]');
-//
-//         // Verify no redirect (still on homepage)
-//         await expect(page.url()).to.equal(baseURL + '/');
-//
-//         // Verify success message in #message div
-//         await expect(await page.textContent('#message')).to.equal('Validating city...');
-//
-//         // Wait for success message (up to 3 seconds to account for API delay)
-//         await delay(5000);
-//
-//         await expect(await page.textContent('#message')).to.equal('Subscription already exists for this city and frequency.');
-//     });
-//
-//     it('should not allow submission if not all fields are filled', async () =>
-//     {
-//         await subscriptionRepo.clear();
-//         await page.goto(baseURL);
-//         await expect(page.url()).to.equal(baseURL + '/');
-//
-//         await page.click('button[type="submit"]');
-//         await expect(page.url()).to.equal(baseURL + '/');
-//         await expect(await page.textContent('#message')).to.equal('');
-//
-//         await page.fill('input[name="email"]', sub.email);
-//         await expect(page.url()).to.equal(baseURL + '/');
-//         await expect(await page.textContent('#message')).to.equal('');
-//
-//         await page.selectOption('select[name="frequency"]', sub.frequency);
-//         await page.fill('input[name="email"]', '');
-//         await expect(page.url()).to.equal(baseURL + '/');
-//         await expect(await page.textContent('#message')).to.equal('');
-//     });
-//
-//     it('should not allow submission if email format is invalid', async () =>
-//     {
-//         await subscriptionRepo.clear();
-//         await page.goto(baseURL);
-//         await expect(page.url()).to.equal(baseURL + '/');
-//
-//         await page.fill('input[name="email"]', 'jhkhhj');
-//         await page.fill('input[name="city"]', sub.city);
-//         await page.selectOption('select[name="frequency"]', sub.frequency);
-//         await page.click('button[type="submit"]');
-//
-//         await expect(page.url()).to.equal(baseURL + '/');
-//         await expect(await page.textContent('#message')).to.equal('');
-//     });
+
 //
 //     // Confirmation page ------------------------------------ \
 //     it('should confirm a new subscription with a valid token', async () =>
