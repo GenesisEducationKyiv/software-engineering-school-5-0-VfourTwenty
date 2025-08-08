@@ -16,7 +16,7 @@ jobs:
   test-e2e:
     runs-on: ubuntu-latest
     env:
-      DB_NAME: subscription_db_test
+      DATABASE_URL: DATABASE_URL=postgres://postgres:postgres@db:5432/subscription_db_test
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
