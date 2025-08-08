@@ -1,0 +1,3 @@
+module.exports = {
+    WEATHER_UPDATES_AVAILABLE: 'WEATHER_UPDATES_AVAILABLE',
+}

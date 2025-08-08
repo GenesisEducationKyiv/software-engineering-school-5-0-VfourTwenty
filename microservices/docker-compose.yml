@@ -1,20 +1,9 @@
-networks:
-  frontend-backend:
-  backend-email:
-  backend-subscription:
-  backend-weather:
-  subscription-db:
-  weather-redis-prom:
-
 services:
   backend:
     container_name: skyfetch-backend
     build: apps/backend
-    networks:
-      - frontend-backend
-      - backend-email
-      - backend-subscription
-      - backend-weather
+    depends_on:
+      - rabbitmq
     ports:
       - "5000:4000"
     command: npm start
@@ -23,8 +12,6 @@ services:
   frontend:
     container_name: skyfetch-frontend
     build: apps/frontend
-    networks:
-      - frontend-backend
     ports:
       - "5001:4001"
     command: npm start
@@ -33,9 +20,6 @@ services:
   weather:
     container_name: skyfetch-weather
     build: apps/weather
-    networks:
-      - backend-weather
-      - weather-redis-prom
     depends_on:
       - redis
     ports:
@@ -46,21 +30,27 @@ services:
   subscription:
     container_name: skyfetch-subscription
     build: apps/subscription
-    networks:
-      - backend-subscription
-      - subscription-db
     depends_on:
       - db
+      - rabbitmq
     ports:
       - "5003:4003"
+    command: npm start
+    restart: always
+
+  notification:
+    container_name: skyfetch-notification
+    build: apps/notification
+    depends_on:
+      - rabbitmq
+    ports:
+      - "5009:4009"
     command: npm start
     restart: always
 
   email:
     container_name: skyfetch-email
     build: apps/email
-    networks:
-      - backend-email
     ports:
       - "5004:4004"
     command: npm start
@@ -69,8 +59,6 @@ services:
   db:
     container_name: skyfetch-db
     image: postgres:15
-    networks:
-      - subscription-db
     ports:
       - "5005:5432"
     volumes:
@@ -82,8 +70,6 @@ services:
   redis:
     container_name: skyfetch-redis
     image: redis:7
-    networks:
-      - weather-redis-prom
     ports:
       - "5006:6379"
     restart: always
@@ -91,8 +77,6 @@ services:
   prometheus:
     container_name: skyfetch-prometheus
     image: prom/prometheus:latest
-    networks:
-      - weather-redis-prom
     depends_on:
       - weather
     ports:
@@ -101,8 +85,14 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     restart: always
 
+  rabbitmq:
+    container_name: skyfetch-rabbitmq
+    image: rabbitmq:3
+    ports:
+      - "5008:5672"
+    restart: always
+
 volumes:
   pgdata:
 
-    ####
 

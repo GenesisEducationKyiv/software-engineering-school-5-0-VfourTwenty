@@ -1,0 +1,26 @@
+name: E2E Tests Microservices
+
+on:
+  push:
+    paths:
+      - 'microservices/**'
+  pull_request:
+    paths:
+      - 'microservices/**'
+
+defaults:
+  run:
+    working-directory: microservices
+
+jobs:
+  test-e2e:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: DATABASE_URL=postgres://postgres:postgres@db:5432/subscription_db_test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run E2E tests
+        run: chmod +x create-db-if-needed.sh && chmod +x run-e2e-tests.sh && ./run-e2e-tests.sh
+        working-directory: microservices/scripts

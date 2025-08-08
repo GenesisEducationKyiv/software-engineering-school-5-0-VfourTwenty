@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-DB_NAME=${1:-subscription_db}
+DB_NAME=${1:-subscription_db_test}
 DB_USER=${2:-postgres}
 DB_SERVICE=${3:-db}
-COMPOSE_FILE=${4:-../docker-compose.yml}
+COMPOSE_FILE=${4:-../docker-compose.e2e.yml}
 
 # Use 'docker compose' if available, else fallback to 'docker-compose'
 if command -v docker compose &> /dev/null; then

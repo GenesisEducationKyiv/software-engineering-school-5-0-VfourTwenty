@@ -11,11 +11,12 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "amqplib": "^0.10.8",
     "chai": "^4.3.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
-    "node-cron": "^4.0.5",
     "express": "^5.1.0",
-    "mocha": "^11.7.1"
+    "mocha": "^11.7.1",
+    "node-cron": "^4.0.5"
   }
 }

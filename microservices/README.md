@@ -10,6 +10,10 @@ postgres     - 5432 - 5005
 redis        - 6379 - 5006
 prometheus   - 9090 - 5007
 
+rabbitMQ     - 5672 - 5008
+notification - 4009 - 5009
+
+
 
 Most teams and the Docker Compose docs use this order for clarity:
 container_name

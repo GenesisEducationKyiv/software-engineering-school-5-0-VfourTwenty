@@ -1,76 +1,64 @@
-const { buildWeatherUpdateEmail } = require('../../../common/utils/emailTemplates');
+const events = require('../../../common/queue/events');
 
 class WeatherUpdatesUseCase
 {
-    // depends on a service interface
-    constructor(emailService, weatherService, subscriptionService)
+    constructor(weatherService, subscriptionService, queuePublisher)
     {
-        this.emailService = emailService;
         this.weatherService = weatherService;
         this.subscriptionService = subscriptionService;
-    }
-
-    // internal helper
-    async _sendWeatherUpdate(email, city, weather, token)
-    {
-        const subject = `SkyFetch Weather Update for ${city}`;
-        const html = buildWeatherUpdateEmail(city, weather, token);
-        // call email service
-        const result = await this.emailService.sendEmail(email, subject, html);
-        if (!result.success)
-        {
-            return false;
-        }
-        console.log(`📧 Weather update sent to ${email}`);
-        return true;
+        this.queuePublisher = queuePublisher;
     }
 
     async sendWeatherUpdates(frequency)
     {
-        let sent = 0;
+        let published = 0;
         let failed = 0;
         let skipped = 0;
-        // fetch
-        const finAllResult = await this.subscriptionService.findAllSubs({ confirmed: true, frequency });
-        if (!finAllResult)
+
+        const findAllResult = await this.subscriptionService.findAllSubs({ confirmed: true, frequency });
+        if (!findAllResult)
         {
             console.error('Failed to find subscriptions');
-            return { sent, failed, skipped };
+            return { published, failed, skipped };
         }
 
-        const subs = finAllResult.data;
-        for (const sub of subs)
-        {
-            try
-            {
-                // fetch
-                const response = await this.weatherService.fetchWeather(sub.city);
+        const subs = findAllResult.data;
 
-                if (!response.success)
-                {
-                    console.warn(`⚠️ No weather data available for ${sub.city}, skipping ${sub.email}, error: ${response.err}`);
-                    skipped++;
+        const cityMap = {};
+        for (const sub of subs) {
+            if (!cityMap[sub.city]) {
+                cityMap[sub.city] = [];
+            }
+            cityMap[sub.city].push({ email: sub.email, token: sub.token });
+        }
+
+        for (const [city, subscribers] of Object.entries(cityMap)) {
+            try {
+                const response = await this.weatherService.fetchWeather(city);
+
+                if (!response.success) {
+                    console.warn(`⚠️ No weather data available for ${city}, skipping, error: ${response.err}`);
+                    skipped += subscribers.length;
                     continue;
                 }
 
-                const ok = await this._sendWeatherUpdate(sub.email, sub.city, response.data, sub.token);
-                if (ok)
-                {
-                    sent++;
-                    console.log(`✅ ${frequency} email sent to ${sub.email}`);
-                    continue;
-                }
+                const payload = {
+                    city,
+                    weather: response.data,
+                    subscribers
+                };
 
-                failed++;
-                console.error(`❌ Email send failed for ${sub.email}`);
+                this.queuePublisher.publish(events.WEATHER_UPDATES_AVAILABLE, payload);
+                published += subscribers.length;
+                console.log(`✅ Weather update event published for ${city} (${subscribers.length} subscribers)`);
             }
-            catch (err)
-            {
-                failed++;
-                console.error(`❌ Failed ${frequency} for ${sub.email}:`, err.message);
+            catch (err) {
+                failed += subscribers.length;
+                console.error(`❌ Failed to publish weather update for ${city}:`, err.message);
             }
         }
-        return { sent, failed, skipped };
+
+        return { published, failed, skipped };
     }
 }
 
