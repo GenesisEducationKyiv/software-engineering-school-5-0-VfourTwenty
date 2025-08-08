@@ -13,5 +13,5 @@ const subscriptionService = new SubscriptionService(subscriptionRepo, queuePubli
 const subscriptionController = new SubscriptionController(subscriptionService, subscriptionValidator);
 
 module.exports = {
-    subscriptionController
+    subscriptionController,
 }
