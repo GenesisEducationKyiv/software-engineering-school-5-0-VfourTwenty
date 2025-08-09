@@ -3,11 +3,18 @@ const metricsKeys = require('../../common/metrics/metricsKeys');
 
 class WeatherUpdatesUseCase
 {
-    constructor(weatherService, subscriptionService, queuePublisher, metricsProvider)
+    constructor(
+        weatherService,
+        subscriptionService,
+        queuePublisher,
+        logger,
+        metricsProvider
+    )
     {
         this.weatherService = weatherService;
         this.subscriptionService = subscriptionService;
         this.queuePublisher = queuePublisher;
+        this.log = logger.for('WeatherUpdatesUseCase');
         this.metricsProvider = metricsProvider;
     }
 
@@ -20,7 +27,7 @@ class WeatherUpdatesUseCase
         const findAllResult = await this.subscriptionService.findAllSubs({ confirmed: true, frequency });
         if (!findAllResult)
         {
-            console.error('Failed to find subscriptions');
+            this.log.error(`Failed to find subscriptions for ${frequency} frequency`);
             return { published, failed, skipped };
         }
 
@@ -44,7 +51,7 @@ class WeatherUpdatesUseCase
 
                 if (!response.success) 
                 {
-                    console.warn(`⚠️ No weather data available for ${city}, skipping, error: ${response.err}`);
+                    this.log.warn(`⚠️ No weather data available for ${city}, skipping, error: ${response.err}`);
                     skipped += subscribers.length;
                     continue;
                 }
@@ -60,15 +67,16 @@ class WeatherUpdatesUseCase
                     { event: events.WEATHER_UPDATES_AVAILABLE }
                 );
                 published += subscribers.length;
-                console.log(`✅ Weather update event published for ${city} (${subscribers.length} subscribers)`);
+                this.log.info(`✅ Weather update event published for ${city} (${subscribers.length} subscribers)`);
             }
             catch (err) 
             {
                 failed += subscribers.length;
-                console.error(`❌ Failed to publish weather update for ${city}:`, err.message);
+                this.log.error(`❌ Failed to publish weather update for ${city}:`, err.message);
             }
         }
 
+        this.log.info('Published, failed, skipped weather updates', { published, failed, skipped });
         return { published, failed, skipped };
     }
 }

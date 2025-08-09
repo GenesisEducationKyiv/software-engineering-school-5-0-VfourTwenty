@@ -3,11 +3,18 @@ const metricsKeys = require('../../common/metrics/metricsKeys');
 
 class SubscriptionUseCase
 {
-    constructor(cityValidator, subscriptionService, queuePublisher, metricsProvider)
+    constructor(
+        cityValidator,
+        subscriptionService,
+        queuePublisher,
+        logger,
+        metricsProvider
+    )
     {
         this.cityValidator = cityValidator;
         this.subscriptionService = subscriptionService;
         this.queuePublisher = queuePublisher;
+        this.log = logger.for('SubscriptionUseCase');
         this.metricsProvider = metricsProvider;
     }
 
@@ -15,10 +22,10 @@ class SubscriptionUseCase
     {
         const validationResult = await this.cityValidator.validate(city);
         if (!validationResult.success) return validationResult;
-        console.log('just passed city validation (in use-case)');
+        this.log.info(`City validation passed for ${city}`);
 
         const subscriptionResult = await this.subscriptionService.subscribeUser(email, city, frequency);
-        console.log('subscription service responded to subscribe: ', subscriptionResult);
+        this.log.info('Subscription service responded to subscribe', subscriptionResult);
 
         if (subscriptionResult.success)
         {
@@ -36,7 +43,9 @@ class SubscriptionUseCase
 
     async confirm(token)
     {
-        return this.subscriptionService.confirmSubscription(token);
+        const confirmResult = this.subscriptionService.confirmSubscription(token);
+        this.log.info('Subscription service responded to confirm', confirmResult);
+        return confirmResult;
     }
 
     async unsubscribe(token)
@@ -53,6 +62,7 @@ class SubscriptionUseCase
                 { event: events.USER_UNSUBSCRIBED }
             );
         }
+        this.log.info('Subscription service responded to unsubscribe', unsubscribeResult);
         return unsubscribeResult;
     }
 }

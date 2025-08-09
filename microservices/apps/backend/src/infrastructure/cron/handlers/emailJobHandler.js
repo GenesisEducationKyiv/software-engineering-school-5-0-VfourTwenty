@@ -1,35 +1,36 @@
 class EmailJobHandler
 {
-    constructor(weatherUpdatesUseCase)
+    constructor(weatherUpdatesUseCase, logger)
     {
         this.weatherUpdatesUseCase = weatherUpdatesUseCase;
+        this.log = logger.for('EmailCronJobHandler');
     }
 
     async runDaily()
     {
-        console.log('Running daily email job…');
+        this.log.info('Running daily email job...');
         try
         {
             const { published, failed, skipped } = await this.weatherUpdatesUseCase.sendWeatherUpdates('daily');
-            console.log(`Daily stats ➜ published: ${published}, skipped: ${skipped}, failed: ${failed}`);
+            this.log.info(`Daily stats ➜ published: ${published}, skipped: ${skipped}, failed: ${failed}`);
         }
         catch (err)
         {
-            console.error('❌ Daily email job failed:', err.message || err);
+            this.log.error('❌ Daily email job failed:', err.message || err);
         }
     }
 
     async runHourly()
     {
-        console.log('Running hourly email job…');
+        this.log.info('Running hourly email job...');
         try
         {
             const { published, failed, skipped } = await this.weatherUpdatesUseCase.sendWeatherUpdates('hourly');
-            console.log(`Hourly stats ➜ published: ${published}, skipped: ${skipped}, failed: ${failed}`);
+            this.log.info(`Hourly stats ➜ published: ${published}, skipped: ${skipped}, failed: ${failed}`);
         }
         catch (err)
         {
-            console.error('❌ Hourly email job failed:', err.message || err);
+            this.log.error('❌ Hourly email job failed:', err.message || err);
         }
     }
 }
