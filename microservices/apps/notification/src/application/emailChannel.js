@@ -5,8 +5,9 @@ const metricsKeys = require('../common/metrics/metricsKeys');
 
 class EmailChannel
 {
-    constructor(metricsProvider)
+    constructor(logger, metricsProvider)
     {
+        this.log = logger.for('NotificationEmailChannel');
         this.metricsProvider = metricsProvider;
     }
 
@@ -24,14 +25,18 @@ class EmailChannel
                 })
             });
             const emailResJson = await emailResult.json();
-            console.log('fetched from email service: ', emailResJson);
-            //console.log('fetched from email service', await emailResult.json());
-            if (emailResult.status !== 200) return new Result(false, 'EMAIL SERVICE FAILED');
+            this.log.debug('Called email service', emailResJson);
+            if (emailResult.status !== 200)
+            {
+                this.log.error('Email service failed', emailResJson.err);
+                return new Result(false, 'EMAIL SERVICE FAILED');
+            }
+            this.log.info('Email service succeeded');
             return new Result(true);
         }
         catch (err)
         {
-            console.log('error calling email service from backend: ', err);
+            this.log.error('Failed to call email service', err);
             return new Result(false, 'EMAIL SERVICE FAILED');
         }
     }
@@ -41,6 +46,7 @@ class EmailChannel
         const subject = 'Confirm your weather subscription';
         const body = buildConfirmEmail(token);
         const result = await this._sendEmail(to, subject, body);
+        this.log.debug('Confirmation email result', result);
         this.metricsProvider.incrementCounter(metricsKeys.CONFIRMATION_EMAILS_TOTAL, 1, { success: result.success });
         return result.success;
     }
@@ -50,6 +56,7 @@ class EmailChannel
         const subject = 'You\'ve been unsubscribed';
         const body = buildUnsubscribedEmail(city);
         const result = await this._sendEmail(to, subject, body);
+        this.log.debug('Unsubscribed email result', result);
         this.metricsProvider.incrementCounter(metricsKeys.UNSUBSCRIBED_EMAILS_TOTAL, 1, { success: result.success });
         return result.success;
     }
@@ -59,13 +66,9 @@ class EmailChannel
         const subject = `SkyFetch Weather Update for ${city}`;
         const html = buildWeatherUpdateEmail(city, weather, token);
         const result = await this._sendEmail(email, subject, html);
+        this.log.debug('Weather Update email result', result);
         this.metricsProvider.incrementCounter(metricsKeys.WEATHER_UPDATE_EMAILS_TOTAL, 1, { success: result.success });
-        if (!result.success)
-        {
-            return false;
-        }
-        console.log(`📧 Weather update sent to ${email}`);
-        return true;
+        return result.success;
     }
 
     async sendWeatherUpdates(payload) 
@@ -81,18 +84,18 @@ class EmailChannel
                 if (result) 
                 {
                     sent++;
-                    console.log(`📧 Weather update sent to ${sub.email}`);
+                    this.log.info(`📧 Weather update sent to ${sub.email}`);
                 }
                 else 
                 {
                     failed++;
-                    console.error(`❌ Failed to send weather update to ${sub.email}`);
+                    this.log.warn(`❌ Failed to send weather update to ${sub.email}`);
                 }
             }
             catch (err) 
             {
                 failed++;
-                console.error(`❌ Error sending weather update to ${sub.email}:`, err.message);
+                this.log.error(`❌ Error sending weather update to ${sub.email}:`, err.message);
             }
         }
 
