@@ -1,11 +1,13 @@
 const { genToken } = require('../common/utils/strings');
 const Result = require('../common/utils/result');
+const metricsKeys = require('../common/metrics/metricsKeys');
 
 class SubscriptionService
 {
-    constructor(subscriptionRepo)
+    constructor(subscriptionRepo, metricsProvider)
     {
         this.subscriptionRepo = subscriptionRepo;
+        this.metricsProvider = metricsProvider;
     }
 
     async subscribeUser(email, city, frequency) 
@@ -23,6 +25,7 @@ class SubscriptionService
             return new Result(false, 'FAILED TO CREATE SUBSCRIPTION');
         }
 
+        this.metricsProvider.incrementCounter(metricsKeys.SUBSCRIPTIONS_CREATED_TOTAL);
         return new Result(true, null, { token: token });
     }
 
@@ -46,6 +49,7 @@ class SubscriptionService
             return new Result(false, 'CONFIRMATION FAILED');
         }
 
+        this.metricsProvider.incrementCounter(metricsKeys.SUBSCRIPTIONS_CONFIRMED_TOTAL);
         return new Result(true, null, { city: sub.city, frequency: sub.frequency });
     }
 
@@ -64,6 +68,7 @@ class SubscriptionService
             return new Result(false, 'FAILED TO DELETE SUBSCRIPTION');
         }
 
+        this.metricsProvider.incrementCounter(metricsKeys.SUBSCRIPTIONS_CANCELED_TOTAL);
         return new Result(true, null, { email: sub.email, city: sub.city });
     }
 
