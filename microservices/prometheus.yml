@@ -7,3 +7,4 @@ scrape_configs:
       - targets:
           - 'backend:4000'
           - 'weather:4002'
+          - 'subscription:4003'

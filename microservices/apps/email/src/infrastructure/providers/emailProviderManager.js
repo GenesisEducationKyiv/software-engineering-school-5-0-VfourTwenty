@@ -1,12 +1,14 @@
 const IEmailProvider = require('../../domain/interfaces/emailProviderInterface');
 const Result = require('../../common/utils/result');
+const metricsKeys = require('../../common/metrics/metricsKeys');
 
 class EmailProviderManager extends IEmailProvider 
 {
-    constructor(providers)
+    constructor(providers, metricsProvider)
     {
         super();
         this.providers = providers;
+        this.metricsProvider = metricsProvider;
     }
 
     async sendEmail(to, subject, body) 
@@ -16,7 +18,18 @@ class EmailProviderManager extends IEmailProvider
             try 
             {
                 const result = await provider.sendEmail(to, subject, body);
-                if (result.success) return new Result(true);
+                if (result.success)
+                {
+                    this.metricsProvider.incrementCounter(metricsKeys.EXTERNAL_API_CALLS, 1, {
+                        provider: provider.name,
+                        success: true
+                    });
+                    return new Result(true);
+                }
+                this.metricsProvider.incrementCounter(metricsKeys.EXTERNAL_API_CALLS, 1, {
+                    provider: provider.name,
+                    success: false
+                });
                 console.log(`Email provider ${provider.name} has failed: ${result.err}`);
             }
             catch (err)
