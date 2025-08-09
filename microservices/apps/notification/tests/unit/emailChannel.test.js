@@ -2,13 +2,15 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const proxyquire = require('proxyquire');
 
-describe('EmailChannel', () => {
+describe('EmailChannel', () => 
+{
     let EmailChannel, fetchStub, buildConfirmEmail, buildUnsubscribedEmail, buildWeatherUpdateEmail;
     let configStub;
     const emailUrl = 'http://mocked-email-service';
     const frontendUrl = 'http://mocked-frontend';
 
-    beforeEach(() => {
+    beforeEach(() => 
+    {
         fetchStub = sinon.stub();
         buildConfirmEmail = sinon.stub().returns('<html>confirm</html>');
         buildUnsubscribedEmail = sinon.stub().returns('<html>unsub</html>');
@@ -26,12 +28,14 @@ describe('EmailChannel', () => {
         global.fetch = fetchStub;
     });
 
-    afterEach(() => {
+    afterEach(() => 
+    {
         sinon.restore();
         delete global.fetch;
     });
 
-    it('should send confirmation email successfully', async () => {
+    it('should send confirmation email successfully', async () => 
+    {
         const channel = new EmailChannel();
         fetchStub.resolves({ status: 200, json: async () => ({ ok: true }) });
         const result = await channel.sendConfirmationEmail('to@example.com', 'token123');
@@ -40,14 +44,16 @@ describe('EmailChannel', () => {
         expect(fetchStub.calledOnce).to.be.true;
     });
 
-    it('should handle failure in confirmation email', async () => {
+    it('should handle failure in confirmation email', async () => 
+    {
         const channel = new EmailChannel();
         fetchStub.resolves({ status: 500, json: async () => ({ ok: false }) });
         const result = await channel.sendConfirmationEmail('to@example.com', 'token123');
         expect(result).to.be.false;
     });
 
-    it('should send unsubscribed email successfully', async () => {
+    it('should send unsubscribed email successfully', async () => 
+    {
         const channel = new EmailChannel();
         fetchStub.resolves({ status: 200, json: async () => ({ ok: true }) });
         const result = await channel.sendUnsubscribedEmail('to@example.com', 'Kyiv');
@@ -56,14 +62,16 @@ describe('EmailChannel', () => {
         expect(fetchStub.calledOnce).to.be.true;
     });
 
-    it('should handle failure in unsubscribed email', async () => {
+    it('should handle failure in unsubscribed email', async () => 
+    {
         const channel = new EmailChannel();
         fetchStub.resolves({ status: 500, json: async () => ({ ok: false }) });
         const result = await channel.sendUnsubscribedEmail('to@example.com', 'Kyiv');
         expect(result).to.be.false;
     });
 
-    it('should send weather updates to all subscribers and count sent/failed', async () => {
+    it('should send weather updates to all subscribers and count sent/failed', async () => 
+    {
         const channel = new EmailChannel();
         // Simulate 2 subscribers: one success, one fail
         fetchStub.onFirstCall().resolves({ status: 200, json: async () => ({ ok: true }) });
@@ -83,7 +91,8 @@ describe('EmailChannel', () => {
         expect(fetchStub.calledTwice).to.be.true;
     });
 
-    it('should handle fetch throwing error', async () => {
+    it('should handle fetch throwing error', async () => 
+    {
         const channel = new EmailChannel();
         fetchStub.rejects(new Error('network error'));
         const result = await channel.sendConfirmationEmail('to@example.com', 'token123');

@@ -17,5 +17,4 @@ function handleError(err, res, map = errorMap)
     }
 }
 
-
 module.exports = { handleError };

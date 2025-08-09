@@ -42,4 +42,4 @@ module.exports = {
     weatherController,
     subscriptionController,
     cronMain
-}
+};

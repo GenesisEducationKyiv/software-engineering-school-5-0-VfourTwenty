@@ -9,6 +9,7 @@ const { connectToRedisWithRetry } = require('./src/common/cache/redis/redisClien
 connectToRedisWithRetry();
 
 const PORT = process.env.PORT || 4002;
-app.listen(PORT, () => {
+app.listen(PORT, () => 
+{
     console.log(`Weather service running on port ${PORT}`);
 });

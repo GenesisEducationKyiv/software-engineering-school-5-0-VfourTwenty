@@ -1,4 +1,4 @@
-const {handleError} = require("../../common/utils/clientErrors");
+const { handleError } = require('../../common/utils/clientErrors');
 
 class SubscriptionController
 {

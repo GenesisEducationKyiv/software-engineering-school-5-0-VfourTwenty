@@ -6,7 +6,8 @@ class EmailChannel
 {
     async _sendEmail(to, subject, body)
     {
-        try {
+        try 
+        {
             const emailResult = await fetch(`${config.emailUrl}/send-email`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -58,21 +59,29 @@ class EmailChannel
         return true;
     }
 
-    async sendWeatherUpdates(payload) {
+    async sendWeatherUpdates(payload) 
+    {
         const { city, weather, subscribers } = payload;
         let sent = 0, failed = 0;
 
-        for (const sub of subscribers) {
-            try {
+        for (const sub of subscribers) 
+        {
+            try 
+            {
                 const result = await this._sendWeatherUpdate(sub.email, city, weather, sub.token);
-                if (result) {
+                if (result) 
+                {
                     sent++;
                     console.log(`📧 Weather update sent to ${sub.email}`);
-                } else {
+                }
+                else 
+                {
                     failed++;
                     console.error(`❌ Failed to send weather update to ${sub.email}`);
                 }
-            } catch (err) {
+            }
+            catch (err) 
+            {
                 failed++;
                 console.error(`❌ Error sending weather update to ${sub.email}:`, err.message);
             }

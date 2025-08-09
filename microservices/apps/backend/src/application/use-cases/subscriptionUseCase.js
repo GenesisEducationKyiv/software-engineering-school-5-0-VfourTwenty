@@ -23,7 +23,7 @@ class SubscriptionUseCase
             const token = subscriptionResult.data.token;
             this.queuePublisher.publish(
                 events.USER_SUBSCRIBED,
-                {email, token}
+                { email, token }
             );
         }
         return subscriptionResult;
@@ -42,7 +42,7 @@ class SubscriptionUseCase
             const sub = unsubscribeResult.data;
             this.queuePublisher.publish(
                 events.USER_UNSUBSCRIBED,
-                {email: sub.email, city: sub.city }
+                { email: sub.email, city: sub.city }
             );
         }
         return unsubscribeResult;

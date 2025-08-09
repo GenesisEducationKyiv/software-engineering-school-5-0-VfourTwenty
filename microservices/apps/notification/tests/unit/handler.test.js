@@ -3,10 +3,12 @@ const sinon = require('sinon');
 const EventHandler = require('../../src/common/queue/handler');
 const events = require('../../src/common/queue/events');
 
-describe('EventHandler.handleEvent', () => {
+describe('EventHandler.handleEvent', () => 
+{
     let emailServiceMock, handler;
 
-    beforeEach(() => {
+    beforeEach(() => 
+    {
         emailServiceMock = {
             sendConfirmationEmail: sinon.stub(),
             sendUnsubscribedEmail: sinon.stub(),
@@ -15,7 +17,8 @@ describe('EventHandler.handleEvent', () => {
         handler = new EventHandler(emailServiceMock);
     });
 
-    it('should call sendConfirmationEmail for USER_SUBSCRIBED', async () => {
+    it('should call sendConfirmationEmail for USER_SUBSCRIBED', async () => 
+    {
         const msg = JSON.stringify({
             type: events.USER_SUBSCRIBED,
             payload: { email: 'test@example.com', token: 'abc123' }
@@ -25,7 +28,8 @@ describe('EventHandler.handleEvent', () => {
         expect(emailServiceMock.sendConfirmationEmail.calledOnceWith('test@example.com', 'abc123')).to.be.true;
     });
 
-    it('should call sendUnsubscribedEmail for USER_UNSUBSCRIBED', async () => {
+    it('should call sendUnsubscribedEmail for USER_UNSUBSCRIBED', async () => 
+    {
         const msg = JSON.stringify({
             type: events.USER_UNSUBSCRIBED,
             payload: { email: 'test@example.com', city: 'Kyiv' }
@@ -35,7 +39,8 @@ describe('EventHandler.handleEvent', () => {
         expect(emailServiceMock.sendUnsubscribedEmail.calledOnceWith('test@example.com', 'Kyiv')).to.be.true;
     });
 
-    it('should call sendWeatherUpdates for WEATHER_UPDATES_AVAILABLE', async () => {
+    it('should call sendWeatherUpdates for WEATHER_UPDATES_AVAILABLE', async () => 
+    {
         const payload = { city: 'Kyiv', weather: {}, subscribers: [] };
         const msg = JSON.stringify({
             type: events.WEATHER_UPDATES_AVAILABLE,
@@ -46,7 +51,8 @@ describe('EventHandler.handleEvent', () => {
         expect(emailServiceMock.sendWeatherUpdates.calledOnceWith(payload)).to.be.true;
     });
 
-    it('should warn on unknown event type', async () => {
+    it('should warn on unknown event type', async () => 
+    {
         const msg = JSON.stringify({ type: 'UNKNOWN_EVENT', payload: {} });
         const warnStub = sinon.stub(console, 'warn');
         await handler.handleEvent(msg);
@@ -54,7 +60,8 @@ describe('EventHandler.handleEvent', () => {
         warnStub.restore();
     });
 
-    it('should handle malformed JSON', async () => {
+    it('should handle malformed JSON', async () => 
+    {
         const errorStub = sinon.stub(console, 'error');
         await handler.handleEvent('not a json');
         expect(errorStub.called).to.be.true;

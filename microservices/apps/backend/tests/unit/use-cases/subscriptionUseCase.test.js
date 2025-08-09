@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const SubscriptionUseCase = require('../../../src/application/use-cases/subscriptionUseCase');
 const CityValidatorMock = require('../../mocks/validators/cityValidator.mock');
 const SubscriptionServiceMock = require('../../mocks/services/subscriptionService.mock');
-const QueuePublisherMock = require('../../mocks/queue/queuePublisher.mock')
+const QueuePublisherMock = require('../../mocks/queue/queuePublisher.mock');
 
 const Result = require('../../../src/common/utils/result');
 

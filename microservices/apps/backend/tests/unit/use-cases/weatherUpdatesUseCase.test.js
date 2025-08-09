@@ -86,6 +86,7 @@ describe('WeatherUpdatesUseCase Unit Tests', () =>
 
         // Assert
         expect(published).to.eq(5);
+        expect(failed).to.eq(0);
         expect(skipped).to.eq(2);
     });
 });

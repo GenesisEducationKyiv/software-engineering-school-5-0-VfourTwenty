@@ -1,8 +1,9 @@
-const IQueuePublisher = require('../../../src/common/queue/IQueuePublisher');
+const IQueuePublisher = require('../../../src/common/queue/queuePublisherInterface');
 
 class QueuePublisherMock extends IQueuePublisher
 {
-    async publish(type, payload, queue) {
+    async publish(type, payload, queue) 
+    {
 
     }
 }

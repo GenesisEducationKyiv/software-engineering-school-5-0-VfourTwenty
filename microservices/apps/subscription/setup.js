@@ -10,4 +10,4 @@ const subscriptionController = new SubscriptionController(subscriptionService, s
 
 module.exports = {
     subscriptionController,
-}
+};

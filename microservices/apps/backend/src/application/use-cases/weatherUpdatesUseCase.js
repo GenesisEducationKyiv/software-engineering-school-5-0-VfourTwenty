@@ -25,18 +25,23 @@ class WeatherUpdatesUseCase
         const subs = findAllResult.data;
 
         const cityMap = {};
-        for (const sub of subs) {
-            if (!cityMap[sub.city]) {
+        for (const sub of subs) 
+        {
+            if (!cityMap[sub.city]) 
+            {
                 cityMap[sub.city] = [];
             }
             cityMap[sub.city].push({ email: sub.email, token: sub.token });
         }
 
-        for (const [city, subscribers] of Object.entries(cityMap)) {
-            try {
+        for (const [city, subscribers] of Object.entries(cityMap)) 
+        {
+            try 
+            {
                 const response = await this.weatherService.fetchWeather(city);
 
-                if (!response.success) {
+                if (!response.success) 
+                {
                     console.warn(`⚠️ No weather data available for ${city}, skipping, error: ${response.err}`);
                     skipped += subscribers.length;
                     continue;
@@ -52,7 +57,8 @@ class WeatherUpdatesUseCase
                 published += subscribers.length;
                 console.log(`✅ Weather update event published for ${city} (${subscribers.length} subscribers)`);
             }
-            catch (err) {
+            catch (err) 
+            {
                 failed += subscribers.length;
                 console.error(`❌ Failed to publish weather update for ${city}:`, err.message);
             }

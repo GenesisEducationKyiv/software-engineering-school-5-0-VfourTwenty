@@ -1,8 +1,10 @@
 const express = require('express');
 const proxyRouter = express.Router();
 
-proxyRouter.use('/api', async (req, res) => {
-    try {
+proxyRouter.use('/api', async (req, res) => 
+{
+    try 
+    {
         console.log('req body: ', req.body);
         console.log('req method: ', req.method);
         const backendUrl = `http://backend:4000${req.originalUrl}`;
@@ -22,7 +24,9 @@ proxyRouter.use('/api', async (req, res) => {
 
         res.status(backendRes.status);
         res.json(resData);
-    } catch (err) {
+    }
+    catch (err) 
+    {
         console.error('[PROXY ERROR]', err);
         res.status(500).send('Proxy error');
     }

@@ -10,4 +10,4 @@ const emailController = new EmailController(emailService);
 
 module.exports = {
     emailController
-}
+};

@@ -23,4 +23,4 @@ const weatherController = new WeatherController(weatherService);
 module.exports =
     {
         weatherController
-    }
+    };

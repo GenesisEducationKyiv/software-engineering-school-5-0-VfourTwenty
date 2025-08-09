@@ -10,4 +10,4 @@ const eventHandler = new EventHandler(emailChannel);
 module.exports = {
     eventHandler,
     queueConsumer
-}
+};
