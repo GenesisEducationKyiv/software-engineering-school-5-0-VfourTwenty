@@ -1,4 +1,4 @@
-const events = require('../../../common/queue/events');
+const events = require('../../common/queue/events');
 
 class WeatherUpdatesUseCase
 {

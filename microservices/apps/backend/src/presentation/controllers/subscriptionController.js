@@ -4,15 +4,11 @@ class SubscriptionController
 {
     constructor(
         subscriptionDtoValidator,
-        subscribeUserUseCase,
-        confirmSubscriptionUseCase,
-        unsubscribeUserUseCase
+        subscriptionUseCase
     )
     {
         this.subscriptionDtoValidator = subscriptionDtoValidator;
-        this.subscribeUserUseCase = subscribeUserUseCase;
-        this.confirmSubscriptionUseCase = confirmSubscriptionUseCase;
-        this.unsubscribeUserUseCase = unsubscribeUserUseCase;
+        this.subscriptionUseCase = subscriptionUseCase;
     }
 
     subscribe = async (req, res) => 
@@ -27,7 +23,7 @@ class SubscriptionController
         const validationResult = this.subscriptionDtoValidator.validateNewSubscription(email, city, frequency);
         if (!validationResult.success) return handleError(validationResult.err, res);
 
-        const result = await this.subscribeUserUseCase.subscribe(email, city, frequency);
+        const result = await this.subscriptionUseCase.subscribe(email, city, frequency);
         if (result.success)
         {
             return res.status(200).json({ message: 'Subscription successful. Confirmation email sent.' });
@@ -44,7 +40,7 @@ class SubscriptionController
         console.log('token validation result: ', validationResult);
         if (!validationResult.success) return handleError(validationResult.err, res);
 
-        const result = await this.confirmSubscriptionUseCase.confirm(token);
+        const result = await this.subscriptionUseCase.confirm(token);
         console.log('result from confirm use case: ', result);
         if (result.success)
         {
@@ -60,7 +56,7 @@ class SubscriptionController
         const validationResult = this.subscriptionDtoValidator.validateToken(token);
         if (!validationResult.success) return handleError(validationResult.err, res);
 
-        const result = await this.unsubscribeUserUseCase.unsubscribe(token);
+        const result = await this.subscriptionUseCase.unsubscribe(token);
         if (result.success)
         {
             return res.status(200).json({ message: 'Unsubscribed successfully' });

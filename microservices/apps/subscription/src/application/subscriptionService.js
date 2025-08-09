@@ -1,13 +1,11 @@
 const { genToken } = require('../common/utils/strings');
-const events = require('../common/queue/events');
 const Result = require('../common/utils/result');
 
 class SubscriptionService
 {
-    constructor(subscriptionRepo, queuePublisher)
+    constructor(subscriptionRepo)
     {
         this.subscriptionRepo = subscriptionRepo;
-        this.queuePublisher = queuePublisher;
     }
 
     async subscribeUser(email, city, frequency) 
@@ -25,10 +23,6 @@ class SubscriptionService
             return new Result(false, 'FAILED TO CREATE SUBSCRIPTION');
         }
 
-        this.queuePublisher.publish(
-            events.USER_SUBSCRIBED,
-            {email, token}
-        );
         return new Result(true, null, { token: token });
     }
 
@@ -70,10 +64,6 @@ class SubscriptionService
             return new Result(false, 'FAILED TO DELETE SUBSCRIPTION');
         }
 
-        this.queuePublisher.publish(
-            events.USER_UNSUBSCRIBED,
-            {email: sub.email, city: sub.city }
-        );
         return new Result(true, null, { email: sub.email, city: sub.city });
     }
 

@@ -1,4 +1,4 @@
-const Result = require('../../../common/utils/result');
+const Result = require('../../common/utils/result');
 
 class GetWeatherUseCase
 {

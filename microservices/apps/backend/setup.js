@@ -4,11 +4,9 @@ const SubscriptionService = require('./src/application/services/subscriptionServ
 const WeatherService = require('./src/application/services/weatherService');
 
 const CityValidator = require('./src/application/validators/cityValidator');
-const SubscribeUserUseCase = require('./src/application/use-cases/subscription/subscribeUserUseCase');
-const ConfirmSubscriptionUseCase = require('./src/application/use-cases/subscription/confirmSubscriptionUseCase');
-const UnsubscribeUserUseCase = require('./src/application/use-cases/subscription/unsubscribeUserUseCase');
-const GetWeatherUseCase = require('./src/application/use-cases/weather/getWeatherUseCase');
-const WeatherUpdatesUseCase = require('./src/application/use-cases/emails/weatherUpdatesUseCase');
+const SubscriptionUseCase = require('./src/application/use-cases/subscriptionUseCase');
+const GetWeatherUseCase = require('./src/application/use-cases/getWeatherUseCase');
+const WeatherUpdatesUseCase = require('./src/application/use-cases/weatherUpdatesUseCase');
 
 const SubscriptionDtoValidator = require('./src/presentation/validators/subscriptionDtoValidator');
 const SubscriptionController = require('./src/presentation/controllers/subscriptionController');
@@ -27,15 +25,13 @@ const subscriptionService = new SubscriptionService();
 const weatherService = new WeatherService();
 
 const cityValidator = new CityValidator(weatherService);
-const subscribeUserUseCase = new SubscribeUserUseCase(cityValidator, subscriptionService);
-const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
-const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService);
+const subscriptionUseCase = new SubscriptionUseCase(cityValidator, subscriptionService, queuePublisher);
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
 const weatherUpdatesUseCase = new WeatherUpdatesUseCase(weatherService, subscriptionService, queuePublisher);
 
 const subscriptionDtoValidator = new SubscriptionDtoValidator();
 const subscriptionController = new SubscriptionController(
-    subscriptionDtoValidator, subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
+    subscriptionDtoValidator, subscriptionUseCase);
 const weatherController = new WeatherController(getWeatherUseCase);
 
 const emailJobHandler = new EmailJobHandler(weatherUpdatesUseCase);

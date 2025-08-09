@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const WeatherUpdatesUseCase = require('../../../../src/application/use-cases/emails/weatherUpdatesUseCase');
+const WeatherUpdatesUseCase = require('../../../../src/application/use-cases/weatherUpdatesUseCase');
 const EmailServiceMock = require('../../../mocks/services/emailService.mock');
 const WeatherServiceMock = require('../../../mocks/services/weatherService.mock');
 const SubscriptionServiceMock = require('../../../mocks/services/subscriptionService.mock');
