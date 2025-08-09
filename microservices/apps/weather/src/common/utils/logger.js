@@ -65,8 +65,15 @@ class Logger
 
     _buildLogString(level, message, meta)
     {
-        const entityTag = this.entity ? ` [${this.entity}]` : '';
-        return `${new Date().toISOString()} [${level.toUpperCase()}]${entityTag} ${message}${meta ? ' ' + JSON.stringify(meta).slice(0, 1000) : ''}`;
+        const logObject = {
+            timestamp: new Date().toISOString(),
+            level: level.toUpperCase(),
+            entity: this.entity || undefined,
+            message,
+            meta: meta ? meta : undefined
+        };
+        Object.keys(logObject).forEach(key => logObject[key] === undefined && delete logObject[key]);
+        return JSON.stringify(logObject);
     }
 
     _shouldBeLogged(level)

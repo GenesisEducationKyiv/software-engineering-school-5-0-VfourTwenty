@@ -1,4 +1,4 @@
-const Logger = require('./src/common/utils/logger.mock');
+const Logger = require('./src/common/utils/logger');
 
 const RedisCacheProvider = require('./src/common/cache/redis/redisCacheProvider');
 const MetricsProvider = require('./src/common/metrics/metricsProvider.mock');
@@ -10,7 +10,8 @@ const WeatherProviderManager = require('./src/infrastructure/weather-providers/w
 const WeatherService = require('./src/application/weatherService');
 const WeatherController = require('./src/presentation/controllers/weatherController');
 
-const logger = new Logger();
+const config = require('./src/common/config/index').logger;
+const logger = new Logger(config);
 
 const cacheProvider = new RedisCacheProvider();
 const metricsProvider = new MetricsProvider();
