@@ -1,10 +1,14 @@
 const { expect } = require('chai');
 const SubscriptionService = require('../../src/application/subscriptionService');
-
 const SubscriptionRepoMock = require('../mocks/subscriptionRepo.mock');
+const LoggerMock = require('../mocks/utils/logger.mock');
+const MetricsProviderMock = require('../mocks/metrics/metricsProvider.mock');
+
+const loggerMock = new LoggerMock();
+const metricsProviderMock = new MetricsProviderMock();
 const subscriptionRepoMock = new SubscriptionRepoMock();
 
-const subscriptionService = new SubscriptionService(subscriptionRepoMock);
+const subscriptionService = new SubscriptionService(subscriptionRepoMock, loggerMock, metricsProviderMock);
 
 const validSub = {
     email: 'valid@mail.com',
