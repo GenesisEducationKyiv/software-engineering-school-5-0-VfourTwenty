@@ -79,6 +79,7 @@ services:
     image: prom/prometheus:latest
     depends_on:
       - weather
+      - backend
     ports:
       - "5007:9090"
     volumes:
