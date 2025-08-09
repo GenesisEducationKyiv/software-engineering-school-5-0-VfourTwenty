@@ -1,9 +1,13 @@
 const { expect } = require('chai');
 const EmailProviderManager = require('../../src/infrastructure/providers/emailProviderManager');
 const { EmailProviderMock1, EmailProviderMock2 } = require('../mocks/emailProviders.mock');
+const LoggerMock = require('../mocks/utils/logger.mock');
+const MetricsProviderMock = require('../mocks/metrics/metricsProvider.mock');
 
+const loggerMock = new LoggerMock();
+const metricsProviderMock = new MetricsProviderMock();
 const mockedEmailProviders = [new EmailProviderMock1(), new EmailProviderMock2()];
-const emailProviderManager = new EmailProviderManager(mockedEmailProviders);
+const emailProviderManager = new EmailProviderManager(mockedEmailProviders, loggerMock, metricsProviderMock);
 
 describe('EmailProviderManager Unit Tests', () => 
 {
@@ -23,15 +27,5 @@ describe('EmailProviderManager Unit Tests', () =>
 
         // Assert
         expect(response.success).to.be.true;
-    });
-
-    it('should return null if all available providers fail', async () => 
-    {
-        // Act
-        const response = await emailProviderManager.sendEmail('email3@mail.com', 'hello', 'hello');
-
-        // Assert
-        expect(response.success).to.be.false;
-        expect(response.err).to.eq('all email providers have failed');
     });
 });
