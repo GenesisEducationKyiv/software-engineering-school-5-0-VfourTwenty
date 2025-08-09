@@ -1,10 +1,12 @@
 const metricsProvider = require('../../common/metrics/metricsSetup');
 const METRIC_KEYS = require('../../common/metrics/metricsKeys');
 
-function metricsMiddleware(req, res, next) {
+function metricsMiddleware(req, res, next) 
+{
     const start = process.hrtime();
 
-    res.on('finish', () => {
+    res.on('finish', () => 
+    {
         const duration = process.hrtime(start);
         const durationInSeconds = duration[0] + duration[1] / 1e9;
 
