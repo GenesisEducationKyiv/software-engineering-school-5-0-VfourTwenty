@@ -32,7 +32,7 @@ describe('EventHandler.handleEvent', () => {
         });
         emailServiceMock.sendUnsubscribedEmail.resolves(true);
         await handler.handleEvent(msg);
-        expect(emailServiceMock.sendUnsubscribedEmail.calledOnceWith('tests@example.com', 'Kyiv')).to.be.true;
+        expect(emailServiceMock.sendUnsubscribedEmail.calledOnceWith('test@example.com', 'Kyiv')).to.be.true;
     });
 
     it('should call sendWeatherUpdates for WEATHER_UPDATES_AVAILABLE', async () => {
