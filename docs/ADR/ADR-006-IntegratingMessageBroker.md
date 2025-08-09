@@ -13,11 +13,11 @@ To address these issues, we decided to introduce a message broker (RabbitMQ) to 
 We will integrate a message broker RabbitMQ into the microservice architecture to support asynchronous, event-driven communication. This will involve the following changes:
 ### Service Responsibilities and Event Flows
 - **Backend (reverse proxy + update scheduling)**:
-Continues to act as an API gateway and request delegator, but no longer handles email logic directly. Instead, it emits weather updates events to the message broker as appropriate.
+Continues to act as an API gateway and request delegator, but no longer handles email logic directly. Instead, it emits weather updates and subscription related events to the message broker as appropriate.
 - **Notification Service**:
 A new service that subscribes to relevant events from the message broker and handles all notification logic (sending subscription and weather related notifications). It calls the Email Service to deliver notifications via email.
 - **Subscription Service**:
-  Emits subscription related events (SubscriptionCreated, SubscriptionConfirmed, UserUnsubscribed) to the message broker when relevant actions occur.
+  Remains focused on managing subscriptions and accessing data storage, as before.
 - **Weather Service**:
 Remains focused on providing weather data, as before.
 - **Email Service**:
