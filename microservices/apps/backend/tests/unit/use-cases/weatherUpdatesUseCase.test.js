@@ -13,7 +13,8 @@ const queuePublisherMock = new QueuePublisherMock();
 const weatherServiceMock = new WeatherServiceMock();
 const subscriptionServiceMock = new SubscriptionServiceMock();
 
-const weatherUpdatesUseCase = new WeatherUpdatesUseCase(weatherServiceMock, subscriptionServiceMock, queuePublisherMock, loggerMock, metricsProviderMock);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(
+    weatherServiceMock, subscriptionServiceMock, queuePublisherMock, loggerMock, metricsProviderMock);
 
 const Result = require('../../../src/common/utils/result');
 
