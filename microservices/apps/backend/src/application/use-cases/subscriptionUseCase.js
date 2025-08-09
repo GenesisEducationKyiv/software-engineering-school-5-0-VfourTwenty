@@ -1,12 +1,14 @@
 const events = require('../../common/queue/events');
+const metricsKeys = require('../../common/metrics/metricsKeys');
 
 class SubscriptionUseCase
 {
-    constructor(cityValidator, subscriptionService, queuePublisher)
+    constructor(cityValidator, subscriptionService, queuePublisher, metricsProvider)
     {
         this.cityValidator = cityValidator;
         this.subscriptionService = subscriptionService;
         this.queuePublisher = queuePublisher;
+        this.metricsProvider = metricsProvider;
     }
 
     async subscribe(email, city, frequency)
@@ -24,6 +26,9 @@ class SubscriptionUseCase
             this.queuePublisher.publish(
                 events.USER_SUBSCRIBED,
                 { email, token }
+            );
+            this.metricsProvider.incrementCounter(metricsKeys.QUEUE_JOBS_PUBLISHED, 1,
+                { event: events.USER_SUBSCRIBED }
             );
         }
         return subscriptionResult;
@@ -43,6 +48,9 @@ class SubscriptionUseCase
             this.queuePublisher.publish(
                 events.USER_UNSUBSCRIBED,
                 { email: sub.email, city: sub.city }
+            );
+            this.metricsProvider.incrementCounter(metricsKeys.QUEUE_JOBS_PUBLISHED, 1,
+                { event: events.USER_UNSUBSCRIBED }
             );
         }
         return unsubscribeResult;

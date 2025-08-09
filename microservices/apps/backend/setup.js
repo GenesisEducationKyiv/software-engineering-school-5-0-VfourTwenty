@@ -17,6 +17,7 @@ const EmailJobHandler = require('./src/infrastructure/cron/handlers/emailJobHand
 const EmailJobs = require('./src/infrastructure/cron/emailJobs');
 const CronMain = require('./src/infrastructure/cron/main');
 
+const metricsProvider = require('./src/common/metrics/metricsSetup');
 const config = require('./src/common/config/index').queue;
 const queuePublisher = new QueuePublisher(config.queueUrl, config.queueName);
 
@@ -25,9 +26,9 @@ const subscriptionService = new SubscriptionService();
 const weatherService = new WeatherService();
 
 const cityValidator = new CityValidator(weatherService);
-const subscriptionUseCase = new SubscriptionUseCase(cityValidator, subscriptionService, queuePublisher);
+const subscriptionUseCase = new SubscriptionUseCase(cityValidator, subscriptionService, queuePublisher, metricsProvider);
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
-const weatherUpdatesUseCase = new WeatherUpdatesUseCase(weatherService, subscriptionService, queuePublisher);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(weatherService, subscriptionService, queuePublisher, metricsProvider);
 
 const subscriptionDtoValidator = new SubscriptionDtoValidator();
 const subscriptionController = new SubscriptionController(

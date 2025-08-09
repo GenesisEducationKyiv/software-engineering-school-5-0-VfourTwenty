@@ -1,12 +1,14 @@
 const events = require('../../common/queue/events');
+const metricsKeys = require('../../common/metrics/metricsKeys');
 
 class WeatherUpdatesUseCase
 {
-    constructor(weatherService, subscriptionService, queuePublisher)
+    constructor(weatherService, subscriptionService, queuePublisher, metricsProvider)
     {
         this.weatherService = weatherService;
         this.subscriptionService = subscriptionService;
         this.queuePublisher = queuePublisher;
+        this.metricsProvider = metricsProvider;
     }
 
     async sendWeatherUpdates(frequency)
@@ -54,6 +56,9 @@ class WeatherUpdatesUseCase
                 };
 
                 this.queuePublisher.publish(events.WEATHER_UPDATES_AVAILABLE, payload);
+                this.metricsProvider.incrementCounter(metricsKeys.QUEUE_JOBS_PUBLISHED, 1,
+                    { event: events.WEATHER_UPDATES_AVAILABLE }
+                );
                 published += subscribers.length;
                 console.log(`✅ Weather update event published for ${city} (${subscribers.length} subscribers)`);
             }
