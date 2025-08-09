@@ -1,5 +1,5 @@
 const config = require('../common/config');
-const Result = require('../domain/types/result');
+const Result = require('../common/utils/result');
 const { buildConfirmEmail, buildUnsubscribedEmail, buildWeatherUpdateEmail } = require('../common/utils/emailTemplates');
 
 class EmailChannel
