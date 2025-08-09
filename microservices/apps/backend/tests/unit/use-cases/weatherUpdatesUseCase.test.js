@@ -1,17 +1,17 @@
 const { expect } = require('chai');
 
-const WeatherUpdatesUseCase = require('../../../../src/application/use-cases/weatherUpdatesUseCase');
-const EmailServiceMock = require('../../../mocks/services/emailService.mock');
-const WeatherServiceMock = require('../../../mocks/services/weatherService.mock');
-const SubscriptionServiceMock = require('../../../mocks/services/subscriptionService.mock');
+const WeatherUpdatesUseCase = require('../../../src/application/use-cases/weatherUpdatesUseCase');
+const QueuePublisherMock = require('../../mocks/queue/queuePublisher.mock');
+const WeatherServiceMock = require('../../mocks/services/weatherService.mock');
+const SubscriptionServiceMock = require('../../mocks/services/subscriptionService.mock');
 
-const emailServiceMock = new EmailServiceMock();
+const queuePublisherMock = new QueuePublisherMock();
 const weatherServiceMock = new WeatherServiceMock();
 const subscriptionServiceMock = new SubscriptionServiceMock();
 
-const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailServiceMock, weatherServiceMock, subscriptionServiceMock);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(weatherServiceMock, subscriptionServiceMock, queuePublisherMock);
 
-const Result = require('../../../../src/common/utils/result');
+const Result = require('../../../src/common/utils/result');
 
 const sub1 =
     {   email: 'valid@mail.com',
@@ -36,21 +36,21 @@ const sub3 =
 
 describe('WeatherUpdatesUseCase Unit Tests', () => 
 {
-    it('should send weather updates to all valid subscribers', async () => 
+    it('should publish weather updates for all valid subscribers', async () =>
     {
         // Arrange
         subscriptionServiceMock.stub(new Result(true, null, [sub1, sub2, sub3]));
 
         // Act
-        const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
+        const { published, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
 
         // Assert
-        expect(sent).to.eq(3);
+        expect(published).to.eq(3);
         expect(failed).to.eq(0);
         expect(skipped).to.eq(0);
     });
 
-    it('should not send weather updates if there is no weather data for chosen city', async () => 
+    it('should not publish weather updates if there is no weather data for chosen city', async () =>
     {
         // Arrange
         subscriptionServiceMock.stub(new Result(true, null, [
@@ -60,33 +60,15 @@ describe('WeatherUpdatesUseCase Unit Tests', () =>
         ]));
 
         // Act
-        const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
+        const { published, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
 
         // Assert
-        expect(sent).to.eq(0);
+        expect(published).to.eq(0);
         expect(failed).to.eq(0);
         expect(skipped).to.eq(3);
     });
 
-    it('should not send weather updates to subscribers with invalid email addresses', async () => 
-    {
-        // Arrange
-        subscriptionServiceMock.stub(new Result(true, null, [
-            { ...sub1, email:'shouldfail@mail.com' },
-            { ...sub2, email:'shouldfail@mail.com' },
-            { ...sub3, email:'shouldfail@mail.com' }
-        ]));
-
-        // Act
-        const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
-
-        // Assert
-        expect(sent).to.eq(0);
-        expect(failed).to.eq(3);
-        expect(skipped).to.eq(0);
-    });
-
-    it('should handle all cases properly and return correct counters for sent, failed, and skipped', async () => 
+    it('should handle all cases properly and return correct counters for published, failed, and skipped', async () =>
     {
         // Arrange
         subscriptionServiceMock.stub(new Result(true, null, [
@@ -100,11 +82,10 @@ describe('WeatherUpdatesUseCase Unit Tests', () =>
         ]));
 
         // Act
-        const { sent, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
+        const { published, failed, skipped } = await weatherUpdatesUseCase.sendWeatherUpdates('hourly');
 
         // Assert
-        expect(sent).to.eq(3);
-        expect(failed).to.eq(2);
+        expect(published).to.eq(5);
         expect(skipped).to.eq(2);
     });
 });

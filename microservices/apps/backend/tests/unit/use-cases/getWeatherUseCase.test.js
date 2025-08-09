@@ -1,5 +1,5 @@
-const GetWeatherUseCase = require('../../../../src/application/use-cases/getWeatherUseCase');
-const WeatherServiceMock = require('../../../mocks/services/weatherService.mock');
+const GetWeatherUseCase = require('../../../src/application/use-cases/getWeatherUseCase');
+const WeatherServiceMock = require('../../mocks/services/weatherService.mock');
 const { expect } = require('chai');
 
 const weatherServiceMock = new WeatherServiceMock();
