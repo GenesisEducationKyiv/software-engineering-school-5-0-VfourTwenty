@@ -19,7 +19,7 @@ const errorMap = {
 
 function handleError(err, res, map = errorMap)
 {
-    const status= map[err];
+    const status = map[err];
     if (status)
     {
         return res.status(status).json({ error: err });
@@ -29,6 +29,5 @@ function handleError(err, res, map = errorMap)
         return res.status(500).json({ error: 'SUBSCRIPTION SERVICE ERROR' });
     }
 }
-
 
 module.exports = { handleError };

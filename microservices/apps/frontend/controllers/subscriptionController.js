@@ -1,10 +1,12 @@
-const {buildConfirmedUrl, buildErrorUrl, buildUnsubscribedUrl} = require("../utils/redirectUtils");
+const { buildConfirmedUrl, buildErrorUrl, buildUnsubscribedUrl } = require('../utils/redirectUtils');
 
 class SubscriptionController
 {
-    confirm = async (req, res) => {
+    confirm = async (req, res) => 
+    {
         const { token } = req.params;
-        try {
+        try 
+        {
             const fetchRes = await fetch(`http://backend:4000/api/confirm/${token}`);
             const resJson = await fetchRes.json();
             let url;
@@ -24,12 +26,13 @@ class SubscriptionController
         {
             console.log('error fetching api confirm: ', err);
         }
-    }
+    };
 
     unsubscribe = async (req, res) =>
     {
         const { token } = req.params;
-        try {
+        try 
+        {
             const fetchRes = await fetch(`http://backend:4000/api/unsubscribe/${token}`);
             const resJson = await fetchRes.json();
             let url;
@@ -48,7 +51,7 @@ class SubscriptionController
         {
             console.log('error fetching api unsubscribe: ', err);
         }
-    }
+    };
 }
 
 module.exports = SubscriptionController;

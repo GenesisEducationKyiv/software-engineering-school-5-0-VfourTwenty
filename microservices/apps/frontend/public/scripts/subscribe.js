@@ -1,12 +1,5 @@
-async function loadConfig() {
-    const res = await fetch(`/config.json`);
-    if (!res.ok) {
-        throw new Error('Could not load config');
-    }
-    const config = await res.json();
-}
-
-async function handleSubscribe(e) {
+async function handleSubscribe(e)
+{
     e.preventDefault();
     const form = new FormData(e.target);
     const email = form.get('email');
@@ -16,23 +9,29 @@ async function handleSubscribe(e) {
     msg.innerText = 'Validating city...';
 
     msg.innerText = 'Subscribing...';
-    const data = JSON.stringify({ email, city, frequency })
+    const data = JSON.stringify({ email, city, frequency });
     console.log('sending data: ', data);
 
-    const res = await fetch(`/api/subscribe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: data
-    });
+    try 
+    {
+        const res = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: data
+        });
 
-    const json = await res.json();
-    msg.innerText = json.message || json.error;
+        const json = await res.json();
+        msg.innerText = json.message || json.error;
+    }
+    catch (err) 
+    {
+        msg.innerText = 'Failed to subscribe!';
+        console.error(err);
+    }
 }
 
-// Load config first, then set up event listener
-loadConfig().then(() => {
+// Attach the event listener after DOM is loaded
+document.addEventListener('DOMContentLoaded', function() 
+{
     document.getElementById('subscribe-form').addEventListener('submit', handleSubscribe);
-}).catch(err => {
-    document.getElementById('message').innerText = 'Failed to load config!';
-    console.error(err);
 });

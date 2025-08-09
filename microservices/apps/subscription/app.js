@@ -7,6 +7,7 @@ const subscriptionRouter = require('./src/presentation/routes/subscriptionRouter
 app.use('/api', subscriptionRouter);
 
 const PORT = process.env.PORT || 4003;
-app.listen(PORT, () => {
+app.listen(PORT, () => 
+{
     console.log(`Subscription running on port ${PORT}`);
 });

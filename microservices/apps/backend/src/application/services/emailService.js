@@ -5,7 +5,8 @@ class EmailService
 {
     async sendEmail(to, subject, body)
     {
-        try {
+        try 
+        {
             const emailResult = await fetch(`${config.emailUrl}/send-email`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
