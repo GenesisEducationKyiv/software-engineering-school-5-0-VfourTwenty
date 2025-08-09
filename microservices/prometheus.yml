@@ -6,3 +6,4 @@ scrape_configs:
     static_configs:
       - targets:
           - 'backend:4000'
+          - 'weather:4002'
