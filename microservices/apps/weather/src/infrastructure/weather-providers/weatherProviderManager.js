@@ -1,13 +1,15 @@
 const IWeatherProvider = require('../../domain/interfaces/weatherProviderInterface');
 const Result = require('../../common/utils/result');
+const metricsKeys = require('../../common/metrics/metricsKeys');
 
 class WeatherProviderManager extends IWeatherProvider
 {
-    constructor(providers, logger)
+    constructor(providers, logger, metricsProvider)
     {
         super();
         this.providers = providers;
         this.log = logger.for('WeatherProviderManager');
+        this.metricsProvider = metricsProvider;
     }
 
     async fetchWeather(city)
@@ -43,11 +45,17 @@ class WeatherProviderManager extends IWeatherProvider
                         this.log.debug(`Using description value ${description}`);
                         resultObj.description = description;
                     }
+                    this.metricsProvider.incrementCounter(metricsKeys.EXTERNAL_API_CALLS, 1, {
+                        provider: provider.name, success: true
+                    });
                 }
                 else
                 {
                     console.log(provider.name, 'failed');
                     this.log.warn(`External provider ${provider.name} failed`);
+                    this.metricsProvider.incrementCounter(metricsKeys.EXTERNAL_API_CALLS, 1, {
+                        provider: provider.name, success: false
+                    });
                 }
             }
             catch (err)

@@ -4,12 +4,17 @@ const WeatherUpdatesUseCase = require('../../../src/application/use-cases/weathe
 const QueuePublisherMock = require('../../mocks/queue/queuePublisher.mock');
 const WeatherServiceMock = require('../../mocks/services/weatherService.mock');
 const SubscriptionServiceMock = require('../../mocks/services/subscriptionService.mock');
+const LoggerMock = require('../../mocks/utils/logger.mock');
+const MetricsProviderMock = require('../../mocks/metrics/metricsProvider.mock');
 
+const loggerMock = new LoggerMock();
+const metricsProviderMock = new MetricsProviderMock();
 const queuePublisherMock = new QueuePublisherMock();
 const weatherServiceMock = new WeatherServiceMock();
 const subscriptionServiceMock = new SubscriptionServiceMock();
 
-const weatherUpdatesUseCase = new WeatherUpdatesUseCase(weatherServiceMock, subscriptionServiceMock, queuePublisherMock);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(
+    weatherServiceMock, subscriptionServiceMock, queuePublisherMock, loggerMock, metricsProviderMock);
 
 const Result = require('../../../src/common/utils/result');
 

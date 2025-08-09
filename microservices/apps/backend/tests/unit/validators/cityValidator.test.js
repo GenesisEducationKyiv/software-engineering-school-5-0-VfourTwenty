@@ -1,9 +1,11 @@
+const { expect } = require('chai');
 const CityValidator = require('../../../src/application/validators/cityValidator');
 const WeatherServiceMock = require('../../mocks/services/weatherService.mock');
-const { expect } = require('chai');
+const LoggerMock = require('../../mocks/utils/logger.mock');
 
+const loggerMock = new LoggerMock();
 const weatherServiceMock = new WeatherServiceMock();
-const cityValidator = new CityValidator(weatherServiceMock);
+const cityValidator = new CityValidator(weatherServiceMock, loggerMock);
 
 describe('CityValidator Unit Tests', () => 
 {

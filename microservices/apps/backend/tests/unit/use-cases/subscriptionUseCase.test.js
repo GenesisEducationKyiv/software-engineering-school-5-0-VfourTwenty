@@ -3,13 +3,17 @@ const SubscriptionUseCase = require('../../../src/application/use-cases/subscrip
 const CityValidatorMock = require('../../mocks/validators/cityValidator.mock');
 const SubscriptionServiceMock = require('../../mocks/services/subscriptionService.mock');
 const QueuePublisherMock = require('../../mocks/queue/queuePublisher.mock');
+const LoggerMock = require('../../mocks/utils/logger.mock');
+const MetricsProviderMock = require('../../mocks/metrics/metricsProvider.mock');
 
 const Result = require('../../../src/common/utils/result');
 
 const cityValidatorMock = new CityValidatorMock();
 const subscriptionServiceMock = new SubscriptionServiceMock();
 const queuePublisherMock = new QueuePublisherMock();
-const subscriptionUseCase = new SubscriptionUseCase(cityValidatorMock, subscriptionServiceMock, queuePublisherMock);
+const loggerMock = new LoggerMock();
+const metricsProviderMock = new MetricsProviderMock();
+const subscriptionUseCase = new SubscriptionUseCase(cityValidatorMock, subscriptionServiceMock, queuePublisherMock, loggerMock, metricsProviderMock);
 
 const validSub = {
     email: 'valid@mail.com',
