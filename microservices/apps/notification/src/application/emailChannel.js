@@ -1,9 +1,15 @@
 const config = require('../common/config');
 const Result = require('../common/utils/result');
 const { buildConfirmEmail, buildUnsubscribedEmail, buildWeatherUpdateEmail } = require('../common/utils/emailTemplates');
+const metricsKeys = require('../common/metrics/metricsKeys');
 
 class EmailChannel
 {
+    constructor(metricsProvider)
+    {
+        this.metricsProvider = metricsProvider;
+    }
+
     async _sendEmail(to, subject, body)
     {
         try 
@@ -35,6 +41,7 @@ class EmailChannel
         const subject = 'Confirm your weather subscription';
         const body = buildConfirmEmail(token);
         const result = await this._sendEmail(to, subject, body);
+        this.metricsProvider.incrementCounter(metricsKeys.CONFIRMATION_EMAILS_TOTAL, 1, { success: result.success });
         return result.success;
     }
 
@@ -43,6 +50,7 @@ class EmailChannel
         const subject = 'You\'ve been unsubscribed';
         const body = buildUnsubscribedEmail(city);
         const result = await this._sendEmail(to, subject, body);
+        this.metricsProvider.incrementCounter(metricsKeys.UNSUBSCRIBED_EMAILS_TOTAL, 1, { success: result.success });
         return result.success;
     }
 
@@ -51,6 +59,7 @@ class EmailChannel
         const subject = `SkyFetch Weather Update for ${city}`;
         const html = buildWeatherUpdateEmail(city, weather, token);
         const result = await this._sendEmail(email, subject, html);
+        this.metricsProvider.incrementCounter(metricsKeys.WEATHER_UPDATE_EMAILS_TOTAL, 1, { success: result.success });
         if (!result.success)
         {
             return false;

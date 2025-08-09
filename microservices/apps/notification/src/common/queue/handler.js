@@ -1,16 +1,21 @@
+const config = require('../config/index').queue;
 const events = require('./events');
+const metricsKeys = require('../metrics/metricsKeys');
 
 class EventHandler
 {
-    constructor(emailService)
+    constructor(emailService, metricsProvider)
     {
         this.emailService = emailService;
+        this.metricsProvider = metricsProvider;
     }
 
     async handleEvent(message)
     {
         try 
         {
+            this.metricsProvider.incrementCounter(metricsKeys.QUEUE_JOBS_CONSUMED);
+            const start = process.hrtime();
             console.log('this.email service:', this.emailService);
             const event = JSON.parse(message);
 
@@ -41,6 +46,15 @@ class EventHandler
                 default:
                     console.warn('Unknown event type:', event.type);
             }
+            const [seconds, nanoseconds] = process.hrtime(start);
+            const duration = seconds + nanoseconds / 1e9;
+            this.metricsProvider.observeHistogram(
+                metricsKeys.QUEUE_CONSUMER_DURATION,
+                duration, {
+                    queue: config.queueName,
+                    event_type: event.type
+                }
+            );
         }
         catch (err) 
         {
