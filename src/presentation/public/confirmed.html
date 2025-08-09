@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subscription Confirmed</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to top, #cceeff, #e6f7ff);
+        }
+
+        .container {
+            background: white;
+            padding: 2rem 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #3399ff;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: #333;
+            margin: 0.5rem 0;
+        }
+
+        a {
+            color: #3399ff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Your subscription is confirmed!</h1>
+    <p id="details"></p>
+    <p>
+        Unsubscribe from updates: <a id="unsubscribe-link" href="#">Click here</a>
+    </p>
+    <footer>
+        SkyFetch 2025 by <a href="https://github.com/VfourTwenty" target="_blank">VfourTwenty</a>
+    </footer>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const city = params.get('city') || 'your city';
+    const frequency = params.get('frequency') || 'daily';
+    const token = params.get('token') || '';
+
+    function getNextTime(frequency) {
+        const now = new Date();
+        const target = new Date();
+
+        if (frequency === 'hourly') {
+            target.setHours(target.getHours() + 1, 0, 0, 0);
+            const minutes = Math.ceil((target - now) / 60000);
+            return `${minutes} minute${minutes === 1 ? '' : 's'}`;
+        } else {
+            // daily – next update at 9:00 AM
+            target.setHours(9, 0, 0, 0);
+            if (target < now) target.setDate(target.getDate() + 1);
+
+            const diffMs = target - now;
+            const totalMinutes = Math.ceil(diffMs / 60000);
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+
+            const parts = [];
+            if (hours > 0) parts.push(`${hours} hour${hours === 1 ? '' : 's'}`);
+            if (minutes > 0) parts.push(`${minutes} minute${minutes === 1 ? '' : 's'}`);
+            return parts.join(' ');
+        }
+    }
+
+    document.getElementById('details').innerText =
+        `Next weather update for ${city} in ${getNextTime(frequency)}.`;
+
+    document.getElementById('unsubscribe-link').href = `/unsubscribe/${token}`;
+</script>
+</body>
+</html>
