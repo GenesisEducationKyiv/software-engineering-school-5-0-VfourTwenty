@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
-const EventHandler = require('../src/common/queue/handler');
-const events = require('../src/common/queue/events');
+const EventHandler = require('../../src/common/queue/handler');
+const events = require('../../src/common/queue/events');
 
 describe('EventHandler.handleEvent', () => {
     let emailServiceMock, handler;
@@ -32,7 +32,7 @@ describe('EventHandler.handleEvent', () => {
         });
         emailServiceMock.sendUnsubscribedEmail.resolves(true);
         await handler.handleEvent(msg);
-        expect(emailServiceMock.sendUnsubscribedEmail.calledOnceWith('test@example.com', 'Kyiv')).to.be.true;
+        expect(emailServiceMock.sendUnsubscribedEmail.calledOnceWith('tests@example.com', 'Kyiv')).to.be.true;
     });
 
     it('should call sendWeatherUpdates for WEATHER_UPDATES_AVAILABLE', async () => {
