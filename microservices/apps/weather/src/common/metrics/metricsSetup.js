@@ -17,6 +17,10 @@ metricsProvider.registerMetric('counter', METRICS_KEYS.HTTP_REQUEST_ERRORS, 'Tot
     labelNames: ['method', 'route', 'status_code']
 });
 
+metricsProvider.registerMetric('counter', METRICS_KEYS.EXTERNAL_API_CALLS, 'Total number of external API calls', {
+    labelNames: ['provider', 'success']
+});
+
 metricsProvider.registerMetric('gauge', METRICS_KEYS.APP_UPTIME, 'Application uptime in seconds', {
     labelNames: ['service'] });
 
