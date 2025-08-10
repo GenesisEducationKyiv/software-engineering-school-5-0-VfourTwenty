@@ -1,0 +1,77 @@
+services:
+  backend:
+    container_name: skyfetch-backend
+    build: apps/backend
+    ports:
+      - "5000:4000"
+    command: npm start
+    restart: always
+
+  frontend:
+    container_name: skyfetch-frontend
+    build: apps/frontend
+    ports:
+      - "5001:4001"
+    command: npm start
+    restart: always
+
+  weather:
+    container_name: skyfetch-weather
+    build: apps/weather
+    depends_on:
+      - redis
+    ports:
+      - "5002:4002"
+    command: npm start
+    restart: always
+
+  subscription:
+    container_name: skyfetch-subscription
+    build: apps/subscription
+    depends_on:
+      - db
+    ports:
+      - "5003:4003"
+    command: npm start
+    restart: always
+
+  email:
+    container_name: skyfetch-email
+    build: apps/email
+    ports:
+      - "5004:4004"
+    command: npm start
+    restart: always
+
+  db:
+    container_name: skyfetch-db
+    image: postgres:15
+    ports:
+      - "5005:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    restart: always
+
+  redis:
+    container_name: skyfetch-redis
+    image: redis:7
+    ports:
+      - "5006:6379"
+    restart: always
+
+  prometheus:
+    container_name: skyfetch-prometheus
+    image: prom/prometheus:latest
+    depends_on:
+      - weather
+    ports:
+      - "5007:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: always
+
+volumes:
+  pgdata:
+

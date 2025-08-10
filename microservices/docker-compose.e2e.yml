@@ -1,0 +1,29 @@
+services:
+  # combine/overwrite dev config
+  subscription:
+    container_name: test-subscription
+    build: apps/subscription
+    environment:
+      - NODE_ENV=test
+
+  db:
+    container_name: test-subscription-db
+    image: postgres:15
+    ports:
+      - "5005:5432"
+    volumes:
+      - pgdata-test:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    restart: always
+
+  test-e2e:
+    container_name: microservices-e2e-tests
+    build:
+      context: ./test
+      dockerfile: Dockerfile.test-e2e
+    entrypoint: npx playwright test
+    restart: no
+
+volumes:
+  pgdata-test:
