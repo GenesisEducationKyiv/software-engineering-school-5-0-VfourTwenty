@@ -1,13 +1,12 @@
-const EmailService = require('./src/application/services/emailService');
+const QueuePublisher = require('./src/common/queue/rabbitMQ/RabbitMQPublisher');
+
 const SubscriptionService = require('./src/application/services/subscriptionService');
 const WeatherService = require('./src/application/services/weatherService');
 
 const CityValidator = require('./src/application/validators/cityValidator');
-const SubscribeUserUseCase = require('./src/application/use-cases/subscription/subscribeUserUseCase');
-const ConfirmSubscriptionUseCase = require('./src/application/use-cases/subscription/confirmSubscriptionUseCase');
-const UnsubscribeUserUseCase = require('./src/application/use-cases/subscription/unsubscribeUserUseCase');
-const GetWeatherUseCase = require('./src/application/use-cases/weather/getWeatherUseCase');
-const WeatherUpdatesUseCase = require('./src/application/use-cases/emails/weatherUpdatesUseCase');
+const SubscriptionUseCase = require('./src/application/use-cases/subscriptionUseCase');
+const GetWeatherUseCase = require('./src/application/use-cases/getWeatherUseCase');
+const WeatherUpdatesUseCase = require('./src/application/use-cases/weatherUpdatesUseCase');
 
 const SubscriptionDtoValidator = require('./src/presentation/validators/subscriptionDtoValidator');
 const SubscriptionController = require('./src/presentation/controllers/subscriptionController');
@@ -18,21 +17,21 @@ const EmailJobHandler = require('./src/infrastructure/cron/handlers/emailJobHand
 const EmailJobs = require('./src/infrastructure/cron/emailJobs');
 const CronMain = require('./src/infrastructure/cron/main');
 
+const config = require('./src/common/config/index').queue;
+const queuePublisher = new QueuePublisher(config.queueUrl, config.queueName);
+
 // call dedicated services' APIs
-const emailService = new EmailService();
 const subscriptionService = new SubscriptionService();
 const weatherService = new WeatherService();
 
 const cityValidator = new CityValidator(weatherService);
-const subscribeUserUseCase = new SubscribeUserUseCase(cityValidator, subscriptionService, emailService);
-const confirmSubscriptionUseCase = new ConfirmSubscriptionUseCase(subscriptionService);
-const unsubscribeUserUseCase = new UnsubscribeUserUseCase(subscriptionService, emailService);
+const subscriptionUseCase = new SubscriptionUseCase(cityValidator, subscriptionService, queuePublisher);
 const getWeatherUseCase = new GetWeatherUseCase(weatherService);
-const weatherUpdatesUseCase = new WeatherUpdatesUseCase(emailService, weatherService, subscriptionService);
+const weatherUpdatesUseCase = new WeatherUpdatesUseCase(weatherService, subscriptionService, queuePublisher);
 
 const subscriptionDtoValidator = new SubscriptionDtoValidator();
 const subscriptionController = new SubscriptionController(
-    subscriptionDtoValidator, subscribeUserUseCase, confirmSubscriptionUseCase, unsubscribeUserUseCase);
+    subscriptionDtoValidator, subscriptionUseCase);
 const weatherController = new WeatherController(getWeatherUseCase);
 
 const emailJobHandler = new EmailJobHandler(weatherUpdatesUseCase);
