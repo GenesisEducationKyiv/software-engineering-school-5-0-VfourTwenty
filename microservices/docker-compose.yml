@@ -6,6 +6,8 @@ services:
       - rabbitmq
     ports:
       - "5000:4000"
+    volumes:
+      - ./apps/backend/logs:/app/logs
     command: npm start
     restart: always
 
@@ -24,6 +26,8 @@ services:
       - redis
     ports:
       - "5002:4002"
+    volumes:
+      - ./apps/weather/logs:/app/logs
     command: npm start
     restart: always
 
@@ -35,6 +39,8 @@ services:
       - rabbitmq
     ports:
       - "5003:4003"
+    volumes:
+      - ./apps/subscription/logs:/app/logs
     command: npm start
     restart: always
 
@@ -45,6 +51,8 @@ services:
       - rabbitmq
     ports:
       - "5009:4009"
+    volumes:
+      - ./apps/notification/logs:/app/logs
     command: npm start
     restart: always
 
@@ -53,6 +61,8 @@ services:
     build: apps/email
     ports:
       - "5004:4004"
+    volumes:
+      - ./apps/email/logs:/app/logs
     command: npm start
     restart: always
 
@@ -79,6 +89,7 @@ services:
     image: prom/prometheus:latest
     depends_on:
       - weather
+      - backend
     ports:
       - "5007:9090"
     volumes:
@@ -96,3 +107,4 @@ volumes:
   pgdata:
 
 
+#

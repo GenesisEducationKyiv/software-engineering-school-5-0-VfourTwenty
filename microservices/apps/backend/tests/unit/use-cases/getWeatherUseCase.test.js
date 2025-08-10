@@ -1,9 +1,11 @@
 const GetWeatherUseCase = require('../../../src/application/use-cases/getWeatherUseCase');
 const WeatherServiceMock = require('../../mocks/services/weatherService.mock');
+const LoggerMock = require('../../mocks/utils/logger.mock');
 const { expect } = require('chai');
 
 const weatherServiceMock = new WeatherServiceMock();
-const getWeatherUseCase = new GetWeatherUseCase(weatherServiceMock);
+const loggerMock = new LoggerMock();
+const getWeatherUseCase = new GetWeatherUseCase(weatherServiceMock, loggerMock);
 
 describe('GetWeatherUseCase Unit Tests', () => 
 {
