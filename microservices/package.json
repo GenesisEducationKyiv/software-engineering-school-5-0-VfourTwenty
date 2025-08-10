@@ -1,0 +1,21 @@
+{
+  "name": "microservices",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "cd scripts && bash start-all-apps.sh",
+    "test:unit": "cd scripts && bash unit-tests-all.sh",
+    "test:e2e": "cd scripts && bash run-e2e-tests.sh",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@stylistic/eslint-plugin": "^4.4.1",
+    "eslint": "^9.29.0",
+    "globals": "^16.2.0"
+  }
+}

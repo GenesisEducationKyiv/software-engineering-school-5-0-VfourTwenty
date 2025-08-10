@@ -1,0 +1,26 @@
+name: Architecture Tests
+
+on:
+  push:
+    paths:
+      - 'monolith/**'
+  pull_request:
+    paths:
+      - 'monolith/**'
+
+defaults:
+  run:
+    working-directory: monolith
+
+jobs:
+  test-architecture:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Architecture tests
+        run: npm run test:arch

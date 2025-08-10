@@ -1,0 +1,8 @@
+FROM node:22
+
+WORKDIR /app/tests
+
+RUN npm install @playwright/test && \
+    npx playwright install --with-deps chromium
+
+COPY . .

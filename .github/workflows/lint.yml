@@ -1,0 +1,32 @@
+name: Lint with ESLint
+
+on:
+  push:
+    paths:
+      - 'monolith/**'
+  pull_request:
+    paths:
+      - 'monolith/**'
+
+defaults:
+  run:
+    working-directory: monolith
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
